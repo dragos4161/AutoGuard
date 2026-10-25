@@ -2,7 +2,7 @@
 //  AutoGuardApp.swift
 //  AutoGuard
 //
-//  Created by Dragos Dima on 24.10.2026.
+//  Punctul de intrare în aplicație (în Flutter: echivalentul funcției `main()` și a widgetului `MaterialApp`).
 //
 
 import SwiftUI
@@ -10,22 +10,31 @@ import SwiftData
 
 @main
 struct AutoGuardApp: App {
+    // Configurația containerului SwiftData pentru stocarea locală (SQLite pe dispozitiv)
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Vehicle.self,
+            VehicleDocument.self
         ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+
+        // Folosim `cloudKitDatabase: .none` pentru dezvoltare locală și Previews rapide în Simulator
+        let modelConfiguration = ModelConfiguration(
+            schema: schema,
+            isStoredInMemoryOnly: false,
+            cloudKitDatabase: .none
+        )
 
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+            fatalError("Eroare la crearea ModelContainer SwiftData: \(error)")
         }
     }()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            // Ecranul inițial cu care pornește aplicația
+            GarageView()
         }
         .modelContainer(sharedModelContainer)
     }
