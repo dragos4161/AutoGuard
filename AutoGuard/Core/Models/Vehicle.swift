@@ -11,12 +11,12 @@ import SwiftData
 @Model
 final class Vehicle {
     var id: UUID = UUID()
-    var plateNumber: String = "" // Ex: B 123 ABC
-    var make: String = ""        // Ex: Dacia, Volkswagen, BMW
-    var model: String = ""       // Ex: Duster, Golf, Seria 3
+    var plateNumber: String = ""  // Ex: B 123 ABC
+    var make: String = ""  // Ex: Dacia, Volkswagen, BMW
+    var model: String = ""  // Ex: Duster, Golf, Seria 3
     var year: Int = 2023
-    var vin: String = ""         // Serie șasiu (17 caractere)
-    var nickname: String = ""    // Ex: "Mașina familiei"
+    var vin: String = ""  // Serie șasiu (17 caractere)
+    var nickname: String = ""  // Ex: "Mașina familiei"
     var createdAt: Date = Date()
 
     // Relație one-to-many cu documentele mașinii (opțională pentru compatibilitate CloudKit)

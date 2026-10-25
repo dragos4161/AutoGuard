@@ -13,7 +13,7 @@ import SwiftData
 protocol VehicleRepositoryProtocol: Sendable {
     func insertVehicle(_ vehicle: Vehicle, in context: ModelContext)
     func deleteVehicle(_ vehicle: Vehicle, in context: ModelContext)
-    func updateVehicleDocument(_ document:VehicleDocument, newExpiryDate: Date)
+    func updateVehicleDocument(_ document: VehicleDocument, newExpiryDate: Date)
 }
 
 /// Implementarea concretă pentru SwiftData (stocare locală pe telefon)
@@ -25,8 +25,9 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
     func deleteVehicle(_ vehicle: Vehicle, in context: ModelContext) {
         context.delete(vehicle)
     }
-    
-    func updateVehicleDocument(_ document:VehicleDocument, newExpiryDate: Date) {
+
+    func updateVehicleDocument(_ document: VehicleDocument, newExpiryDate: Date)
+    {
         document.expirationDate = newExpiryDate
     }
 }

@@ -33,7 +33,13 @@ struct VehicleCardView: View {
 
                         // Numărul propriu-zis (ex: B 123 ABC)
                         Text(vehicle.plateNumber)
-                            .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                            .font(
+                                .system(
+                                    .subheadline,
+                                    design: .monospaced,
+                                    weight: .bold
+                                )
+                            )
                             .foregroundStyle(.black)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
@@ -69,7 +75,10 @@ struct VehicleCardView: View {
             if let docs = vehicle.documents, !docs.isEmpty {
                 Divider()
 
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                LazyVGrid(
+                    columns: [GridItem(.flexible()), GridItem(.flexible())],
+                    spacing: 8
+                ) {
                     ForEach(docs) { doc in
                         HStack(spacing: 6) {
                             Image(systemName: doc.type.iconName)

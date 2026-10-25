@@ -24,22 +24,28 @@ final class GarageViewModel {
     // MARK: - Business Logic: Calcul Status Emoțional (Liniște vs Atenție)
     func hasUrgentDocuments(in vehicles: [Vehicle]) -> Bool {
         vehicles.contains { vehicle in
-            (vehicle.documents ?? []).contains { $0.isExpired || $0.isExpiringSoon }
+            (vehicle.documents ?? []).contains {
+                $0.isExpired || $0.isExpiringSoon
+            }
         }
     }
 
     /// Datele necesare pentru afișarea bannerului de liniște sufletească
-    func statusBannerData(for vehicles: [Vehicle]) -> (title: String, subtitle: String, isWarning: Bool) {
+    func statusBannerData(for vehicles: [Vehicle]) -> (
+        title: String, subtitle: String, isWarning: Bool
+    ) {
         if hasUrgentDocuments(in: vehicles) {
             return (
                 title: "Atenție la termene",
-                subtitle: "Ai documente care expiră în curând sau sunt deja expirate.",
+                subtitle:
+                    "Ai documente care expiră în curând sau sunt deja expirate.",
                 isWarning: true
             )
         } else {
             return (
                 title: "Liniște deplină",
-                subtitle: "Toate actele mașinilor tale sunt în regulă. Conduci fără griji!",
+                subtitle:
+                    "Toate actele mașinilor tale sunt în regulă. Conduci fără griji!",
                 isWarning: false
             )
         }

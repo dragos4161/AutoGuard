@@ -6,17 +6,17 @@
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @Model
 final class VehicleDocument {
     var id: UUID = UUID()
     var typeRawValue: String = DocumentType.rca.rawValue
     var expirationDate: Date = Date()
-    var provider: String = "" // Ex: Omniasig, Groupama, CNAIR
-    var policyNumber: String = "" // Serie/Număr poliță sau bon
-    
+    var provider: String = ""  // Ex: Omniasig, Groupama, CNAIR
+    var policyNumber: String = ""  // Serie/Număr poliță sau bon
+
     // Relația inversă către mașină (se populează automat de SwiftData)
     var vehicle: Vehicle?
 
@@ -44,7 +44,11 @@ final class VehicleDocument {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
         let target = calendar.startOfDay(for: expirationDate)
-        let components = calendar.dateComponents([.day], from: today, to: target)
+        let components = calendar.dateComponents(
+            [.day],
+            from: today,
+            to: target
+        )
         return components.day ?? 0
     }
 

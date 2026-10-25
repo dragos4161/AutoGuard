@@ -6,8 +6,8 @@
 //  Nu conține logică de business; se leagă direct la `AddVehicleViewModel`.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct AddVehicleView: View {
     @Environment(\.modelContext) private var modelContext
@@ -21,20 +21,41 @@ struct AddVehicleView: View {
             Form {
                 // Secțiunea 1: Date generale
                 Section("Date Vehicul") {
-                    TextField("Număr înmatriculare (ex: B 123 ABC)", text: $viewModel.plateNumber)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
+                    TextField(
+                        "Număr înmatriculare (ex: B 123 ABC)",
+                        text: $viewModel.plateNumber
+                    )
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
 
-                    TextField("Marcă (ex: Dacia, Volkswagen)", text: $viewModel.make)
-                    TextField("Model (ex: Duster, Golf)", text: $viewModel.model)
+                    TextField(
+                        "Marcă (ex: Dacia, Volkswagen)",
+                        text: $viewModel.make
+                    )
+                    TextField(
+                        "Model (ex: Duster, Golf)",
+                        text: $viewModel.model
+                    )
                     TextField("Poreclă opțională", text: $viewModel.nickname)
                 }
 
                 // Secțiunea 2: Termene de expirare
                 Section("Termene Inițiale de Expirare") {
-                    DatePicker("Expirare RCA", selection: $viewModel.rcaDate, displayedComponents: .date)
-                    DatePicker("Expirare ITP", selection: $viewModel.itpDate, displayedComponents: .date)
-                    DatePicker("Expirare Rovinietă", selection: $viewModel.rovinietaDate, displayedComponents: .date)
+                    DatePicker(
+                        "Expirare RCA",
+                        selection: $viewModel.rcaDate,
+                        displayedComponents: .date
+                    )
+                    DatePicker(
+                        "Expirare ITP",
+                        selection: $viewModel.itpDate,
+                        displayedComponents: .date
+                    )
+                    DatePicker(
+                        "Expirare Rovinietă",
+                        selection: $viewModel.rovinietaDate,
+                        displayedComponents: .date
+                    )
                 }
             }
             .navigationTitle("Adaugă Mașină")
@@ -62,5 +83,8 @@ struct AddVehicleView: View {
 
 #Preview {
     AddVehicleView()
-        .modelContainer(for: [Vehicle.self, VehicleDocument.self], inMemory: true)
+        .modelContainer(
+            for: [Vehicle.self, VehicleDocument.self],
+            inMemory: true
+        )
 }

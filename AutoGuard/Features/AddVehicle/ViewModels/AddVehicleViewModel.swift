@@ -19,9 +19,12 @@ final class AddVehicleViewModel {
     var nickname: String = ""
 
     // Termene inițiale
-    var rcaDate: Date = Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
-    var itpDate: Date = Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
-    var rovinietaDate: Date = Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    var rcaDate: Date =
+        Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    var itpDate: Date =
+        Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    var rovinietaDate: Date =
+        Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
 
     // MARK: - Dependencies
     private let repository: VehicleRepositoryProtocol
@@ -32,7 +35,9 @@ final class AddVehicleViewModel {
 
     // MARK: - Business Logic: Validare
     var isFormValid: Bool {
-        let cleanPlate = plateNumber.trimmingCharacters(in: .whitespacesAndNewlines)
+        let cleanPlate = plateNumber.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
         let cleanMake = make.trimmingCharacters(in: .whitespacesAndNewlines)
         return !cleanPlate.isEmpty && !cleanMake.isEmpty
     }
@@ -58,7 +63,10 @@ final class AddVehicleViewModel {
         // 2. Creăm documentele obligatorii
         let rca = VehicleDocument(type: .rca, expirationDate: rcaDate)
         let itp = VehicleDocument(type: .itp, expirationDate: itpDate)
-        let rovinieta = VehicleDocument(type: .rovinieta, expirationDate: rovinietaDate)
+        let rovinieta = VehicleDocument(
+            type: .rovinieta,
+            expirationDate: rovinietaDate
+        )
 
         vehicle.documents = [rca, itp, rovinieta]
 

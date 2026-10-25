@@ -5,8 +5,8 @@
 //  Created by Dragos Dima on 25.10.2026.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct DocumentStatusRow: View {
     let doc: VehicleDocument
@@ -25,7 +25,7 @@ struct DocumentStatusRow: View {
                     .font(.caption.bold())
                     .foregroundStyle(doc.statusColor)
             }
-            Spacer() // Împinge butonul în capătul din dreapta și lățimea la 100%!
+            Spacer()  // Împinge butonul în capătul din dreapta și lățimea la 100%!
             Button("Reînnoiește") {
                 onRenewTap()
             }
@@ -39,7 +39,11 @@ struct DocumentStatusRow: View {
 
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: Vehicle.self, VehicleDocument.self, configurations: config)
+    let container = try! ModelContainer(
+        for: Vehicle.self,
+        VehicleDocument.self,
+        configurations: config
+    )
     let sampleDoc = VehicleDocument(type: .rca, expirationDate: Date())
 
     DocumentStatusRow(doc: sampleDoc) {
