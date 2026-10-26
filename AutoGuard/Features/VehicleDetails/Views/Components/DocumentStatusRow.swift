@@ -17,16 +17,16 @@ struct DocumentStatusRow: View {
                 .font(.title2)
                 .foregroundStyle(doc.statusColor)
             VStack(alignment: .leading, spacing: 4) {
-                Text(doc.type.title).font(.headline)
+                Text(doc.type.titleKey).font(.headline)
                 Text(doc.expirationDate, format: .dateTime.day().month().year())
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Text("\(doc.daysRemaining) zile ramase")
+                Text("days_remaining \(doc.daysRemaining)")
                     .font(.caption.bold())
                     .foregroundStyle(doc.statusColor)
             }
             Spacer()  // Împinge butonul în capătul din dreapta și lățimea la 100%!
-            Button("Reînnoiește") {
+            Button("common.renew") {
                 onRenewTap()
             }
             .buttonStyle(.borderedProminent)

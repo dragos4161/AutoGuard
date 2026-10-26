@@ -32,20 +32,18 @@ final class GarageViewModel {
 
     /// Datele necesare pentru afișarea bannerului de liniște sufletească
     func statusBannerData(for vehicles: [Vehicle]) -> (
-        title: String, subtitle: String, isWarning: Bool
+        titleKey: LocalizedStringResource, subtitleKey: LocalizedStringResource, isWarning: Bool
     ) {
         if hasUrgentDocuments(in: vehicles) {
             return (
-                title: "Atenție la termene",
-                subtitle:
-                    "Ai documente care expiră în curând sau sunt deja expirate.",
+                titleKey: "banner.warning.title",
+                subtitleKey: "banner.warning.subtitle",
                 isWarning: true
             )
         } else {
             return (
-                title: "Liniște deplină",
-                subtitle:
-                    "Toate actele mașinilor tale sunt în regulă. Conduci fără griji!",
+                titleKey: "banner.all_clear.title",
+                subtitleKey: "banner.all_clear.subtitle",
                 isWarning: false
             )
         }

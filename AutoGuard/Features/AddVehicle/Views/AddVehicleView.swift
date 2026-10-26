@@ -20,55 +20,55 @@ struct AddVehicleView: View {
         NavigationStack {
             Form {
                 // Secțiunea 1: Date generale
-                Section("Date Vehicul") {
+                Section("add_vehicle.section.details") {
                     TextField(
-                        "Număr înmatriculare (ex: B 123 ABC)",
+                        "add_vehicle.plate_placeholder",
                         text: $viewModel.plateNumber
                     )
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
 
                     TextField(
-                        "Marcă (ex: Dacia, Volkswagen)",
+                        "add_vehicle.make_placeholder",
                         text: $viewModel.make
                     )
                     TextField(
-                        "Model (ex: Duster, Golf)",
+                        "add_vehicle.model_placeholder",
                         text: $viewModel.model
                     )
-                    TextField("Poreclă opțională", text: $viewModel.nickname)
+                    TextField("add_vehicle.nickname_placeholder", text: $viewModel.nickname)
                 }
 
                 // Secțiunea 2: Termene de expirare
-                Section("Termene Inițiale de Expirare") {
+                Section("add_vehicle.section.expirations") {
                     DatePicker(
-                        "Expirare RCA",
+                        "add_vehicle.rca_expiry",
                         selection: $viewModel.rcaDate,
                         displayedComponents: .date
                     )
                     DatePicker(
-                        "Expirare ITP",
+                        "add_vehicle.itp_expiry",
                         selection: $viewModel.itpDate,
                         displayedComponents: .date
                     )
                     DatePicker(
-                        "Expirare Rovinietă",
+                        "add_vehicle.rovinieta_expiry",
                         selection: $viewModel.rovinietaDate,
                         displayedComponents: .date
                     )
                 }
             }
-            .navigationTitle("Adaugă Mașină")
+            .navigationTitle("add_vehicle.title")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Anulează") {
+                    Button("common.cancel") {
                         dismiss()
                     }
                 }
 
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Salvează") {
+                    Button("common.save") {
                         if viewModel.saveVehicle(in: modelContext) {
                             dismiss()
                         }

@@ -18,7 +18,18 @@ enum DocumentType: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    /// Titlul afișat în interfață
+    /// Cheia de localizare pentru afișarea numelui în interfață
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .rca: return "doc.type.rca"
+        case .itp: return "doc.type.itp"
+        case .rovinieta: return "doc.type.rovinieta"
+        case .casco: return "doc.type.casco"
+        case .extinguisher: return "doc.type.extinguisher"
+        }
+    }
+
+    /// Titlul afișat în interfață (fallback)
     var title: String {
         switch self {
         case .rca: return "Poliță RCA"

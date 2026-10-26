@@ -18,6 +18,8 @@ struct GarageView: View {
 
     // ViewModel-ul gestionează starea interfeței și calculele de business
     @State private var viewModel = GarageViewModel()
+    
+    @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
 
     var body: some View {
         NavigationStack {
@@ -25,16 +27,16 @@ struct GarageView: View {
                 if vehicles.isEmpty {
                     // Empty State
                     ContentUnavailableView {
-                        Label("Garajul tău este gol", systemImage: "car.2.fill")
+                        Label("garage.empty.title", systemImage: "car.2.fill")
                     } description: {
                         Text(
-                            "Adaugă prima mașină pentru a urmări automat RCA-ul, ITP-ul și Rovinieta."
+                            "garage.empty.subtitle"
                         )
                     } actions: {
                         Button {
                             viewModel.isShowingAddVehicleSheet = true
                         } label: {
-                            Text("Adaugă Mașină")
+                            Text("garage.add_vehicle")
                                 .fontWeight(.semibold)
                         }
                         .buttonStyle(.borderedProminent)
@@ -61,7 +63,7 @@ struct GarageView: View {
                                         )
                                     } label: {
                                         Label(
-                                            "Șterge Mașina",
+                                            "garage.delete_vehicle",
                                             systemImage: "trash"
                                         )
                                     }
@@ -73,7 +75,7 @@ struct GarageView: View {
                     .background(Color(uiColor: .systemGroupedBackground))
                 }
             }
-            .navigationTitle("Garajul Meu")
+            .navigationTitle("garage.title")
             .navigationDestination(for: Vehicle.self) { selectedVehicle in
                 // 2. Router-ul central: "Când cineva navighează cu un obiect Vehicle, deschide acest ecran:"
                 VehicleDetailsView(vehicle: selectedVehicle)
@@ -85,6 +87,23 @@ struct GarageView: View {
                     } label: {
                         Image(systemName: "plus.circle.fill")
                             .font(.title3)
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        ForEach(AppLanguage.allCases) { lang in
+                            Button {
+                                appLanguage = lang
+                            } label: {
+                                if appLanguage == lang {
+                                    Label(lang.displayName, systemImage: "checkmark")
+                                } else {
+                                    Text(lang.displayName)
+                                }
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "globe")
                     }
                 }
             }
@@ -102,17 +121,17 @@ struct GarageView: View {
         HStack(spacing: 12) {
             Image(
                 systemName: banner.isWarning
-                    ? "exclamationmark.triangle.fill" : "shield.checkmark.fill"
+                    ? "exclamationmark.triangle.fill" : "heckmark.shield.fill"
             )
             .font(.title2)
             .foregroundStyle(banner.isWarning ? .orange : .green)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(banner.title)
+                Text(banner.titleKey)
                     .font(.subheadline.bold())
                     .foregroundStyle(.primary)
 
-                Text(banner.subtitle)
+                Text(banner.subtitleKey)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

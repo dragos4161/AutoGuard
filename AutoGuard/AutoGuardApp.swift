@@ -10,6 +10,9 @@ import SwiftData
 
 @main
 struct AutoGuardApp: App {
+    
+    @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
+    
     // Configurația containerului SwiftData pentru stocarea locală (SQLite pe dispozitiv)
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -35,6 +38,8 @@ struct AutoGuardApp: App {
         WindowGroup {
             // Ecranul inițial cu care pornește aplicația
             GarageView()
+                .id(appLanguage)
+                .environment(\.locale, appLanguage.locale)
         }
         .modelContainer(sharedModelContainer)
     }

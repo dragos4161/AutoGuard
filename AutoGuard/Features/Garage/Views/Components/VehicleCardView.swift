@@ -86,11 +86,11 @@ struct VehicleCardView: View {
                                 .foregroundStyle(doc.statusColor)
 
                             VStack(alignment: .leading, spacing: 1) {
-                                Text(doc.type.rawValue)
+                                Text(doc.type.titleKey)
                                     .font(.caption2)
                                     .foregroundStyle(.secondary)
 
-                                Text(statusText(for: doc))
+                                statusBadge(for: doc)
                                     .font(.caption.bold())
                                     .foregroundStyle(doc.statusColor)
                             }
@@ -110,13 +110,14 @@ struct VehicleCardView: View {
         .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
     }
 
-    private func statusText(for doc: VehicleDocument) -> String {
+    @ViewBuilder
+    private func statusBadge(for doc: VehicleDocument) -> some View {
         if doc.isExpired {
-            return "Expirat!"
+            Text("doc.status.expired")
         } else if doc.daysRemaining == 0 {
-            return "Expiră azi"
+            Text("doc.status.expires_today")
         } else {
-            return "\(doc.daysRemaining) zile"
+            Text("days_count \(doc.daysRemaining)")
         }
     }
 }
