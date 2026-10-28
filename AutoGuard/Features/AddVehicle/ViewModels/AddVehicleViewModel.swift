@@ -17,6 +17,7 @@ final class AddVehicleViewModel {
     var model: String = ""
     var year: Int = Calendar.current.component(.year, from: Date())
     var nickname: String = ""
+    var vin: String = ""
 
     // Termene inițiale
     var rcaDate: Date =
@@ -34,12 +35,21 @@ final class AddVehicleViewModel {
     }
 
     // MARK: - Business Logic: Validare
+    var isVinValid: Bool {
+        let cleanVin = vin.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+        // Dacă e gol, e permis (opțional). Dacă are ceva scris, verificăm regula celor 17 caractere:
+        if cleanVin.isEmpty { return true }
+        
+        let vinRegex = "^[A-HJ-NPR-Z0-9]{17}$"
+        return cleanVin.range(of: vinRegex, options: .regularExpression) != nil
+    }
     var isFormValid: Bool {
         let cleanPlate = plateNumber.trimmingCharacters(
             in: .whitespacesAndNewlines
         )
         let cleanMake = make.trimmingCharacters(in: .whitespacesAndNewlines)
-        return !cleanPlate.isEmpty && !cleanMake.isEmpty
+        
+        return !cleanPlate.isEmpty && !cleanMake.isEmpty && isVinValid
     }
 
     // Formatare automată număr înmatriculare (ex: majuscule fără spații duble)
@@ -57,6 +67,7 @@ final class AddVehicleViewModel {
             make: make.trimmingCharacters(in: .whitespacesAndNewlines),
             model: model.trimmingCharacters(in: .whitespacesAndNewlines),
             year: year,
+            vin: vin.trimmingCharacters(in: .whitespacesAndNewlines),
             nickname: nickname.trimmingCharacters(in: .whitespacesAndNewlines)
         )
 

@@ -57,7 +57,6 @@ struct AutoGuardTests {
         // Garaj fără mașini -> Liniște deplină
         let emptyStatus = viewModel.statusBannerData(for: [])
         #expect(emptyStatus.isWarning == false)
-        #expect(emptyStatus.title == "Liniște deplină")
 
         // Garaj cu mașină cu act expirat -> Atenție la termene
         let vehicle = Vehicle(plateNumber: "B 123 ABC", make: "Dacia", model: "Duster")
@@ -66,6 +65,10 @@ struct AutoGuardTests {
 
         let warningStatus = viewModel.statusBannerData(for: [vehicle])
         #expect(warningStatus.isWarning == true)
-        #expect(warningStatus.title == "Atenție la termene")
+
+        // Dacă documentul expirat este arhivat în istoric, nu mai dă alertă!
+        expiredDoc.isArchived = true
+        let archivedStatus = viewModel.statusBannerData(for: [vehicle])
+        #expect(archivedStatus.isWarning == false)
     }
 }

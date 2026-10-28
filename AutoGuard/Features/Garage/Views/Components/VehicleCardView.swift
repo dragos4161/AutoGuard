@@ -71,8 +71,9 @@ struct VehicleCardView: View {
                     .foregroundStyle(.blue.gradient)
             }
 
-            // Grile de status pentru documente (RCA, ITP, Rovinietă)
-            if let docs = vehicle.documents, !docs.isEmpty {
+            // Grile de status pentru documente active (RCA, ITP, Rovinietă)
+            let docs = vehicle.activeDocuments
+            if !docs.isEmpty {
                 Divider()
 
                 LazyVGrid(

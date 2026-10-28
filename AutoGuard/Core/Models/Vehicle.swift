@@ -41,14 +41,26 @@ final class Vehicle {
         self.createdAt = Date()
     }
 
-    /// Găsește un document specific (ex: RCA sau ITP)
-    func document(for type: DocumentType) -> VehicleDocument? {
-        (documents ?? []).first { $0.type == type }
+    /// Doar documentele active (curente) ale mașinii
+    var activeDocuments: [VehicleDocument] {
+        (documents ?? []).filter { !$0.isArchived }
     }
 
-    /// Cel mai urgent document (cel cu cele mai puține zile rămase)
+    /// Istoricul documentelor vechi (arhivate la reînnoire), de la cel mai recent la cel mai vechi
+    var archivedDocuments: [VehicleDocument] {
+        (documents ?? [])
+            .filter { $0.isArchived }
+            .sorted { $0.expirationDate > $1.expirationDate }
+    }
+
+    /// Găsește un document activ specific (ex: RCA sau ITP)
+    func document(for type: DocumentType) -> VehicleDocument? {
+        activeDocuments.first { $0.type == type }
+    }
+
+    /// Cel mai urgent document activ (cel cu cele mai puține zile rămase)
     var mostUrgentDocument: VehicleDocument? {
-        (documents ?? []).min { $0.daysRemaining < $1.daysRemaining }
+        activeDocuments.min { $0.daysRemaining < $1.daysRemaining }
     }
 
     /// Titlul complet al mașinii pentru interfață

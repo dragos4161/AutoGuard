@@ -15,12 +15,32 @@ struct AddVehicleView: View {
 
     // ViewModel-ul gestionează starea și validările (State Management)
     @State private var viewModel = AddVehicleViewModel()
-
+    @FocusState private var isVinFocused: Bool
+    
     var body: some View {
         NavigationStack {
             Form {
                 // Secțiunea 1: Date generale
                 Section("add_vehicle.section.details") {
+                    TextField(
+                        "add_vehicle.vin_placeholder",
+                        text: $viewModel.vin
+                    )
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
+                    .focused($isVinFocused) // 1. Legăm focusul de câmp
+                    .onChange(of: viewModel.vin) { _, newValue in
+                        if newValue.count >= 17 {
+                            // Dacă a depășit (de ex. prin Paste), tăiem la fix 17
+                            if newValue.count > 17 {
+                                viewModel.vin = String(newValue.prefix(17))
+                            }
+                            
+                            // 2. Închidem tastatura automat!
+                            isVinFocused = false
+                        }
+                    }
+                    
                     TextField(
                         "add_vehicle.plate_placeholder",
                         text: $viewModel.plateNumber

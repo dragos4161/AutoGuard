@@ -16,6 +16,13 @@ final class VehicleDocument {
     var expirationDate: Date = Date()
     var provider: String = ""  // Ex: Omniasig, Groupama, CNAIR
     var policyNumber: String = ""  // Serie/Număr poliță sau bon
+    var isArchived: Bool = false  // true dacă documentul a fost reînnoit și mutat în istoric
+    var archivedAt: Date? = nil   // Data la care a fost arhivat
+
+    // Stocare externă optimizată pentru fișiere mari (PDF sau Poză), compatibilă cu CloudKit CKAsset
+    @Attribute(.externalStorage)
+    var attachmentData: Data? = nil
+    var attachmentFileName: String? = nil
 
     // Relația inversă către mașină (se populează automat de SwiftData)
     var vehicle: Vehicle?
@@ -24,13 +31,24 @@ final class VehicleDocument {
         type: DocumentType,
         expirationDate: Date,
         provider: String = "",
-        policyNumber: String = ""
+        policyNumber: String = "",
+        isArchived: Bool = false,
+        attachmentData: Data? = nil,
+        attachmentFileName: String? = nil
     ) {
         self.id = UUID()
         self.typeRawValue = type.rawValue
         self.expirationDate = expirationDate
         self.provider = provider
         self.policyNumber = policyNumber
+        self.isArchived = isArchived
+        self.attachmentData = attachmentData
+        self.attachmentFileName = attachmentFileName
+    }
+
+    /// Indică dacă documentul are un fișier PDF sau o poză atașată
+    var hasAttachment: Bool {
+        attachmentData != nil
     }
 
     /// Tipul convertit în enum-ul sigur de tip `DocumentType`

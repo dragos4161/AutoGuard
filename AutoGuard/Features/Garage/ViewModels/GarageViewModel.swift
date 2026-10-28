@@ -24,7 +24,7 @@ final class GarageViewModel {
     // MARK: - Business Logic: Calcul Status Emoțional (Liniște vs Atenție)
     func hasUrgentDocuments(in vehicles: [Vehicle]) -> Bool {
         vehicles.contains { vehicle in
-            (vehicle.documents ?? []).contains {
+            vehicle.activeDocuments.contains {
                 $0.isExpired || $0.isExpiringSoon
             }
         }
