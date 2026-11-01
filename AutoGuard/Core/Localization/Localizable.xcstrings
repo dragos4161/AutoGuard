@@ -2202,6 +2202,210 @@
         }
       }
     },
+    "service.card.first_to_expire" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Will reach limit first:"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Va atinge pragul mai întâi:"
+          }
+        }
+      }
+    },
+    "service.card.factor.mileage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MILEAGE"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KILOMETRAJUL"
+          }
+        }
+      }
+    },
+    "service.card.factor.time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TIME"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "TIMPUL"
+          }
+        }
+      }
+    },
+    "service.card.factor.balanced" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BALANCED"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ECHILIBRAT"
+          }
+        }
+      }
+    },
+    "service.card.factor.mileage_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "At current driving pace, you will reach the mileage limit before the calendar deadline."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La ritmul actual de condus, vei atinge limita de kilometri înaintea datei din calendar."
+          }
+        }
+      }
+    },
+    "service.card.factor.time_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Low driving frequency; calendar deadline will arrive before the mileage limit."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mașina rulează puțin; termenul calendaristic va expira înaintea limitei de kilometri."
+          }
+        }
+      }
+    },
+    "service.card.factor.balanced_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mileage and time are progressing at a similar pace."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilometrajul și timpul avansează într-un ritm similar."
+          }
+        }
+      }
+    },
+    "service.card.km_remaining_pill" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ km remaining"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ km rămași"
+          }
+        }
+      }
+    },
+    "service.card.months_remaining_pill" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld months left"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld luni rămase"
+          }
+        }
+      }
+    },
+    "service.card.overdue_both" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Overdue on both mileage and time!"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Termen depășit la kilometri și la timp!"
+          }
+        }
+      }
+    },
+    "service.card.overdue_km" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Mileage exceeded by %@ km!"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Kilometraj depășit cu %@ km!"
+          }
+        }
+      }
+    },
+    "service.card.overdue_time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Calendar deadline passed!"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Termen calendaristic depășit!"
+          }
+        }
+      }
+    },
     "service.category.brakes" : {
 
     },

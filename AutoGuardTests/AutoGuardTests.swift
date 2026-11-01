@@ -117,6 +117,8 @@ struct AutoGuardTests {
         #expect(status != nil)
         #expect(status?.remainingKm == 3000)
         #expect(status?.isOverdue == false)
+        #expect(status?.limitingFactor == .mileage)
+        #expect(status?.kmProgressPercent == 70)
 
         // Dacă parcurgem încă 4.000 km (total 151.000 km) -> revizia devine depășită!
         let highMileage = MileageEntry(mileage: 151000, date: Date())

@@ -122,7 +122,8 @@ final class Vehicle {
 
         let baseMileage = lastRecord.mileage
         let targetMileage = baseMileage + oilChangeIntervalKm
-        let remainingKm = targetMileage - (currentMileage ?? baseMileage)
+        let currentKm = currentMileage ?? baseMileage
+        let remainingKm = targetMileage - currentKm
 
         let calendar = Calendar.current
         let dueDate = calendar.date(byAdding: .month, value: oilChangeIntervalMonths, to: lastRecord.date) ?? Date()
@@ -133,7 +134,7 @@ final class Vehicle {
         let isOverdue = remainingKm <= 0 || remainingDays <= 0
         let isDueSoon = !isOverdue && (remainingKm <= 1000 || remainingDays <= 30)
 
-        let kmUsed = Double(max(0, (currentMileage ?? baseMileage) - baseMileage))
+        let kmUsed = Double(max(0, currentKm - baseMileage))
         let kmProgress = min(1.0, max(0.0, kmUsed / Double(max(1, oilChangeIntervalKm))))
 
         let daysTotal = Double(max(1, calendar.dateComponents([.day], from: lastRecord.date, to: dueDate).day ?? 365))
@@ -147,7 +148,10 @@ final class Vehicle {
             isOverdue: isOverdue,
             isDueSoon: isDueSoon,
             kmProgress: kmProgress,
-            timeProgress: timeProgress
+            timeProgress: timeProgress,
+            kmUsed: Int(kmUsed),
+            targetKm: targetMileage,
+            lastServiceDate: lastRecord.date
         )
     }
 }
@@ -161,6 +165,33 @@ struct MaintenanceStatus {
     let isDueSoon: Bool
     let kmProgress: Double
     let timeProgress: Double
+    let kmUsed: Int
+    let targetKm: Int
+    let lastServiceDate: Date
+
+    enum LimitingFactor {
+        case mileage
+        case time
+        case balanced
+    }
+
+    var limitingFactor: LimitingFactor {
+        let diff = kmProgress - timeProgress
+        if abs(diff) < 0.05 { return .balanced }
+        return kmProgress > timeProgress ? .mileage : .time
+    }
+
+    var kmProgressPercent: Int {
+        Int(min(1.0, max(0.0, kmProgress)) * 100)
+    }
+
+    var timeProgressPercent: Int {
+        Int(min(1.0, max(0.0, timeProgress)) * 100)
+    }
+
+    var monthsRemaining: Int {
+        max(0, (remainingDays + 15) / 30)
+    }
 
     var statusColor: SwiftUI.Color {
         if isOverdue {
