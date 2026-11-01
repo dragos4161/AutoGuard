@@ -2202,6 +2202,108 @@
         }
       }
     },
+    "service.card.quick_complete_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick mark as done"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marchează rapid ca efectuat"
+          }
+        }
+      }
+    },
+    "service.card.log_service_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Log service entry (invoice/price)"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Înregistrează service (factură/cost)"
+          }
+        }
+      }
+    },
+    "service.card.quick_complete_alert_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm Oil Service"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmare Schimb Ulei"
+          }
+        }
+      }
+    },
+    "service.card.quick_complete_alert_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This will record an oil service completed today and reset the maintenance interval."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se va înregistra schimbul de ulei efectuat astăzi și se va reseta intervalul de mentenanță."
+          }
+        }
+      }
+    },
+    "service.card.quick_complete_confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm & Reset"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmă & Resetează"
+          }
+        }
+      }
+    },
+    "service.card.overdue_action_prompt" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Already had your oil changed?"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ai făcut deja revizia?"
+          }
+        }
+      }
+    },
     "service.card.first_to_expire" : {
       "extractionState" : "manual",
       "localizations" : {

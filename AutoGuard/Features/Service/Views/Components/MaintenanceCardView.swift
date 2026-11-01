@@ -3,15 +3,34 @@
 //  AutoGuard
 //
 //  Card vizual interactiv pentru starea de mentenanță / schimb de ulei (Timp vs. KM).
-//  Afișează bare de completitudine paralele și semnalează care prag se va atinge primul.
+//  Afișează bare de completitudine paralele, semnalează factorul limită și oferă
+//  acțiuni rapide pentru înregistrarea reviziei sau marcarea rapidă ca efectuat.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MaintenanceCardView: View {
+    @Environment(\.modelContext) private var modelContext
+
     let vehicle: Vehicle
     var onAddServiceTap: () -> Void
     var onConfigureIntervalsTap: () -> Void
+
+    private let repository: VehicleRepositoryProtocol
+    @State private var showingQuickMarkAlert: Bool = false
+
+    init(
+        vehicle: Vehicle,
+        onAddServiceTap: @escaping () -> Void,
+        onConfigureIntervalsTap: @escaping () -> Void,
+        repository: VehicleRepositoryProtocol = SwiftDataVehicleRepository()
+    ) {
+        self.vehicle = vehicle
+        self.onAddServiceTap = onAddServiceTap
+        self.onConfigureIntervalsTap = onConfigureIntervalsTap
+        self.repository = repository
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -83,7 +102,12 @@ struct MaintenanceCardView: View {
                 .background(Color(uiColor: .tertiarySystemFill).opacity(0.5))
                 .clipShape(RoundedRectangle(cornerRadius: 12))
 
-                // Secțiunea 3: Footer cu Status Badge
+                // Secțiunea 3: Butoane Acțiuni Rapide (când este depășit sau în curând)
+                if status.isOverdue || status.isDueSoon {
+                    actionButtonsSection(for: status)
+                }
+
+                // Secțiunea 4: Footer cu Status Badge
                 HStack {
                     statusBadgeView(for: status)
                     Spacer()
@@ -99,6 +123,68 @@ struct MaintenanceCardView: View {
         .padding(16)
         .background(Color(uiColor: .secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
+        .alert("service.card.quick_complete_alert_title", isPresented: $showingQuickMarkAlert) {
+            Button("service.card.quick_complete_confirm") {
+                performQuickOilChange()
+            }
+            Button("common.cancel", role: .cancel) {}
+        } message: {
+            Text("service.card.quick_complete_alert_message")
+        }
+    }
+
+    // MARK: - Secțiune Acțiuni Rapide (Înregistrează sau Marchează ca Efectuat)
+    @ViewBuilder
+    private func actionButtonsSection(for status: MaintenanceStatus) -> some View {
+        VStack(spacing: 8) {
+            // Butonul Principal: Deschide formularul complet (factură, preț, bon)
+            Button {
+                onAddServiceTap()
+            } label: {
+                HStack {
+                    Image(systemName: "wrench.and.screwdriver.fill")
+                    Text("service.card.log_service_button")
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }
+                .font(.subheadline.bold())
+                .foregroundStyle(.white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(
+                    LinearGradient(
+                        colors: status.isOverdue
+                            ? [Color.red, Color.red.opacity(0.85)]
+                            : [Color.orange, Color.orange.opacity(0.85)],
+                        startPoint: .leading,
+                        endPoint: .trailing
+                    )
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            .buttonStyle(.plain)
+
+            // Butonul Secundar: 1-Tap Quick Mark (Marchează rapid la km curenți fără alte eforturi)
+            Button {
+                showingQuickMarkAlert = true
+            } label: {
+                HStack {
+                    Image(systemName: "bolt.fill")
+                        .foregroundStyle(.orange)
+                    Text("service.card.quick_complete_button")
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(.secondary)
+                }
+                .font(.caption.bold())
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Color(uiColor: .tertiarySystemFill).opacity(0.7))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            .buttonStyle(.plain)
+        }
     }
 
     // MARK: - Banner Factor Limită ("Care se va atinge prima?")
@@ -278,6 +364,29 @@ struct MaintenanceCardView: View {
             .buttonStyle(.plain)
             .padding(.top, 4)
         }
+    }
+
+    // MARK: - Marcarea Rapidă ca Efectuat (1-Tap Quick Action)
+    private func performQuickOilChange() {
+        let km = vehicle.currentMileage ?? (vehicle.lastOilChangeRecord?.mileage ?? 0)
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+
+        _ = repository.addServiceRecord(
+            title: String(localized: "service.category.oil_and_filters"),
+            category: .oilAndFilters,
+            date: Date(),
+            mileage: km,
+            notes: nil,
+            price: nil,
+            invoiceData: nil,
+            invoiceFileName: nil,
+            for: vehicle,
+            in: modelContext
+        )
+
+        NotificationManager.shared.scheduleMaintenanceReminder(for: vehicle)
+        WidgetDataManager.shared.updateWidgetData(for: vehicle)
     }
 
     // MARK: - Helperi Traduceri & Logică
