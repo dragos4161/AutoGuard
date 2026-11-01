@@ -23,6 +23,8 @@ struct VehicleDetailsView: View {
     @State private var isShowingAddFuelSheet = false
     @State private var isShowingFuelHistory = false
     @State private var isShowingAnalytics = false
+    @State private var isShowingReportPreview = false
+    @State private var generatedReportURL: URL? = nil
     @State private var invoicePreviewURL: URL? = nil
     @State private var isScanningDate: Bool = false
     @State private var dateScanDestination: DateScanDestination = .renewal
@@ -95,6 +97,19 @@ struct VehicleDetailsView: View {
                             .padding(.leading, 4)
 
                         Spacer()
+
+                        Button {
+                            generateAndShowReport()
+                        } label: {
+                            HStack(spacing: 3) {
+                                Image(systemName: "doc.richtext")
+                                Text("PDF")
+                            }
+                            .font(.caption.bold())
+                            .foregroundStyle(.indigo)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.trailing, 8)
 
                         Button {
                             isShowingAddServiceSheet = true
@@ -196,8 +211,20 @@ struct VehicleDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("common.edit") {
-                    isShowingEditSheet = true
+                Menu {
+                    Button {
+                        generateAndShowReport()
+                    } label: {
+                        Label("report.button.generate", systemImage: "doc.richtext")
+                    }
+
+                    Button {
+                        isShowingEditSheet = true
+                    } label: {
+                        Label("common.edit", systemImage: "pencil")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
@@ -249,6 +276,12 @@ struct VehicleDetailsView: View {
                 }
             }
         }
+        // Modal Previzualizare & Partajare Carte de Service PDF
+        .sheet(isPresented: $isShowingReportPreview) {
+            if let url = generatedReportURL {
+                ReportPreviewSheet(vehicle: vehicle, pdfURL: url)
+            }
+        }
         // Selector nativ de fișiere (PDF / Imagini din Files / iCloud Drive)
         .fileImporter(
             isPresented: $viewModel.isShowingFileImporter,
@@ -290,6 +323,13 @@ struct VehicleDetailsView: View {
     private func deleteServiceRecord(_ record: ServiceRecord) {
         let repository = SwiftDataVehicleRepository()
         repository.deleteServiceRecord(record, in: modelContext)
+    }
+
+    private func generateAndShowReport() {
+        if let url = VehicleReportGenerator.shared.generatePdf(for: vehicle) {
+            generatedReportURL = url
+            isShowingReportPreview = true
+        }
     }
 
     // MARK: - Rând pentru un document din Istoric
