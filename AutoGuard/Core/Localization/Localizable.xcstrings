@@ -8188,6 +8188,193 @@
           }
         }
       }
+    },
+    "report.export.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicle Records & Expenses"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dosar Vehicul & Cheltuieli"
+          }
+        }
+      }
+    },
+    "report.export.odometer_label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current Odometer"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometraj Curent"
+          }
+        }
+      }
+    },
+    "report.export.pdf_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Digital Service Book (PDF)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carte de Service Digitală (PDF)"
+          }
+        }
+      }
+    },
+    "report.export.pdf_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Official A4 report for car sale or archive"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raport A4 oficial pentru vânzare sau arhivă"
+          }
+        }
+      }
+    },
+    "report.export.pdf_description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Complete A4 document structured with vehicle specs, document validity, service records, and average consumption. Great for verifying maintenance history to prospective buyers."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Document A4 complet structurat cu datele de identificare ale mașinii, starea actelor, istoricul de revizii și consumul mediu. Excelent pentru atestarea istoricului tehnic către un cumpărător."
+          }
+        }
+      }
+    },
+    "report.export.preview_pdf": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preview"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previzualizează"
+          }
+        }
+      }
+    },
+    "report.export.csv_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expense Journal (CSV / Excel)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jurnal Cheltuieli (CSV / Excel)"
+          }
+        }
+      }
+    },
+    "report.export.csv_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spreadsheet format compatible with Excel & Google Sheets"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Format tabelar compatibil Excel & Google Sheets"
+          }
+        }
+      }
+    },
+    "report.export.csv_description": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detailed export with every service visit, replaced part, fuel receipt, and document fee. Ideal for accounting (sole proprietorship/LLC deductions) and financial tracking."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export detaliat cu fiecare intervenție în service, piesă înlocuită, bon fiscal de carburant și taxă. Ideal pentru contabilitate (deduceri PFA/SRL) și analize financiare."
+          }
+        }
+      }
+    },
+    "report.export.share_csv": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export CSV File"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportă fișierul CSV"
+          }
+        }
+      }
+    },
+    "report.export.privacy_note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Documents are generated securely and exclusively on your device, with no transmission to external servers."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Documentele sunt generate exclusiv pe telefonul tău în siguranță, fără a fi transmise pe servere externe."
+          }
+        }
+      }
     }
   },
   "version": "1.3"

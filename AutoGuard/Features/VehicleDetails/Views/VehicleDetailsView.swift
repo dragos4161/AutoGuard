@@ -165,11 +165,9 @@ struct VehicleDetailsView: View {
                 }
             })
         }
-        // Modal Previzualizare & Partajare Carte de Service PDF
+        // Modal Export Dosar Vehicul & Cheltuieli (PDF / CSV)
         .sheet(isPresented: $isShowingReportPreview) {
-            if let url = generatedReportURL {
-                ReportPreviewSheet(vehicle: vehicle, pdfURL: url)
-            }
+            VehicleExportSheet(vehicle: vehicle)
         }
         .sheet(isPresented: $isShowingPaywall) {
             PaywallView()
@@ -225,10 +223,7 @@ struct VehicleDetailsView: View {
             isShowingPaywall = true
             return
         }
-        if let url = VehicleReportGenerator.shared.generatePdf(for: vehicle) {
-            generatedReportURL = url
-            isShowingReportPreview = true
-        }
+        isShowingReportPreview = true
     }
 
     // MARK: - Secțiuni Modulare Dashboard (Adaptabile iPad & iPhone)
