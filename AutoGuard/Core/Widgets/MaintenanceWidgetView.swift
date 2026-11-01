@@ -185,7 +185,7 @@ struct MaintenanceWidgetEntryView: View {
             Image(systemName: "car.fill")
                 .font(.title2)
                 .foregroundStyle(.secondary)
-            Text("AutoGuard")
+            Text(Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Torpedou")
                 .font(.caption.bold())
             Text("Deschide aplicația pentru a configura revizia.")
                 .font(.system(size: 10))
