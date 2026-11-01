@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct AssistantView: View {
+    @Environment(\.locale) private var locale
     @Query private var vehicles: [Vehicle]
 
     @State private var queryText: String = ""
@@ -20,6 +21,12 @@ struct AssistantView: View {
         let isUser: Bool
         let timestamp: Date = Date()
     }
+
+    private let suggestionKeys: [LocalizedStringResource] = [
+        "assistant.prompt.oil",
+        "assistant.prompt.mileage",
+        "assistant.prompt.expirations"
+    ]
 
     var body: some View {
         NavigationStack {
@@ -54,18 +61,13 @@ struct AssistantView: View {
                             .foregroundStyle(.secondary)
                             .padding(.top, 8)
 
-                        let suggestions = [
-                            String(localized: "assistant.prompt.oil"),
-                            String(localized: "assistant.prompt.mileage"),
-                            String(localized: "assistant.prompt.expirations")
-                        ]
-
-                        ForEach(suggestions, id: \.self) { prompt in
+                        ForEach(suggestionKeys, id: \.key) { promptKey in
                             Button {
-                                sendQuery(prompt)
+                                let localizedPrompt = String(localized: promptKey, locale: locale)
+                                sendQuery(localizedPrompt)
                             } label: {
                                 HStack {
-                                    Text(prompt)
+                                    Text(promptKey)
                                         .font(.subheadline)
                                         .foregroundStyle(.primary)
                                     Spacer()
@@ -144,51 +146,59 @@ struct AssistantView: View {
         let lower = query.lowercased()
 
         if vehicles.isEmpty {
-            return String(localized: "assistant.answer.no_vehicles")
+            return String(localized: "assistant.answer.no_vehicles", locale: locale)
         }
 
         if lower.contains("km") || lower.contains("kilometr") || lower.contains("mileage") {
             let summary = vehicles.map { vehicle in
-                let km = vehicle.formattedMileage ?? String(localized: "mileage.card.empty")
+                let km = vehicle.formattedMileage ?? String(localized: "mileage.card.empty", locale: locale)
                 return "\(vehicle.displayName): \(km)"
             }.joined(separator: "\n")
-            return "\(String(localized: "assistant.answer.mileage_header"))\n\(summary)"
+            return "\(String(localized: "assistant.answer.mileage_header", locale: locale))\n\(summary)"
         }
 
         if lower.contains("ulei") || lower.contains("oil") || lower.contains("revizi") || lower.contains("service") {
             let answers = vehicles.map { vehicle -> String in
                 if let lastOil = vehicle.lastOilChangeRecord {
-                    let dateStr = lastOil.date.formatted(.dateTime.day().month().year())
-                    var response = "🚗 \(vehicle.displayName):\n• Ultimul schimb: \(dateStr) la \(lastOil.formattedMileage)."
+                    let dateStr = lastOil.date.formatted(.dateTime.day().month().year().locale(locale))
+                    let lastChangeLabel = String(localized: "assistant.answer.oil_last_change", locale: locale)
+                    let atLabel = String(localized: "assistant.answer.oil_at", locale: locale)
+                    var response = "🚗 \(vehicle.displayName):\n• \(lastChangeLabel)\(dateStr) \(atLabel) \(lastOil.formattedMileage)."
                     if let status = vehicle.oilChangeStatus {
                         if status.isOverdue {
-                            response += "\n• ⚠️ Termen depășit! Fă o programare în service."
+                            let overdueMsg = String(localized: "assistant.answer.oil_overdue", locale: locale)
+                            response += "\n• \(overdueMsg)"
                         } else {
                             let monthsLeft = max(0, status.remainingDays / 30)
-                            response += "\n• Următorul schimb: peste aproximativ \(monthsLeft) luni (\(status.remainingKm) km rămași)."
+                            let nextMsg = String(localized: "assistant.answer.oil_next", locale: locale)
+                            let monthsUnit = String(localized: "assistant.answer.oil_months", locale: locale)
+                            let kmLeftUnit = String(localized: "assistant.answer.oil_km_left", locale: locale)
+                            response += "\n• \(nextMsg) \(monthsLeft) \(monthsUnit) (\(status.remainingKm) \(kmLeftUnit))."
                         }
                     }
                     return response
                 } else {
-                    return "🚗 \(vehicle.displayName): Nu ai înregistrat încă niciun schimb de ulei în tab-ul Service."
+                    let noRec = String(localized: "assistant.answer.oil_no_records", locale: locale)
+                    return "🚗 \(vehicle.displayName): \(noRec)"
                 }
             }.joined(separator: "\n\n")
 
             return answers
         }
 
-        if lower.contains("expir") || lower.contains("rca") || lower.contains("itp") || lower.contains("roviniet") {
+        if lower.contains("expir") || lower.contains("rca") || lower.contains("itp") || lower.contains("roviniet") || lower.contains("doc") {
             let urgent = vehicles.compactMap { $0.mostUrgentDocument }
             if urgent.isEmpty {
-                return String(localized: "assistant.answer.all_good")
+                return String(localized: "assistant.answer.all_good", locale: locale)
             }
+            let daysUnit = String(localized: "assistant.answer.days_left", locale: locale)
             let list = urgent.map { doc in
-                "\(doc.vehicle?.displayName ?? "") • \(doc.type.rawValue): \(doc.daysRemaining) zile rămase"
+                "\(doc.vehicle?.displayName ?? "") • \(doc.type.rawValue): \(doc.daysRemaining) \(daysUnit)"
             }.joined(separator: "\n")
-            return "\(String(localized: "assistant.answer.expiring_header"))\n\(list)"
+            return "\(String(localized: "assistant.answer.expiring_header", locale: locale))\n\(list)"
         }
 
-        return String(localized: "assistant.answer.fallback")
+        return String(localized: "assistant.answer.fallback", locale: locale)
     }
 }
 

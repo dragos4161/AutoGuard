@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ km" : {
+
+    },
     "%@%lld km" : {
       "localizations" : {
         "en" : {
@@ -11,19 +14,10 @@
         }
       }
     },
-    "%lld km" : {
-
-    },
-    "%lld luni" : {
-
-    },
     "•" : {
 
     },
     "★" : {
-
-    },
-    "1 an (12 luni)" : {
 
     },
     "1.0 (Build 1)" : {
@@ -330,6 +324,142 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Pentru a monitoriza revizia, verifică intervalul de schimb de ulei din tab-ul Service sau detaliile mașinii."
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_last_change" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last oil change: "
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimul schimb de ulei: "
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_at" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "at"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "la"
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_overdue" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Overdue! Schedule a service appointment."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "⚠️ Termen depășit! Fă o programare în service."
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_next" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next change: in approx."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Următorul schimb: peste aprox."
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_months" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "months"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "luni"
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_km_left" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "km remaining"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "km rămași"
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_no_records" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No oil change recorded yet in the Service tab."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nu ai înregistrat încă niciun schimb de ulei în tab-ul Service."
+          }
+        }
+      }
+    },
+    "assistant.answer.days_left" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "days remaining"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "zile rămase"
           }
         }
       }
@@ -2192,91 +2322,6 @@
         }
       }
     },
-    "service.interval.km_label" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mileage Interval"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interval Kilometri"
-          }
-        }
-      }
-    },
-    "service.interval.months_label" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time Interval"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interval Timp"
-          }
-        }
-      }
-    },
-    "service.interval.section_footer" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The app will alert you whenever either threshold (mileage or time) is reached."
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aplicația te va alerta când se apropie oricare dintre aceste două praguri (kilometri sau timp)."
-          }
-        }
-      }
-    },
-    "service.interval.section_header" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set recommended intervals"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Setează intervalele recomandate"
-          }
-        }
-      }
-    },
-    "service.interval.title" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maintenance Intervals"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Configurare Interval Revizie"
-          }
-        }
-      }
-    },
     "service.interval.6_months" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2362,36 +2407,19 @@
         }
       }
     },
-    "service.interval.custom_months_title" : {
+    "service.interval.custom_km_placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Months"
+            "value" : "e.g. 12500"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Număr de luni"
-          }
-        }
-      }
-    },
-    "service.interval.custom_months_placeholder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "e.g. 10"
-          }
-        },
-        "ro" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ex: 10"
+            "value" : "ex: 12500"
           }
         }
       }
@@ -2413,19 +2441,70 @@
         }
       }
     },
-    "service.interval.custom_km_placeholder" : {
+    "service.interval.custom_months_placeholder" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "e.g. 12500"
+            "value" : "e.g. 10"
           }
         },
         "ro" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ex: 12500"
+            "value" : "ex: 10"
+          }
+        }
+      }
+    },
+    "service.interval.custom_months_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Months"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Număr de luni"
+          }
+        }
+      }
+    },
+    "service.interval.km_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mileage Interval"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interval Kilometri"
+          }
+        }
+      }
+    },
+    "service.interval.months_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time Interval"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Interval Timp"
           }
         }
       }
@@ -2443,6 +2522,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "luni"
+          }
+        }
+      }
+    },
+    "service.interval.section_footer" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app will alert you whenever either threshold (mileage or time) is reached."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicația te va alerta când se apropie oricare dintre aceste două praguri (kilometri sau timp)."
+          }
+        }
+      }
+    },
+    "service.interval.section_header" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set recommended intervals"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setează intervalele recomandate"
+          }
+        }
+      }
+    },
+    "service.interval.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maintenance Intervals"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Configurare Interval Revizie"
           }
         }
       }
