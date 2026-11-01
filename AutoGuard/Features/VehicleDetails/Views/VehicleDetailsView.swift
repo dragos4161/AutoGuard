@@ -136,14 +136,14 @@ struct VehicleDetailsView: View {
         }
         // Modal Scanare Dată cu Camera (OCR)
         .sheet(isPresented: $isScanningDate) {
-            LiveDocumentScannerView(target: .expirationDate) { date in
+            LiveDocumentScannerView(target: .expirationDate, onDateDetected: { date in
                 switch dateScanDestination {
                 case .correction:
                     viewModel.correctionDate = date
                 case .renewal:
                     viewModel.renewalDate = date
                 }
-            }
+            })
         }
         // Modal Previzualizare & Partajare Carte de Service PDF
         .sheet(isPresented: $isShowingReportPreview) {

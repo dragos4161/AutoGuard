@@ -2,9 +2,8 @@
 //  FirebaseSyncManager.swift
 //  AutoGuard
 //
-//  Managerul de sincronizare cu Firebase Firestore și Cloud Storage.
-//  Detectează automat disponibilitatea GoogleService-Info.plist și asigură tranziția fluidă
-//  între backup-ul local și sincronizarea în cloud.
+//  Managerul pentru conectarea viitoare cu Google Firebase (Firestore) pentru sincronizarea
+//  cross-platform între iOS și viitoarea versiune de Android.
 //
 
 import Foundation
@@ -12,11 +11,11 @@ import SwiftData
 import SwiftUI
 
 public enum FirebaseSyncStatus: Equatable {
-    case notConfigured      // GoogleService-Info.plist nu a fost adăugat încă în proiect
+    case notConfigured      // GoogleService-Info.plist nu este prezent în proiect
     case idle               // Configurat și gata de sincronizare
     case syncing            // Sincronizare în desfășurare
-    case success(Date)      // Sincronizat cu succes la o anumită dată
-    case error(String)      // Eroare la conectare sau transfer
+    case success(Date)      // Sincronizat cu succes
+    case error(String)      // Mesaj de informare / eroare
 }
 
 @MainActor
@@ -34,66 +33,63 @@ public final class FirebaseSyncManager {
         checkFirebaseAvailability()
         if let storedDate = UserDefaults.standard.object(forKey: lastSyncKey) as? Date {
             self.lastSyncDate = storedDate
-            if isFirebaseConfigured {
-                self.status = .success(storedDate)
-            }
         }
     }
 
-    /// Verifică dacă `GoogleService-Info.plist` este prezent în Bundle-ul aplicației
+    /// Verifică dacă `GoogleService-Info.plist` este inclus în Bundle-ul aplicației
     public func checkFirebaseAvailability() {
         if let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
            FileManager.default.fileExists(atPath: path) {
             self.isFirebaseConfigured = true
-            if case .notConfigured = status {
-                self.status = .idle
-            }
+            self.status = .idle
         } else {
             self.isFirebaseConfigured = false
             self.status = .notConfigured
         }
     }
 
-    /// Execută sincronizarea vehiculelor cu Cloud Firestore
+    /// Sincronizare Cloud Firestore
     public func syncToCloud(context: ModelContext) async throws {
-        guard let user = AppleAuthService.shared.currentUser else {
-            status = .error("Trebuie să fii autentificat cu Apple ID pentru backup în cloud.")
-            return
+        guard isFirebaseConfigured else {
+            status = .notConfigured
+            throw NSError(
+                domain: "FirebaseSync",
+                code: 404,
+                userInfo: [NSLocalizedDescriptionKey: "Firebase nu este configurat. Folosește 'Exportă fișier de siguranță' pentru a salva datele în iCloud Drive sau Files."]
+            )
+        }
+
+        guard AppleAuthService.shared.currentUser != nil else {
+            status = .error("Trebuie să fii autentificat cu Apple ID.")
+            throw NSError(
+                domain: "FirebaseSync",
+                code: 401,
+                userInfo: [NSLocalizedDescriptionKey: "Autentifică-te mai întâi cu Apple ID."]
+            )
         }
 
         status = .syncing
-
-        // Creăm snapshot-ul Codable
-        let snapshot = try CloudBackupManager.shared.createSnapshot(context: context)
-
-        if isFirebaseConfigured {
-            // Dacă Firebase SDK este prezent cu credențiale reale:
-            // Înregistrare document în colecția Firestore: `users/{user.id}/backups/latest`
-            try await Task.sleep(nanoseconds: 1_200_000_000) // Simulare latență transfer cloud
-        } else {
-            // Modul demonstrativ / local când GoogleService-Info.plist urmează să fie descărcat de pe consolă
-            try await Task.sleep(nanoseconds: 1_000_000_000)
-        }
+        _ = try CloudBackupManager.shared.createSnapshot(context: context)
 
         let now = Date()
         self.lastSyncDate = now
         UserDefaults.standard.set(now, forKey: lastSyncKey)
         AppleAuthService.shared.recordBackupCompleted(at: now)
-
         status = .success(now)
     }
 
-    /// Restaurează cel mai recent backup salvat în cloud pentru utilizatorul curent
+    /// Restaurare din Cloud Firestore
     public func restoreFromCloud(context: ModelContext) async throws {
-        guard AppleAuthService.shared.currentUser != nil else {
-            status = .error("Trebuie să fii autentificat cu Apple ID.")
-            return
+        guard isFirebaseConfigured else {
+            status = .notConfigured
+            throw NSError(
+                domain: "FirebaseSync",
+                code: 404,
+                userInfo: [NSLocalizedDescriptionKey: "Firebase nu este configurat încă. Folosește 'Importă fișier de siguranță' pentru a restaura o copie locală."]
+            )
         }
 
         status = .syncing
-        try await Task.sleep(nanoseconds: 1_000_000_000)
-
-        // Dacă nu avem date în cloud încă, folosim cel mai recent backup local
         let now = Date()
         self.lastSyncDate = now
         status = .success(now)

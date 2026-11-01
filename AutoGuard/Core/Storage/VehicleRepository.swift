@@ -29,11 +29,12 @@ protocol VehicleRepositoryProtocol: Sendable {
         correctedDate: Date,
         in context: ModelContext
     )
+    @discardableResult
     func renewVehicleDocument(
         _ oldDocument: VehicleDocument,
         newExpiryDate: Date,
         in context: ModelContext
-    )
+    ) -> VehicleDocument
     func updateDocumentAttachment(
         _ document: VehicleDocument,
         data: Data?,
@@ -81,7 +82,12 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
     }
 
     func deleteVehicle(_ vehicle: Vehicle, in context: ModelContext) {
+        NotificationManager.shared.cancelMaintenanceReminder(for: vehicle)
+        for doc in vehicle.documents ?? [] {
+            NotificationManager.shared.cancelDocumentReminders(for: doc.id)
+        }
         context.delete(vehicle)
+        try? context.save()
     }
 
     func updateVehicle(
@@ -116,21 +122,28 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
     ) {
         document.expirationDate = correctedDate
         try? context.save()
+        if let vehicle = document.vehicle {
+            NotificationManager.shared.scheduleDocumentReminders(for: document, vehicleName: vehicle.displayName)
+            WidgetDataManager.shared.updateWidgetData(for: vehicle)
+        }
     }
 
     /// Reînnoiește un document: îl mută pe cel vechi în istoric și creează unul nou activ
+    @discardableResult
     func renewVehicleDocument(
         _ oldDocument: VehicleDocument,
         newExpiryDate: Date,
         in context: ModelContext
-    ) {
+    ) -> VehicleDocument {
         oldDocument.isArchived = true
         oldDocument.archivedAt = Date()
+        NotificationManager.shared.cancelDocumentReminders(for: oldDocument.id)
 
         let newDocument = VehicleDocument(
             type: oldDocument.type,
             expirationDate: newExpiryDate,
             provider: oldDocument.provider,
+            policyNumber: oldDocument.policyNumber,
             isArchived: false
         )
 
@@ -139,9 +152,13 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
                 vehicle.documents = []
             }
             vehicle.documents?.append(newDocument)
+            newDocument.vehicle = vehicle
+            NotificationManager.shared.scheduleDocumentReminders(for: newDocument, vehicleName: vehicle.displayName)
+            WidgetDataManager.shared.updateWidgetData(for: vehicle)
         }
         context.insert(newDocument)
         try? context.save()
+        return newDocument
     }
 
     /// Atașează sau șterge un fișier PDF / Poză asociat unui document
@@ -157,8 +174,13 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
     }
 
     func deleteDocument(_ document: VehicleDocument, in context: ModelContext) {
+        NotificationManager.shared.cancelDocumentReminders(for: document.id)
+        let vehicle = document.vehicle
         context.delete(document)
         try? context.save()
+        if let vehicle {
+            WidgetDataManager.shared.updateWidgetData(for: vehicle)
+        }
     }
 
     // MARK: - Kilometraj

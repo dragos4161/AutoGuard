@@ -13,73 +13,37 @@ struct MainTabView: View {
     @State private var showingOnboarding: Bool = false
 
     var body: some View {
-        if #available(iOS 18.0, *) {
-            TabView(selection: $selectedTab) {
-                Tab(AppTab.garage.titleKey, systemImage: AppTab.garage.iconName, value: .garage) {
-                    GarageView()
-                }
-
-                Tab(AppTab.service.titleKey, systemImage: AppTab.service.iconName, value: .service) {
-                    ServiceHubView()
-                }
-
-                Tab(AppTab.assistant.titleKey, systemImage: AppTab.assistant.iconName, value: .assistant) {
-                    AssistantView()
-                }
-
-                Tab(AppTab.settings.titleKey, systemImage: AppTab.settings.iconName, value: .settings) {
-                    SettingsView()
-                }
-            }
-            .tabViewStyle(.sidebarAdaptable)
-            .fullScreenCover(isPresented: $showingOnboarding) {
-                OnboardingView(onFinish: {
-                    hasCompletedOnboarding = true
-                    showingOnboarding = false
-                })
-            }
-            .onAppear {
-                if !hasCompletedOnboarding {
-                    showingOnboarding = true
-                }
-            }
-        } else {
-            TabView(selection: $selectedTab) {
+        TabView(selection: $selectedTab) {
+            Tab(AppTab.garage.titleKey, systemImage: AppTab.garage.iconName, value: .garage) {
                 GarageView()
-                    .tabItem {
-                        Label(AppTab.garage.titleKey, systemImage: AppTab.garage.iconName)
-                    }
-                    .tag(AppTab.garage)
+            }
 
+            Tab(AppTab.service.titleKey, systemImage: AppTab.service.iconName, value: .service) {
                 ServiceHubView()
-                    .tabItem {
-                        Label(AppTab.service.titleKey, systemImage: AppTab.service.iconName)
-                    }
-                    .tag(AppTab.service)
+            }
 
+            Tab(AppTab.assistant.titleKey, systemImage: AppTab.assistant.iconName, value: .assistant) {
                 AssistantView()
-                    .tabItem {
-                        Label(AppTab.assistant.titleKey, systemImage: AppTab.assistant.iconName)
-                    }
-                    .tag(AppTab.assistant)
+            }
 
+            Tab(AppTab.settings.titleKey, systemImage: AppTab.settings.iconName, value: .settings) {
                 SettingsView()
-                    .tabItem {
-                        Label(AppTab.settings.titleKey, systemImage: AppTab.settings.iconName)
-                    }
-                    .tag(AppTab.settings)
             }
-            .fullScreenCover(isPresented: $showingOnboarding) {
-                OnboardingView(onFinish: {
-                    hasCompletedOnboarding = true
-                    showingOnboarding = false
-                })
+        }
+        .tabViewStyle(.sidebarAdaptable)
+        .fullScreenCover(isPresented: $showingOnboarding) {
+            OnboardingView(onFinish: {
+                hasCompletedOnboarding = true
+                showingOnboarding = false
+            })
+        }
+        .onAppear {
+            if !hasCompletedOnboarding {
+                showingOnboarding = true
             }
-            .onAppear {
-                if !hasCompletedOnboarding {
-                    showingOnboarding = true
-                }
-            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("HandleWidgetDeepLink"))) { _ in
+            selectedTab = .garage
         }
     }
 }

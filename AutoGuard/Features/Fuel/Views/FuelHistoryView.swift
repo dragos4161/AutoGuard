@@ -126,7 +126,11 @@ struct FuelHistoryView: View {
             let entry = sorted[index]
             modelContext.delete(entry)
         }
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+        } catch {
+            print("Eroare la salvare ștergere alimentare: \(error)")
+        }
         WidgetDataManager.shared.updateWidgetData(for: vehicle)
     }
 }

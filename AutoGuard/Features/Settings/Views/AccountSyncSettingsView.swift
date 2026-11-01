@@ -262,10 +262,10 @@ struct AccountSyncSettingsView: View {
             SignInWithAppleButton(
                 .signIn,
                 onRequest: { request in
-                    authService.startSignInFlow()
+                    request.requestedScopes = [.fullName, .email]
                 },
                 onCompletion: { result in
-                    // Gestionat automat prin delegate în AppleAuthService
+                    authService.handleSignInResult(result)
                 }
             )
             .signInWithAppleButtonStyle(.black)
@@ -367,11 +367,18 @@ struct AccountSyncSettingsView: View {
     private func triggerCloudBackup() {
         Task {
             do {
-                try await syncManager.syncToCloud(context: modelContext)
-                alertMessage = "Copia de siguranță a fost sincronizată cu succes în Cloud!"
+                if syncManager.isFirebaseConfigured {
+                    try await syncManager.syncToCloud(context: modelContext)
+                    alertMessage = "Copia de siguranță a fost sincronizată cu succes în Cloud!"
+                } else {
+                    _ = try backupManager.createSnapshot(context: modelContext)
+                    let now = Date()
+                    authService.recordBackupCompleted(at: now)
+                    alertMessage = "Copia de siguranță a fost creată pe dispozitiv. Folosește 'Exportă fișier de siguranță' pentru a o salva în iCloud Drive."
+                }
                 showingAlertMessage = true
             } catch {
-                alertMessage = "Eroare la sincronizare: \(error.localizedDescription)"
+                alertMessage = "Eroare la backup: \(error.localizedDescription)"
                 showingAlertMessage = true
             }
         }
@@ -380,8 +387,12 @@ struct AccountSyncSettingsView: View {
     private func triggerRestoreFromCloud() {
         Task {
             do {
-                try await syncManager.restoreFromCloud(context: modelContext)
-                alertMessage = "Datele au fost restaurate cu succes din Cloud!"
+                if syncManager.isFirebaseConfigured {
+                    try await syncManager.restoreFromCloud(context: modelContext)
+                    alertMessage = "Datele au fost restaurate cu succes din Cloud!"
+                } else {
+                    alertMessage = "Pentru a restaura dintr-un fișier de siguranță, folosește opțiunea 'Importă fișier de siguranță' de mai jos."
+                }
                 showingAlertMessage = true
             } catch {
                 alertMessage = "Eroare la restaurare: \(error.localizedDescription)"

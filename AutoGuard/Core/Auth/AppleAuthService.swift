@@ -34,9 +34,24 @@ public final class AppleAuthService: NSObject {
         currentUser != nil
     }
 
-    // MARK: - Autentificare
+    // MARK: - Autentificare din SwiftUI
 
-    /// Pornește fluxul oficial nativ de Sign in with Apple
+    /// Procesează rezultatul primit direct de la `SignInWithAppleButton` (previne dubla inițializare)
+    public func handleSignInResult(_ result: Result<ASAuthorization, Error>) {
+        isAuthenticating = false
+        switch result {
+        case .success(let authorization):
+            processAuthorization(authorization)
+        case .failure(let error):
+            if let authError = error as? ASAuthorizationError, authError.code == .canceled {
+                errorMessage = nil
+            } else {
+                errorMessage = error.localizedDescription
+            }
+        }
+    }
+
+    /// Pornește fluxul programatic de Sign in with Apple (când se folosește un buton personalizat)
     public func startSignInFlow() {
         isAuthenticating = true
         errorMessage = nil
@@ -74,15 +89,44 @@ public final class AppleAuthService: NSObject {
         saveUser(user)
     }
 
+    // MARK: - Prelucrare Autorizare
+
+    public func processAuthorization(_ authorization: ASAuthorization) {
+        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
+            errorMessage = "Răspuns invalid de la serviciul Apple ID."
+            return
+        }
+
+        let userIdentifier = appleIDCredential.user
+        let email = appleIDCredential.email
+        let givenName = appleIDCredential.fullName?.givenName
+        let familyName = appleIDCredential.fullName?.familyName
+
+        // Salvăm ID-ul sigur în Keychain
+        saveToKeychain(account: userIdentifier, data: Data(userIdentifier.utf8))
+
+        var profile = currentUser ?? AppleUserProfile(id: userIdentifier)
+        if let email, !email.isEmpty {
+            profile.email = email
+        }
+        if let givenName, !givenName.isEmpty {
+            profile.givenName = givenName
+        }
+        if let familyName, !familyName.isEmpty {
+            profile.familyName = familyName
+        }
+        profile.signedInAt = Date()
+
+        self.currentUser = profile
+        self.saveUser(profile)
+        self.errorMessage = nil
+    }
+
     // MARK: - Persistență și Verificare
 
     private func saveUser(_ user: AppleUserProfile) {
         if let encoded = try? JSONEncoder().encode(user) {
             UserDefaults.standard.set(encoded, forKey: userDefaultsKey)
-        }
-        // Salvare token securizat în Keychain
-        if let token = user.identityToken {
-            saveToKeychain(account: user.id, data: Data(token.utf8))
         }
     }
 
@@ -98,15 +142,13 @@ public final class AppleAuthService: NSObject {
     private func checkCredentialStateOnLaunch() {
         guard let user = currentUser else { return }
         let provider = ASAuthorizationAppleIDProvider()
-        provider.getCredentialState(forUserID: user.id) { [weak self] state, _ in
+        provider.getCredentialState(forUserID: user.id) { state, _ in
             Task { @MainActor in
                 switch state {
                 case .authorized:
-                    // Utilizatorul este încă activ și valid
                     break
                 case .revoked, .notFound:
-                    // Tokenul a fost revocat de utilizator sau utilizatorul s-a deconectat
-                    self?.signOut()
+                    AppleAuthService.shared.signOut()
                 case .transferred:
                     break
                 @unknown default:
@@ -116,7 +158,7 @@ public final class AppleAuthService: NSObject {
         }
     }
 
-    // MARK: - Criptografie & Nonce (Pentru suport securizat Firebase Auth)
+    // MARK: - Criptografie & Nonce
 
     private func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
@@ -179,54 +221,12 @@ extension AppleAuthService: ASAuthorizationControllerDelegate, ASAuthorizationCo
 
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         isAuthenticating = false
-
-        guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-            errorMessage = "Răspuns invalid de la serviciul Apple ID."
-            return
-        }
-
-        let userIdentifier = appleIDCredential.user
-        let email = appleIDCredential.email
-        let givenName = appleIDCredential.fullName?.givenName
-        let familyName = appleIDCredential.fullName?.familyName
-
-        var identityTokenString: String?
-        if let tokenData = appleIDCredential.identityToken {
-            identityTokenString = String(data: tokenData, encoding: .utf8)
-        }
-
-        var authCodeString: String?
-        if let authCodeData = appleIDCredential.authorizationCode {
-            authCodeString = String(data: authCodeData, encoding: .utf8)
-        }
-
-        // Apple trimite numele și emailul DOAR la prima autorizare.
-        // Păstrăm valorile existente dacă cele noi sunt nil.
-        var profile = currentUser ?? AppleUserProfile(id: userIdentifier)
-
-        if let email, !email.isEmpty {
-            profile.email = email
-        }
-        if let givenName, !givenName.isEmpty {
-            profile.givenName = givenName
-        }
-        if let familyName, !familyName.isEmpty {
-            profile.familyName = familyName
-        }
-
-        profile.identityToken = identityTokenString
-        profile.authorizationCode = authCodeString
-        profile.signedInAt = Date()
-
-        self.currentUser = profile
-        self.saveUser(profile)
-        self.errorMessage = nil
+        processAuthorization(authorization)
     }
 
     public func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         isAuthenticating = false
         if let authError = error as? ASAuthorizationError, authError.code == .canceled {
-            // Utilizatorul a închis promptul intenționat - nu afișăm mesaj de eroare
             errorMessage = nil
             return
         }

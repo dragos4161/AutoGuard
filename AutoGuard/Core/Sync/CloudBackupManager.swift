@@ -44,7 +44,8 @@ public final class CloudBackupManager {
                     policyNumber: doc.policyNumber,
                     isArchived: doc.isArchived,
                     archivedAt: doc.archivedAt,
-                    attachmentFileName: doc.attachmentFileName
+                    attachmentFileName: doc.attachmentFileName,
+                    attachmentBase64: doc.attachmentData?.base64EncodedString()
                 )
             }
 
@@ -66,7 +67,8 @@ public final class CloudBackupManager {
                     categoryRawValue: record.categoryRawValue,
                     notes: record.notes,
                     price: record.price,
-                    invoiceFileName: record.invoiceFileName
+                    invoiceFileName: record.invoiceFileName,
+                    invoiceBase64: record.invoiceData?.base64EncodedString()
                 )
             }
 
@@ -210,6 +212,9 @@ public final class CloudBackupManager {
                         isArchived: docDTO.isArchived,
                         attachmentFileName: docDTO.attachmentFileName
                     )
+                    if let base64 = docDTO.attachmentBase64, !base64.isEmpty {
+                        newDoc.attachmentData = Data(base64Encoded: base64)
+                    }
                     newDoc.id = docDTO.id
                     newDoc.archivedAt = docDTO.archivedAt
                     newDoc.vehicle = targetVehicle
@@ -246,6 +251,9 @@ public final class CloudBackupManager {
                         price: sDTO.price,
                         invoiceFileName: sDTO.invoiceFileName
                     )
+                    if let base64 = sDTO.invoiceBase64, !base64.isEmpty {
+                        newService.invoiceData = Data(base64Encoded: base64)
+                    }
                     newService.id = sDTO.id
                     newService.vehicle = targetVehicle
                     context.insert(newService)
@@ -275,6 +283,15 @@ public final class CloudBackupManager {
         }
 
         try context.save()
+
+        // Reîmprospătăm notificările și datele widget-urilor după restaurare
+        if let vehicles = try? context.fetch(FetchDescriptor<Vehicle>()) {
+            NotificationManager.shared.rescheduleAllReminders(for: vehicles)
+            if let first = vehicles.first {
+                WidgetDataManager.shared.updateWidgetData(for: first)
+            }
+        }
+
         lastStatusMessage = "Restaurare finalizată cu succes (\(snapshot.vehicles.count) vehicule restaurate)."
     }
 

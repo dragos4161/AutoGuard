@@ -32,51 +32,84 @@ final class NotificationManager {
         return settings.authorizationStatus
     }
 
-    /// Programează alerte pentru documentele unui vehicul (la 30 zile, 7 zile și 1 zi înainte)
-    func scheduleDocumentReminders(for document: VehicleDocument, vehicleName: String) {
-        guard !document.isArchived else { return }
+    // MARK: - Alerte Documente Expirabile (RCA, ITP, Rovinietă)
+
+    /// Programează alerte pentru documentele unui vehicul (la 30, 14, 7, 3 și 1 zi înainte de expirare, la ora 09:00 dimineața)
+    func scheduleDocumentReminders(
+        for document: VehicleDocument,
+        vehicleName: String,
+        language: AppLanguage = .system
+    ) {
+        guard !document.isArchived else {
+            cancelDocumentReminders(for: document.id)
+            return
+        }
 
         let center = UNUserNotificationCenter.current()
         let docId = document.id.uuidString
 
-        // Elimină eventualele notificări anterioare pentru acest document
-        center.removePendingNotificationRequests(withIdentifiers: [
-            "\(docId)_30d",
-            "\(docId)_7d",
-            "\(docId)_1d"
-        ])
+        // Eliminăm notificările anterioare pentru acest document
+        cancelDocumentReminders(for: document.id)
 
-        let daysIntervals = [30, 7, 1]
+        let daysIntervals = [30, 14, 7, 3, 1]
         let calendar = Calendar.current
+        let isRo = language.isRomanian
 
         for daysBefore in daysIntervals {
-            guard let triggerDate = calendar.date(byAdding: .day, value: -daysBefore, to: document.expirationDate),
-                  triggerDate > Date() else {
+            guard let rawTriggerDate = calendar.date(byAdding: .day, value: -daysBefore, to: document.expirationDate) else {
+                continue
+            }
+
+            // Setăm ora de livrare la ora 09:00 AM (nu la miezul nopții!)
+            var components = calendar.dateComponents([.year, .month, .day], from: rawTriggerDate)
+            components.hour = 9
+            components.minute = 0
+
+            guard let scheduledDate = calendar.date(from: components), scheduledDate > Date() else {
                 continue
             }
 
             let content = UNMutableNotificationContent()
-            content.title = "\(document.type.rawValue) - \(vehicleName)"
-            content.body = daysBefore == 1
-                ? "Atenție! Documentul expiră mâine!"
-                : "Atenție! Documentul expiră în \(daysBefore) zile."
+            content.title = "\(document.type.title) • \(vehicleName)"
+
+            if isRo {
+                content.body = daysBefore == 1
+                    ? "Atenție! \(document.type.title) pentru \(vehicleName) expiră mâine!"
+                    : "Atenție! \(document.type.title) pentru \(vehicleName) expiră în \(daysBefore) zile."
+            } else {
+                content.body = daysBefore == 1
+                    ? "Warning! \(document.type.title) for \(vehicleName) expires tomorrow!"
+                    : "Warning! \(document.type.title) for \(vehicleName) expires in \(daysBefore) days."
+            }
             content.sound = .default
 
-            let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: triggerDate)
             let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-
             let request = UNNotificationRequest(
                 identifier: "\(docId)_\(daysBefore)d",
                 content: content,
                 trigger: trigger
             )
 
-            center.add(request)
+            center.add(request) { error in
+                if let error {
+                    print("Eroare la programarea notificării: \(error)")
+                }
+            }
         }
     }
 
-    /// Programează alertă pentru revizie / schimb ulei
-    func scheduleMaintenanceReminder(for vehicle: Vehicle) {
+    /// Anulează alertele programate pentru un document specific (la arhivare sau ștergere)
+    func cancelDocumentReminders(for documentId: UUID) {
+        let docId = documentId.uuidString
+        let intervals = [60, 30, 14, 7, 3, 1]
+        let identifiers = intervals.map { "\(docId)_\($0)d" }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+    }
+
+    // MARK: - Alerte Mentenanță & Schimb Ulei
+
+    /// Programează alertă pentru revizie / schimb ulei la ora 09:00 AM cu 14 zile înainte de data limită
+    func scheduleMaintenanceReminder(for vehicle: Vehicle, language: AppLanguage = .system) {
         guard let status = vehicle.oilChangeStatus, !status.isOverdue else { return }
 
         let center = UNUserNotificationCenter.current()
@@ -84,22 +117,54 @@ final class NotificationManager {
         center.removePendingNotificationRequests(withIdentifiers: [identifier])
 
         let calendar = Calendar.current
-        // Alertă cu 14 zile înainte de termenul limită
-        guard let alertDate = calendar.date(byAdding: .day, value: -14, to: status.dueDate),
-              alertDate > Date() else {
+        guard let alertDate = calendar.date(byAdding: .day, value: -14, to: status.dueDate) else {
             return
         }
 
+        var components = calendar.dateComponents([.year, .month, .day], from: alertDate)
+        components.hour = 9
+        components.minute = 0
+
+        guard let scheduledDate = calendar.date(from: components), scheduledDate > Date() else {
+            return
+        }
+
+        let isRo = language.isRomanian
         let content = UNMutableNotificationContent()
-        content.title = "Revizie Ulei - \(vehicle.displayName)"
-        content.body = "Se apropie termenul pentru schimbul de ulei la \(vehicle.displayName). Planifică vizita în service!"
+        if isRo {
+            content.title = "Revizie Ulei • \(vehicle.displayName)"
+            content.body = "Se apropie termenul pentru revizia de ulei la \(vehicle.displayName). Planifică vizita în service!"
+        } else {
+            content.title = "Oil Service • \(vehicle.displayName)"
+            content.body = "Oil service due date is approaching for \(vehicle.displayName). Schedule your service visit!"
+        }
         content.sound = .default
 
-        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: alertDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
-
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         center.add(request)
+    }
+
+    /// Anulează alerta de mentenanță pentru un vehicul
+    func cancelMaintenanceReminder(for vehicle: Vehicle) {
+        let identifier = "maintenance_\(vehicle.id.uuidString)"
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
+    }
+
+    // MARK: - Resincronizare Globală
+
+    /// Reîmprospătează toate notificările pentru toate vehiculele din garaj (apelat la pornirea aplicației)
+    func rescheduleAllReminders(for vehicles: [Vehicle], language: AppLanguage = .system) {
+        for vehicle in vehicles {
+            scheduleMaintenanceReminder(for: vehicle, language: language)
+            for doc in vehicle.documents ?? [] {
+                if !doc.isArchived {
+                    scheduleDocumentReminders(for: doc, vehicleName: vehicle.displayName, language: language)
+                } else {
+                    cancelDocumentReminders(for: doc.id)
+                }
+            }
+        }
     }
 
     // MARK: - Memento Săptămânal Kilometraj

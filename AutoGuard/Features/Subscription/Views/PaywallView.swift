@@ -79,7 +79,11 @@ struct PaywallView: View {
                 #endif
             }
             .alert("Torpedou Pro", isPresented: $showingAlert) {
-                Button("common.ok", role: .cancel) {}
+                Button("common.ok", role: .cancel) {
+                    if subscriptionManager.isProUser {
+                        dismiss()
+                    }
+                }
             } message: {
                 Text(alertMessage)
             }
@@ -274,9 +278,9 @@ struct PaywallView: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                timelineStep(day: "Astăzi", text: "Acces complet la toate funcțiile Pro. Zero plată.")
-                timelineStep(day: "Ziua 5", text: "Primești memento că perioada de probă se termină curând.")
-                timelineStep(day: "Ziua 7", text: "Începe abonamentul anual. Poți anula oricând din setări.")
+                timelineStep(day: "paywall.trial.step1.day", text: "paywall.trial.step1.text")
+                timelineStep(day: "paywall.trial.step2.day", text: "paywall.trial.step2.text")
+                timelineStep(day: "paywall.trial.step3.day", text: "paywall.trial.step3.text")
             }
             .padding(12)
             .background(Color(uiColor: .secondarySystemGroupedBackground))
@@ -285,11 +289,11 @@ struct PaywallView: View {
     }
 
     @ViewBuilder
-    private func timelineStep(day: String, text: String) -> some View {
+    private func timelineStep(day: LocalizedStringKey, text: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 10) {
             Text(day)
                 .font(.caption2.bold())
-                .frame(width: 50, alignment: .leading)
+                .frame(width: 55, alignment: .leading)
                 .foregroundStyle(.blue)
 
             Text(text)
@@ -347,6 +351,27 @@ struct PaywallView: View {
                     .foregroundStyle(.secondary)
             }
 
+            HStack(spacing: 14) {
+                Link(destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!) {
+                    Text("paywall.terms_of_use")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .underline()
+                }
+
+                Text("•")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
+                Link(destination: URL(string: "https://torpedou.app/privacy")!) {
+                    Text("paywall.privacy_policy")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .underline()
+                }
+            }
+            .padding(.top, 2)
+
             Text("paywall.legal_disclaimer")
                 .font(.system(size: 10))
                 .foregroundStyle(.secondary.opacity(0.8))
@@ -389,8 +414,6 @@ struct PaywallView: View {
             if restored {
                 alertMessage = "Abonamentul tău Torpedou Pro a fost restaurat cu succes!"
                 showingAlert = true
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                dismiss()
             } else {
                 alertMessage = "Nu au fost găsite achiziții active asociate acestui cont Apple ID."
                 showingAlert = true

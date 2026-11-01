@@ -91,6 +91,14 @@ final class AddVehicleViewModel {
 
         // 4. Salvăm prin Repository
         repository.insertVehicle(vehicle, in: context)
+
+        // 5. Programăm notificările pentru noile documente și revizie
+        for doc in [rca, itp, rovinieta] {
+            NotificationManager.shared.scheduleDocumentReminders(for: doc, vehicleName: vehicle.displayName)
+        }
+        NotificationManager.shared.scheduleMaintenanceReminder(for: vehicle)
+        WidgetDataManager.shared.updateWidgetData(for: vehicle)
+
         return true
     }
 }

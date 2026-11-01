@@ -112,6 +112,7 @@ public struct DocumentBackupDTO: Codable, Identifiable {
     public let isArchived: Bool
     public let archivedAt: Date?
     public let attachmentFileName: String?
+    public let attachmentBase64: String?
 
     public init(
         id: UUID,
@@ -121,7 +122,8 @@ public struct DocumentBackupDTO: Codable, Identifiable {
         policyNumber: String,
         isArchived: Bool,
         archivedAt: Date?,
-        attachmentFileName: String?
+        attachmentFileName: String?,
+        attachmentBase64: String? = nil
     ) {
         self.id = id
         self.typeRawValue = typeRawValue
@@ -131,6 +133,7 @@ public struct DocumentBackupDTO: Codable, Identifiable {
         self.isArchived = isArchived
         self.archivedAt = archivedAt
         self.attachmentFileName = attachmentFileName
+        self.attachmentBase64 = attachmentBase64
     }
 }
 
@@ -166,6 +169,7 @@ public struct ServiceBackupDTO: Codable, Identifiable {
     public let notes: String?
     public let price: Double?
     public let invoiceFileName: String?
+    public let invoiceBase64: String?
 
     public init(
         id: UUID,
@@ -175,7 +179,8 @@ public struct ServiceBackupDTO: Codable, Identifiable {
         categoryRawValue: String,
         notes: String?,
         price: Double?,
-        invoiceFileName: String?
+        invoiceFileName: String?,
+        invoiceBase64: String? = nil
     ) {
         self.id = id
         self.date = date
@@ -185,6 +190,7 @@ public struct ServiceBackupDTO: Codable, Identifiable {
         self.notes = notes
         self.price = price
         self.invoiceFileName = invoiceFileName
+        self.invoiceBase64 = invoiceBase64
     }
 }
 

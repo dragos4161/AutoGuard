@@ -48,6 +48,10 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         }
     }
 
+    var isRomanian: Bool {
+        resolvedLanguageCode == "ro"
+    }
+
     var localizedBundle: Bundle {
         if let path = Bundle.main.path(forResource: resolvedLanguageCode, ofType: "lproj"),
            let bundle = Bundle(path: path) {

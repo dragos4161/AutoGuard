@@ -37,7 +37,12 @@ struct AutoGuardApp: App {
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
-            fatalError("Eroare la crearea ModelContainer SwiftData: \(error)")
+            print("AVERTISMENT: Eroare la încărcarea containerului persistent SwiftData: \(error). Se folosește container temporar de siguranță.")
+            let fallbackConfig = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+            if let fallbackContainer = try? ModelContainer(for: schema, configurations: [fallbackConfig]) {
+                return fallbackContainer
+            }
+            fatalError("Eroare critică SwiftData: \(error)")
         }
     }()
 
@@ -57,6 +62,15 @@ struct AutoGuardApp: App {
                                 minute: reminderMinute,
                                 language: appLanguage
                             )
+                        }
+
+                        // Reîmprospătăm alertele pentru documente și revizii la pornirea aplicației
+                        let context = sharedModelContainer.mainContext
+                        if let vehicles = try? context.fetch(FetchDescriptor<Vehicle>()) {
+                            NotificationManager.shared.rescheduleAllReminders(for: vehicles, language: appLanguage)
+                            if let first = vehicles.first {
+                                WidgetDataManager.shared.updateWidgetData(for: first)
+                            }
                         }
                     }
                 }

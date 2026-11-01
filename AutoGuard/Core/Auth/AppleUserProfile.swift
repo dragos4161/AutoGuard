@@ -12,8 +12,6 @@ public struct AppleUserProfile: Codable, Identifiable, Equatable {
     public var email: String?             // Email partajat sau relay privat Apple (@privaterelay.appleid.com)
     public var givenName: String?         // Prenume
     public var familyName: String?        // Nume de familie
-    public var identityToken: String?     // JWT semnat de Apple pentru validare backend / Firebase
-    public var authorizationCode: String? // Cod de autorizare pentru token exchange
     public var signedInAt: Date           // Data autentificării
     public var lastBackupDate: Date?      // Data ultimului backup în cloud
 
@@ -22,8 +20,6 @@ public struct AppleUserProfile: Codable, Identifiable, Equatable {
         email: String? = nil,
         givenName: String? = nil,
         familyName: String? = nil,
-        identityToken: String? = nil,
-        authorizationCode: String? = nil,
         signedInAt: Date = Date(),
         lastBackupDate: Date? = nil
     ) {
@@ -31,8 +27,6 @@ public struct AppleUserProfile: Codable, Identifiable, Equatable {
         self.email = email
         self.givenName = givenName
         self.familyName = familyName
-        self.identityToken = identityToken
-        self.authorizationCode = authorizationCode
         self.signedInAt = signedInAt
         self.lastBackupDate = lastBackupDate
     }

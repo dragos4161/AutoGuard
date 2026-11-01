@@ -6879,6 +6879,142 @@
           }
         }
       }
+    },
+    "paywall.terms_of_use": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terms of Use (EULA)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termeni de Utilizare (EULA)"
+          }
+        }
+      }
+    },
+    "paywall.privacy_policy": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Privacy Policy"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Politica de Confidențialitate"
+          }
+        }
+      }
+    },
+    "paywall.trial.step1.day": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Astăzi"
+          }
+        }
+      }
+    },
+    "paywall.trial.step1.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instant full access to all Pro features. Zero payment."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acces complet la toate funcțiile Pro. Zero plată."
+          }
+        }
+      }
+    },
+    "paywall.trial.step2.day": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day 5"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziua 5"
+          }
+        }
+      }
+    },
+    "paywall.trial.step2.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Friendly reminder from Apple that your trial ends soon."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primești memento că perioada de probă se termină curând."
+          }
+        }
+      }
+    },
+    "paywall.trial.step3.day": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day 7"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziua 7"
+          }
+        }
+      }
+    },
+    "paywall.trial.step3.text": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annual plan starts. Cancel anytime in Apple ID settings."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe abonamentul anual. Poți anula oricând din setări."
+          }
+        }
+      }
     }
   },
   "version": "1.3"
