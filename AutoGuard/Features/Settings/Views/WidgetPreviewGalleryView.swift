@@ -8,6 +8,7 @@
 
 import SwiftUI
 import SwiftData
+import WidgetKit
 
 struct WidgetPreviewGalleryView: View {
     @Query private var vehicles: [Vehicle]
@@ -24,7 +25,7 @@ struct WidgetPreviewGalleryView: View {
             var nextDocIsUrgent = false
 
             if let doc = earliestDoc {
-                nextDocTitle = doc.type.displayName
+                nextDocTitle = doc.type.title
                 let days = Calendar.current.dateComponents(
                     [.day],
                     from: Calendar.current.startOfDay(for: Date()),
@@ -38,7 +39,7 @@ struct WidgetPreviewGalleryView: View {
                 vehicleId: vehicle.id.uuidString,
                 vehicleName: vehicle.displayName,
                 plateNumber: vehicle.plateNumber,
-                odometer: vehicle.currentMileage,
+                odometer: vehicle.currentMileage ?? 0,
                 kmProgress: status?.kmProgress ?? 0.5,
                 timeProgress: status?.timeProgress ?? 0.3,
                 kmUsed: status?.kmUsed ?? 5000,
@@ -87,7 +88,7 @@ struct WidgetPreviewGalleryView: View {
 
                     widgetContainer(width: 345, height: 160) {
                         MaintenanceWidgetEntryView(data: activeData)
-                            .environment(\.widgetFamily, .systemMedium)
+                            .environment(\.widgetFamilyOverride, .systemMedium)
                     }
                     .padding(.horizontal)
                 }
@@ -101,7 +102,7 @@ struct WidgetPreviewGalleryView: View {
                     HStack(alignment: .top, spacing: 16) {
                         widgetContainer(width: 160, height: 160) {
                             MaintenanceWidgetEntryView(data: activeData)
-                                .environment(\.widgetFamily, .systemSmall)
+                                .environment(\.widgetFamilyOverride, .systemSmall)
                         }
 
                         VStack(alignment: .leading, spacing: 6) {
@@ -131,7 +132,7 @@ struct WidgetPreviewGalleryView: View {
                                 ZStack {
                                     Color.black
                                     MaintenanceWidgetEntryView(data: activeData)
-                                        .environment(\.widgetFamily, .accessoryRectangular)
+                                        .environment(\.widgetFamilyOverride, .accessoryRectangular)
                                         .foregroundStyle(.white)
                                         .padding(8)
                                 }
@@ -149,7 +150,7 @@ struct WidgetPreviewGalleryView: View {
                                 ZStack {
                                     Color.black
                                     MaintenanceWidgetEntryView(data: activeData)
-                                        .environment(\.widgetFamily, .accessoryCircular)
+                                        .environment(\.widgetFamilyOverride, .accessoryCircular)
                                         .foregroundStyle(.white)
                                 }
                                 .frame(width: 72, height: 72)
@@ -168,7 +169,7 @@ struct WidgetPreviewGalleryView: View {
 
                             HStack {
                                 MaintenanceWidgetEntryView(data: activeData)
-                                    .environment(\.widgetFamily, .accessoryInline)
+                                    .environment(\.widgetFamilyOverride, .accessoryInline)
                                     .font(.subheadline.bold())
                                     .foregroundStyle(.white)
                                 Spacer()

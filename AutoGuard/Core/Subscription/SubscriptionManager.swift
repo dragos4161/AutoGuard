@@ -42,10 +42,6 @@ public final class SubscriptionManager {
         }
     }
 
-    deinit {
-        updateListenerTask?.cancel()
-    }
-
     public var isProUser: Bool {
         tier.isPro
     }
@@ -172,8 +168,9 @@ public final class SubscriptionManager {
     // MARK: - Listener Tranzacții în Timp Real
 
     private func listenForTransactionUpdates() -> Task<Void, Never> {
-        Task.detached {
+        Task { [weak self] in
             for await result in Transaction.updates {
+                guard let self else { return }
                 do {
                     let transaction = try self.checkVerified(result)
                     await self.updatePurchasedEntitlements()
@@ -187,7 +184,7 @@ public final class SubscriptionManager {
 
     // MARK: - Verificare Criptografică a Tranzacției
 
-    private func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+    nonisolated private func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
         switch result {
         case .unverified(_, let error):
             throw error

@@ -120,7 +120,7 @@ public struct MaintenanceWidgetData: Codable, Equatable {
 }
 
 @MainActor
-public final class WidgetDataManager {
+final class WidgetDataManager {
     public static let shared = WidgetDataManager()
 
     /// ID-ul App Group pentru partajarea datelor între aplicație și extensia WidgetKit
@@ -134,7 +134,7 @@ public final class WidgetDataManager {
     private init() {}
 
     /// Actualizează datele widget-ului pentru cel mai relevant vehicul (sau vehiculul specificat)
-    public func updateWidgetData(for vehicle: Vehicle) {
+    func updateWidgetData(for vehicle: Vehicle) {
         guard let status = vehicle.oilChangeStatus else {
             clearWidgetData()
             return
@@ -148,7 +148,7 @@ public final class WidgetDataManager {
 
         let activeDocs = (vehicle.documents ?? []).filter { !$0.isArchived }
         if let earliestDoc = activeDocs.min(by: { $0.expirationDate < $1.expirationDate }) {
-            nextDocTitle = earliestDoc.type.displayName
+            nextDocTitle = earliestDoc.type.title
             let days = Calendar.current.dateComponents(
                 [.day],
                 from: Calendar.current.startOfDay(for: Date()),
@@ -170,7 +170,7 @@ public final class WidgetDataManager {
             vehicleId: vehicle.id.uuidString,
             vehicleName: vehicle.displayName,
             plateNumber: vehicle.plateNumber,
-            odometer: vehicle.currentMileage,
+            odometer: vehicle.currentMileage ?? 0,
             kmProgress: status.kmProgress,
             timeProgress: status.timeProgress,
             kmUsed: status.kmUsed,

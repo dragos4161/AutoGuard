@@ -9,9 +9,18 @@
 import SwiftUI
 import WidgetKit
 
+// `\.widgetFamily` este read-only în afara extensiei WidgetKit, așa că galeria din aplicație
+// folosește această cheie pentru a forța un anumit format la previzualizare.
+extension EnvironmentValues {
+    @Entry var widgetFamilyOverride: WidgetFamily? = nil
+}
+
 public struct MaintenanceWidgetEntryView: View {
     public let data: MaintenanceWidgetData?
-    @Environment(\.widgetFamily) var family
+    @Environment(\.widgetFamily) private var systemFamily
+    @Environment(\.widgetFamilyOverride) private var familyOverride
+
+    private var family: WidgetFamily { familyOverride ?? systemFamily }
 
     public init(data: MaintenanceWidgetData?) {
         self.data = data

@@ -9,6 +9,7 @@
 import SwiftUI
 import SwiftData
 import AuthenticationServices
+import UniformTypeIdentifiers
 
 struct AccountSyncSettingsView: View {
     @Environment(\.modelContext) private var modelContext
