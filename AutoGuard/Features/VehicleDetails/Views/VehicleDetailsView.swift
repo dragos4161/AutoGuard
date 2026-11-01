@@ -24,6 +24,7 @@ struct VehicleDetailsView: View {
     @State private var isShowingFuelHistory = false
     @State private var isShowingAnalytics = false
     @State private var isShowingReportPreview = false
+    @State private var isShowingPaywall = false
     @State private var generatedReportURL: URL? = nil
     @State private var invoicePreviewURL: URL? = nil
     @State private var isScanningDate: Bool = false
@@ -150,6 +151,9 @@ struct VehicleDetailsView: View {
                 ReportPreviewSheet(vehicle: vehicle, pdfURL: url)
             }
         }
+        .sheet(isPresented: $isShowingPaywall) {
+            PaywallView()
+        }
         // Selector nativ de fișiere (PDF / Imagini din Files / iCloud Drive)
         .fileImporter(
             isPresented: $viewModel.isShowingFileImporter,
@@ -194,6 +198,10 @@ struct VehicleDetailsView: View {
     }
 
     private func generateAndShowReport() {
+        if !SubscriptionManager.shared.isProUser {
+            isShowingPaywall = true
+            return
+        }
         if let url = VehicleReportGenerator.shared.generatePdf(for: vehicle) {
             generatedReportURL = url
             isShowingReportPreview = true

@@ -18,6 +18,8 @@ struct GarageView: View {
 
     // ViewModel-ul gestionează starea interfeței și calculele de business
     @State private var viewModel = GarageViewModel()
+    @State private var subscriptionManager = SubscriptionManager.shared
+    @State private var isShowingPaywall: Bool = false
     
     @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -82,11 +84,35 @@ struct GarageView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        viewModel.isShowingAddVehicleSheet = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.title3)
+                    HStack(spacing: 8) {
+                        if !subscriptionManager.isProUser {
+                            Button {
+                                isShowingPaywall = true
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "sparkles")
+                                        .font(.caption2.bold())
+                                    Text("PRO")
+                                        .font(.caption2.bold())
+                                }
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.blue.gradient)
+                                .foregroundStyle(.white)
+                                .clipShape(Capsule())
+                            }
+                        }
+
+                        Button {
+                            if !vehicles.isEmpty && !subscriptionManager.isProUser {
+                                isShowingPaywall = true
+                            } else {
+                                viewModel.isShowingAddVehicleSheet = true
+                            }
+                        } label: {
+                            Image(systemName: "plus.circle.fill")
+                                .font(.title3)
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarLeading) {
@@ -109,6 +135,9 @@ struct GarageView: View {
             }
             .sheet(isPresented: $viewModel.isShowingAddVehicleSheet) {
                 AddVehicleView()
+            }
+            .sheet(isPresented: $isShowingPaywall) {
+                PaywallView()
             }
         }
     }

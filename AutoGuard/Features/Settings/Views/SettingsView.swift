@@ -20,6 +20,8 @@ struct SettingsView: View {
     @State private var showingPermissionAlert: Bool = false
     @State private var showingOnboardingTour: Bool = false
     @State private var authService = AppleAuthService.shared
+    @State private var subscriptionManager = SubscriptionManager.shared
+    @State private var showingPaywall: Bool = false
 
     private var reminderTimeBinding: Binding<Date> {
         Binding(
@@ -80,6 +82,54 @@ struct SettingsView: View {
                                         .foregroundStyle(.secondary)
                                 }
                             }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+
+                // Secțiunea 0.5: Torpedou Pro
+                Section {
+                    Button {
+                        showingPaywall = true
+                    } label: {
+                        HStack(spacing: 14) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .fill(subscriptionManager.isProUser ? Color.orange.opacity(0.15) : Color.blue.opacity(0.12))
+                                    .frame(width: 44, height: 44)
+
+                                Image(systemName: subscriptionManager.isProUser ? "crown.fill" : "sparkles")
+                                    .font(.title3)
+                                    .foregroundStyle(subscriptionManager.isProUser ? Color.orange : Color.blue)
+                            }
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 6) {
+                                    Text(subscriptionManager.isProUser ? "settings.pro.active_title" : "settings.pro.upgrade_title")
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+
+                                    if subscriptionManager.isProUser {
+                                        Text("PRO")
+                                            .font(.system(size: 9, weight: .bold))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(Color.orange.opacity(0.18))
+                                            .foregroundStyle(.orange)
+                                            .clipShape(Capsule())
+                                    }
+                                }
+
+                                Text(subscriptionManager.isProUser ? "settings.pro.active_subtitle" : "settings.pro.upgrade_subtitle")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Spacer()
+
+                            Image(systemName: "chevron.right")
+                                .font(.caption2.bold())
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.vertical, 2)
                     }
@@ -199,6 +249,9 @@ struct SettingsView: View {
                 OnboardingView(onFinish: {
                     showingOnboardingTour = false
                 })
+            }
+            .sheet(isPresented: $showingPaywall) {
+                PaywallView()
             }
         }
     }

@@ -6284,6 +6284,601 @@
           }
         }
       }
+    },
+    "paywall.hero.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock the Full Potential of Your Garage"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deblochează Întregul Potențial al Garajului Tău"
+          }
+        }
+      }
+    },
+    "paywall.hero.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total peace of mind for documents, maintenance, fuel, and expenses."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fără griji pentru acte, revizii, consum și cheltuieli."
+          }
+        }
+      }
+    },
+    "paywall.feature.unlimited_vehicles.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlimited Vehicles"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicule Nelimitate"
+          }
+        }
+      }
+    },
+    "paywall.feature.unlimited_vehicles.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add family cars or fleet vehicles without any restrictions."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaugă mașinile familiei sau ale flotei fără nicio limită."
+          }
+        }
+      }
+    },
+    "paywall.feature.ocr_scanner.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlimited OCR Camera Scanner"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scaner Cameră OCR Nelimitat"
+          }
+        }
+      }
+    },
+    "paywall.feature.ocr_scanner.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatically scan VIN numbers, insurance policies, and fuel receipts."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanează automat seria de șasiu VIN, polițele RCA și bonurile de benzină."
+          }
+        }
+      }
+    },
+    "paywall.feature.pdf_reports.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Official PDF Service Book"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carnet de Service PDF Oficial"
+          }
+        }
+      }
+    },
+    "paywall.feature.pdf_reports.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generate professional vehicle history reports ready for sale or service."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generează rapoarte profesionale de istoric gata de vânzare sau dosar service."
+          }
+        }
+      }
+    },
+    "paywall.feature.cloud_backup.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloud Sync & Unlimited Backup"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizare Cloud & Backup Nelimitat"
+          }
+        }
+      }
+    },
+    "paywall.feature.cloud_backup.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your data is always secure and synced across all your Apple devices."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datele tale sunt mereu protejate și sincronizate pe toate dispozitivele tale Apple."
+          }
+        }
+      }
+    },
+    "paywall.feature.smart_notifications.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smart Cascading Alerts"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerte Inteligente în Cascadă"
+          }
+        }
+      }
+    },
+    "paywall.feature.smart_notifications.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Advanced alerts at 60, 30, 14, 7, 3, and 1 day before expiration."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notificări avansate cu 60, 30, 14, 7, 3 și 1 zi înainte de expirare."
+          }
+        }
+      }
+    },
+    "paywall.feature.widgets.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All Screen Widgets"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toate Widget-urile de Ecran"
+          }
+        }
+      }
+    },
+    "paywall.feature.widgets.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full accessories for Lock Screen and Home Screen (Small, Medium, Large)."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesorii complete pentru Lock Screen și Home Screen (Mic, Mediu, Mare)."
+          }
+        }
+      }
+    },
+    "paywall.plan.yearly.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yearly"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anual"
+          }
+        }
+      }
+    },
+    "paywall.plan.yearly.period": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ year"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ an"
+          }
+        }
+      }
+    },
+    "paywall.plan.yearly.badge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7-DAY FREE TRIAL • -50%"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7 ZILE GRATUIT • -50%"
+          }
+        }
+      }
+    },
+    "paywall.plan.yearly.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "59.99 lei/year (approx 4.99 lei/month)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "59.99 lei/an (echivalent 4.99 lei/lună)"
+          }
+        }
+      }
+    },
+    "paywall.plan.monthly.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monthly"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lunar"
+          }
+        }
+      }
+    },
+    "paywall.plan.monthly.period": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ month"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ lună"
+          }
+        }
+      }
+    },
+    "paywall.plan.monthly.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billed monthly, total flexibility"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facturat lunar, flexibilitate totală"
+          }
+        }
+      }
+    },
+    "paywall.plan.lifetime.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lifetime"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pe viață"
+          }
+        }
+      }
+    },
+    "paywall.plan.lifetime.period": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "one-time payment"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "o singură dată"
+          }
+        }
+      }
+    },
+    "paywall.plan.lifetime.badge": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NO SUBSCRIPTION"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FĂRĂ ABONAMENT"
+          }
+        }
+      }
+    },
+    "paywall.plan.lifetime.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pay once, access forever"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plătești o singură dată, acces pe viață"
+          }
+        }
+      }
+    },
+    "paywall.trial.timeline_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How the free trial works:"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cum funcționează perioada de probă gratuită:"
+          }
+        }
+      }
+    },
+    "paywall.cta.start_trial": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start 7-Day Free Trial"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe Perioada Gratuită de 7 Zile"
+          }
+        }
+      }
+    },
+    "paywall.cta.subscribe_monthly": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subscribe Monthly"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abonează-te Lunar"
+          }
+        }
+      }
+    },
+    "paywall.cta.buy_lifetime": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlock Lifetime Access"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deblochează pe Viață"
+          }
+        }
+      }
+    },
+    "paywall.restore_purchases": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore Purchases"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurează Achizițiile"
+          }
+        }
+      }
+    },
+    "paywall.legal_disclaimer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Payment will be charged to your Apple ID account at confirmation of purchase or at the end of the 7-day free trial. Subscription automatically renews unless cancelled at least 24 hours before the end of the current period. You can manage and cancel your subscriptions anytime in your Apple ID account settings."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plata se va debita din contul tău Apple ID la confirmarea achiziției sau la finalul perioadei de probă de 7 zile. Abonamentul se reînnoiește automat, cu excepția cazului în care este anulat cu cel puțin 24 de ore înainte de sfârșitul perioadei curente. Îți poți gestiona sau anula abonamentul oricând din setările contului Apple ID."
+          }
+        }
+      }
+    },
+    "settings.pro.active_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torpedou Pro Active"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torpedou Pro Activ"
+          }
+        }
+      }
+    },
+    "settings.pro.active_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You have full access to all premium features."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ai acces complet la toate funcțiile premium."
+          }
+        }
+      }
+    },
+    "settings.pro.upgrade_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upgrade to Torpedou Pro"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Treci la Torpedou Pro"
+          }
+        }
+      }
+    },
+    "settings.pro.upgrade_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlimited vehicles, OCR scanner, PDF reports, and cloud."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicule nelimitate, scaner OCR, rapoarte PDF și cloud."
+          }
+        }
+      }
     }
   },
   "version": "1.3"

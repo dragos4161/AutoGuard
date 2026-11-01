@@ -1,0 +1,184 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : ""
+      }
+    ]
+  },
+  "identifier" : "E2B7A831",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "149.99",
+      "familyShareable" : true,
+      "internalID" : "6449123458",
+      "localizations" : [
+        {
+          "description" : "Acces pe viață la toate funcționalitățile Torpedou Pro.",
+          "displayName" : "Torpedou Pro - Pe viață",
+          "locale" : "ro"
+        },
+        {
+          "description" : "Lifetime access to all Torpedou Pro features.",
+          "displayName" : "Torpedou Pro - Lifetime",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "com.ascend.AutoGuard.pro.lifetime",
+      "referenceName" : "Lifetime Access",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "ro_RO",
+    "_storefront" : "ROU",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21495810",
+      "localizations" : [
+        {
+          "description" : "Abonamente Torpedou Pro",
+          "displayName" : "Torpedou Pro",
+          "locale" : "ro"
+        },
+        {
+          "description" : "Torpedou Pro Subscriptions",
+          "displayName" : "Torpedou Pro",
+          "locale" : "en_US"
+        }
+      ],
+      "name" : "Torpedou Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "9.99",
+          "familyShareable" : true,
+          "groupNumber" : 2,
+          "internalID" : "6449123456",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Abonament lunar cu acces complet la funcționalități avansate.",
+              "displayName" : "Torpedou Pro Lunar",
+              "locale" : "ro"
+            },
+            {
+              "description" : "Monthly subscription with full access to advanced features.",
+              "displayName" : "Torpedou Pro Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.ascend.AutoGuard.pro.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly Pro",
+          "subscriptionGroupID" : "21495810",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "59.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "6449123457",
+          "introductoryOffer" : {
+            "internalID" : "INTRO_YEARLY_TRIAL",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "Abonament anual cu 7 zile gratuite și 50% reducere.",
+              "displayName" : "Torpedou Pro Anual",
+              "locale" : "ro"
+            },
+            {
+              "description" : "Annual subscription with 7-day free trial and 50% savings.",
+              "displayName" : "Torpedou Pro Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.ascend.AutoGuard.pro.yearly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Yearly Pro",
+          "subscriptionGroupID" : "21495810",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
