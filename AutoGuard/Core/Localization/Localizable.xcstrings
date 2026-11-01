@@ -1,6 +1,8 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    " ": {},
+    "—": {},
     "%@ km": {},
     "%@%lld km": {
       "localizations": {
@@ -12,9 +14,175 @@
         }
       }
     },
+    "%lld alimentări": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld fill-ups"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld alimentări"
+          }
+        }
+      }
+    },
+    "%lld km": {},
+    "%lld km rămași": {},
+    "%lld luni rămase": {},
+    "%lld zile": {},
+    "%lld%%": {},
     "•": {},
+    "• %@": {},
+    "+%lld km": {},
     "★": {},
+    "⚠️ REVIZIE DEPĂȘITĂ": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚠️ SERVICE OVERDUE"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚠️ REVIZIE DEPĂȘITĂ"
+          }
+        }
+      }
+    },
+    "⚡️": {},
+    "⚡️ Factor limită: Kilometrajul": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Limiting factor: Mileage"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Factor limită: Kilometrajul"
+          }
+        }
+      }
+    },
+    "⚡️ Factor limită: Timpul": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Limiting factor: Time"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Factor limită: Timpul"
+          }
+        }
+      }
+    },
+    "⚡️ Kilometri": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Mileage"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Kilometri"
+          }
+        }
+      }
+    },
+    "⚡️ Timp": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Time"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⚡️ Timp"
+          }
+        }
+      }
+    },
+    "0": {},
+    "0.0": {},
+    "0.00": {},
     "1.0 (Build 1)": {},
+    "6 / 12 luni (50%)": {},
+    "8.000 / 10.000 km (80%)": {},
+    "acum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "now"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "acum"
+          }
+        }
+      }
+    },
+    "Adaugă intrări de carburant sau revizii pentru a vedea distribuția costurilor.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add fuel entries or service records to view expense breakdown."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaugă intrări de carburant sau revizii pentru a vedea distribuția costurilor."
+          }
+        }
+      }
+    },
+    "adaugă kilometraj": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "add mileage"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "adaugă kilometraj"
+          }
+        }
+      }
+    },
     "add_vehicle.itp_expiry": {
       "extractionState": "manual",
       "localizations": {
@@ -218,6 +386,194 @@
         }
       }
     },
+    "An: %@": {},
+    "analytics.average_line": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Average"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie"
+          }
+        }
+      }
+    },
+    "analytics.button.view": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View Analytics & Charts"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vezi statistici și grafice"
+          }
+        }
+      }
+    },
+    "analytics.consumption_chart_footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows calculated consumption (L/100km) for each consecutive full tank."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afișează consumul calculat (L/100km) pentru fiecare plin complet efectuat."
+          }
+        }
+      }
+    },
+    "analytics.consumption_trend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consumption Trend"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evoluție Consum"
+          }
+        }
+      }
+    },
+    "analytics.cost_per_km": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cost per km"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cost per km"
+          }
+        }
+      }
+    },
+    "analytics.expenses_by_category": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expense Breakdown"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distribuția Cheltuielilor"
+          }
+        }
+      }
+    },
+    "analytics.no_data_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log at least 2 full tanks or service invoices to unlock full financial charts."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Înregistrează cel puțin 2 plinuri de carburant sau revizii pentru a debloca graficele financiare."
+          }
+        }
+      }
+    },
+    "analytics.no_data_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough data yet"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date insuficiente pentru grafice"
+          }
+        }
+      }
+    },
+    "analytics.section.summary": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Financial Summary"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sumar Financiar"
+          }
+        }
+      }
+    },
+    "analytics.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Costs & Analytics"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Statistici & Costuri"
+          }
+        }
+      }
+    },
+    "analytics.total_cost": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Expenses"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Cheltuieli"
+          }
+        }
+      }
+    },
     "assistant.answer.all_good": {
       "extractionState": "manual",
       "localizations": {
@@ -231,6 +587,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vești bune! Toate actele mașinilor tale sunt în regulă și nu expiră în următoarele 30 de zile."
+          }
+        }
+      }
+    },
+    "assistant.answer.days_left": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "days remaining"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zile rămase"
           }
         }
       }
@@ -303,40 +676,6 @@
         }
       }
     },
-    "assistant.answer.service_status": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To track maintenance, check the oil change interval in the Service tab or car details."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pentru a monitoriza revizia, verifică intervalul de schimb de ulei din tab-ul Service sau detaliile mașinii."
-          }
-        }
-      }
-    },
-    "assistant.answer.oil_last_change": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last oil change: "
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ultimul schimb de ulei: "
-          }
-        }
-      }
-    },
     "assistant.answer.oil_at": {
       "extractionState": "manual",
       "localizations": {
@@ -350,57 +689,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "la"
-          }
-        }
-      }
-    },
-    "assistant.answer.oil_overdue": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "⚠️ Overdue! Schedule a service appointment."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "⚠️ Termen depășit! Fă o programare în service."
-          }
-        }
-      }
-    },
-    "assistant.answer.oil_next": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next change: in approx."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Următorul schimb: peste aprox."
-          }
-        }
-      }
-    },
-    "assistant.answer.oil_months": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "months"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "luni"
           }
         }
       }
@@ -422,6 +710,57 @@
         }
       }
     },
+    "assistant.answer.oil_last_change": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last oil change: "
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultimul schimb de ulei: "
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_months": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "months"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "luni"
+          }
+        }
+      }
+    },
+    "assistant.answer.oil_next": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next change: in approx."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Următorul schimb: peste aprox."
+          }
+        }
+      }
+    },
     "assistant.answer.oil_no_records": {
       "extractionState": "manual",
       "localizations": {
@@ -439,19 +778,36 @@
         }
       }
     },
-    "assistant.answer.days_left": {
+    "assistant.answer.oil_overdue": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "days remaining"
+            "value": "⚠️ Overdue! Schedule a service appointment."
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "zile rămase"
+            "value": "⚠️ Termen depășit! Fă o programare în service."
+          }
+        }
+      }
+    },
+    "assistant.answer.service_status": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To track maintenance, check the oil change interval in the Service tab or car details."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pentru a monitoriza revizia, verifică intervalul de schimb de ulei din tab-ul Service sau detaliile mașinii."
           }
         }
       }
@@ -660,6 +1016,24 @@
         }
       }
     },
+    "Carb: %@": {},
+    "carburant & service": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fuel & service"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "carburant & service"
+          }
+        }
+      }
+    },
     "common.cancel": {
       "extractionState": "manual",
       "localizations": {
@@ -677,6 +1051,40 @@
         }
       }
     },
+    "common.car": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicle"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicul"
+          }
+        }
+      }
+    },
+    "common.date": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dată"
+          }
+        }
+      }
+    },
     "common.delete": {
       "extractionState": "manual",
       "localizations": {
@@ -690,6 +1098,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Șterge"
+          }
+        }
+      }
+    },
+    "common.details": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Details"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detalii suplimentare"
           }
         }
       }
@@ -762,49 +1187,104 @@
         }
       }
     },
+    "Consum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consumption"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consum"
+          }
+        }
+      }
+    },
+    "Copie digitală atașată": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Digital copy attached"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copie digitală atașată"
+          }
+        }
+      }
+    },
+    "Data": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dată"
+          }
+        }
+      }
+    },
+    "DATA EMITERII": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISSUE DATE"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DATA EMITERII"
+          }
+        }
+      }
+    },
+    "DATE IDENTIFICARE VEHICUL": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VEHICLE IDENTIFICATION DATA"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DATE IDENTIFICARE VEHICUL"
+          }
+        }
+      }
+    },
     "days_count %lld": {
       "extractionState": "manual",
       "localizations": {
         "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld day"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld days"
-                }
-              }
-            }
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld days"
           }
         },
         "ro": {
-          "variations": {
-            "plural": {
-              "few": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld zile"
-                }
-              },
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld zi"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld de zile"
-                }
-              }
-            }
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld zile"
           }
         }
       }
@@ -813,45 +1293,32 @@
       "extractionState": "manual",
       "localizations": {
         "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld day left"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld days left"
-                }
-              }
-            }
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld days left"
           }
         },
         "ro": {
-          "variations": {
-            "plural": {
-              "few": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld zile rămase"
-                }
-              },
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld zi rămasă"
-                }
-              },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%lld de zile rămase"
-                }
-              }
-            }
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld zile rămase"
+          }
+        }
+      }
+    },
+    "Deschide aplicația pentru a configura revizia.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the app to configure service intervals."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deschide aplicația pentru a configura revizia."
           }
         }
       }
@@ -1383,6 +1850,517 @@
         }
       }
     },
+    "Expirare: %@": {},
+    "Expirat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expired"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Expirat"
+          }
+        }
+      }
+    },
+    "fuel.add.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log Fuel"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adaugă Alimentare"
+          }
+        }
+      }
+    },
+    "fuel.add.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record Fuel Fill-up"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Înregistrează Alimentare"
+          }
+        }
+      }
+    },
+    "fuel.empty.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log every fill-up at the pump to track fuel consumption and costs."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Înregistrează fiecare vizită la pompă pentru a urmări consumul și cheltuielile."
+          }
+        }
+      }
+    },
+    "fuel.empty.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No fuel entries yet"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio alimentare înregistrată"
+          }
+        }
+      }
+    },
+    "fuel.entry.distance": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distance covered"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distanță parcursă"
+          }
+        }
+      }
+    },
+    "fuel.field.full_tank": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full tank"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plin complet (rezervor plin)"
+          }
+        }
+      }
+    },
+    "fuel.field.full_tank_footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full tanks enable exact calculation of fuel consumption between fill-ups."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plinurile complete permit calcularea exactă a consumului de combustibil între alimentări."
+          }
+        }
+      }
+    },
+    "fuel.field.liters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuel Quantity"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cantitate Alimentată"
+          }
+        }
+      }
+    },
+    "fuel.field.notes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Station / Notes"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stație PECO / Notițe"
+          }
+        }
+      }
+    },
+    "fuel.field.notes_placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. Shell, BP, OMV"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ex: OMV, Petrom, Rompetrol"
+          }
+        }
+      }
+    },
+    "fuel.field.odometer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Odometer Reading"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometraj Bord"
+          }
+        }
+      }
+    },
+    "fuel.field.price_per_liter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price per unit"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preț pe litru"
+          }
+        }
+      }
+    },
+    "fuel.field.total_price": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Price"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cost Total"
+          }
+        }
+      }
+    },
+    "fuel.field.type": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuel Type"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tip Carburant"
+          }
+        }
+      }
+    },
+    "fuel.history.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuel History"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Istoric Alimentări"
+          }
+        }
+      }
+    },
+    "fuel.history.view_all": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "View Full History"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vezi tot istoricul"
+          }
+        }
+      }
+    },
+    "fuel.section.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuel & Consumption"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alimentare & Consum"
+          }
+        }
+      }
+    },
+    "fuel.stats.avg_consumption": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avg Consumption"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consum Mediu"
+          }
+        }
+      }
+    },
+    "fuel.stats.calculated_after_two": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calculated after 2 full tanks"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disponibil după 2 plinuri"
+          }
+        }
+      }
+    },
+    "fuel.stats.total_liters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Volume"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Volum"
+          }
+        }
+      }
+    },
+    "fuel.stats.total_spent": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Fuel"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total Carburant"
+          }
+        }
+      }
+    },
+    "fuel.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuel Log"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jurnal Alimentare"
+          }
+        }
+      }
+    },
+    "fuel.type.cng": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CNG"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GNC"
+          }
+        }
+      }
+    },
+    "fuel.type.diesel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard Diesel"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motorină Standard"
+          }
+        }
+      }
+    },
+    "fuel.type.electric": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Electricity (kWh)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Electricitate (kWh)"
+          }
+        }
+      }
+    },
+    "fuel.type.lpg": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LPG"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GPL"
+          }
+        }
+      }
+    },
+    "fuel.type.petrol95": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regular Unleaded (95)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benzină 95"
+          }
+        }
+      }
+    },
+    "fuel.type.petrol98": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium Unleaded (98/100)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benzină Premium (98/100)"
+          }
+        }
+      }
+    },
+    "fuel.type.premium_diesel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium Diesel"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motorină Premium"
+          }
+        }
+      }
+    },
     "garage.add_vehicle": {
       "extractionState": "manual",
       "localizations": {
@@ -1468,10 +2446,148 @@
         }
       }
     },
+    "Generat cu aplicația Torpedou • Document de evidență digitală a vehiculului": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generated with GloveBox app • Digital vehicle maintenance record"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generat cu aplicația Torpedou • Document de evidență digitală a vehiculului"
+          }
+        }
+      }
+    },
+    "În grafic": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On track"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "În grafic"
+          }
+        }
+      }
+    },
+    "ISTORIC INTERVENȚII SERVICE": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SERVICE & MAINTENANCE HISTORY"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ISTORIC INTERVENȚII SERVICE"
+          }
+        }
+      }
+    },
     "Key": {
       "extractionState": "manual"
     },
+    "Kilometraj": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mileage"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometraj"
+          }
+        }
+      }
+    },
+    "Kilometraj: %@": {},
     "km": {},
+    "lei": {},
+    "lei total": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "total RON"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lei total"
+          }
+        }
+      }
+    },
+    "Limita de kilometri va fi atinsă prima.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mileage limit will be reached first."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limita de kilometri va fi atinsă prima."
+          }
+        }
+      }
+    },
+    "Medie": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Average"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie"
+          }
+        }
+      }
+    },
+    "Medie: %@ L": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Average: %@ L"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medie: %@ L"
+          }
+        }
+      }
+    },
     "mileage.card.empty": {
       "extractionState": "manual",
       "localizations": {
@@ -1744,8 +2860,673 @@
         }
       }
     },
+    "Necesită cel puțin 2 plinuri complete pentru a trasa graficul de consum.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At least 2 full tanks are required to plot the consumption chart."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesită cel puțin 2 plinuri complete pentru a trasa graficul de consum."
+          }
+        }
+      }
+    },
+    "Nicio intervenție de service înregistrată.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No service records logged yet."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicio intervenție de service înregistrată."
+          }
+        }
+      }
+    },
+    "notification.weekly_mileage.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It's the end of the week! Log your odometer reading to keep maintenance tracking up to date."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este sfârșitul săptămânii! Înregistrează kilometrajul din bord pentru a ține evidența reviziilor și consumului."
+          }
+        }
+      }
+    },
+    "notification.weekly_mileage.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update your mileage 🚗"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actualizează kilometrajul 🚗"
+          }
+        }
+      }
+    },
+    "ocr.button.scan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan with camera"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanează cu camera"
+          }
+        }
+      }
+    },
+    "ocr.pick_from_photos": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick Photo from Library"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alege o fotografie din Galerie"
+          }
+        }
+      }
+    },
+    "ocr.scan_date.instruction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point camera at the expiration date on document"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Îndreaptă camera spre data de expirare din document"
+          }
+        }
+      }
+    },
+    "ocr.scan_date.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Expiration Date"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanare Dată Expirare"
+          }
+        }
+      }
+    },
+    "ocr.scan_plate.instruction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point camera at license plate"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Îndreaptă camera spre numărul de înmatriculare"
+          }
+        }
+      }
+    },
+    "ocr.scan_plate.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan License Plate"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanare Număr Înmatriculare"
+          }
+        }
+      }
+    },
+    "ocr.scan_vin.instruction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point camera at the VIN on document or windshield"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Îndreaptă camera spre seria de șasiu din talon sau parbriz"
+          }
+        }
+      }
+    },
+    "ocr.scan_vin.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan VIN"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanare Serie Șasiu (VIN)"
+          }
+        }
+      }
+    },
+    "onboarding.get_started": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get Started"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Începe acum"
+          }
+        }
+      }
+    },
+    "onboarding.next": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continue"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuă"
+          }
+        }
+      }
+    },
+    "onboarding.privacy_note": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Private and 100% offline on your device"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confidențial și 100% offline pe dispozitivul tău"
+          }
+        }
+      }
+    },
+    "onboarding.skip": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omite"
+          }
+        }
+      }
+    },
+    "onboarding.slide1.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep your RCA, ITP, and vignettes organized and accessible anytime, with digital copies attached."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Polițele RCA, inspecția ITP și rovinieta sunt mereu organizate și la îndemână, cu copii digitale atașate."
+          }
+        }
+      }
+    },
+    "onboarding.slide1.tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stress-Free"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fără stres"
+          }
+        }
+      }
+    },
+    "onboarding.slide1.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All car documents in one place"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toate actele mașinii într-un singur loc"
+          }
+        }
+      }
+    },
+    "onboarding.slide2.enable_notif": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable Notifications"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activează notificările"
+          }
+        }
+      }
+    },
+    "onboarding.slide2.notif_enabled": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications Enabled"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notificări activate"
+          }
+        }
+      }
+    },
+    "onboarding.slide2.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get smart reminders 30 days, 7 days, and 1 day before expiration, always staying protected."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primești notificări clare la 30 de zile, 7 zile și cu o zi înainte de scadență, ca să fii mereu protejat de amenzi."
+          }
+        }
+      }
+    },
+    "onboarding.slide2.tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zero Penalties"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zero amenzi"
+          }
+        }
+      }
+    },
+    "onboarding.slide2.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smart alerts before expiration"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alerte exacte înainte să expire"
+          }
+        }
+      }
+    },
+    "onboarding.slide3.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Track miles and elapsed time until your next oil change. See at a glance which threshold arrives first."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Monitorizează paralel kilometrii și timpul rămas până la schimbul de ulei. Știi din timp ce limită se va atinge prima."
+          }
+        }
+      }
+    },
+    "onboarding.slide3.tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Engine Care"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motor protejat"
+          }
+        }
+      }
+    },
+    "onboarding.slide3.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maintenance & mileage under control"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Revizii & kilometraj sub control"
+          }
+        }
+      }
+    },
+    "Pagină 1 / 1": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page 1 / 1"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagină 1 / 1"
+          }
+        }
+      }
+    },
+    "PDF": {},
+    "Perioadă": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Period"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perioadă"
+          }
+        }
+      }
+    },
+    "Plin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plin"
+          }
+        }
+      }
+    },
+    "Poliță RCA expiră în 7 zile!": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RCA policy expires in 7 days!"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poliță RCA expiră în 7 zile!"
+          }
+        }
+      }
+    },
+    "Preț mediu:": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Average price:"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preț mediu:"
+          }
+        }
+      }
+    },
+    "RAPORT DE SERVICE & STARE TEHNICĂ": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SERVICE & VEHICLE HEALTH REPORT"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "RAPORT DE SERVICE & STARE TEHNICĂ"
+          }
+        }
+      }
+    },
+    "Reînnoiește din timp pentru a evita amenzile rutiere.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renew early to avoid traffic fines."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reînnoiește din timp pentru a evita amenzile rutiere."
+          }
+        }
+      }
+    },
+    "report.button.generate": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Service Book (PDF)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportă Carte de Service (PDF)"
+          }
+        }
+      }
+    },
+    "report.button.share": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share PDF Report"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Partajează Raportul PDF"
+          }
+        }
+      }
+    },
+    "report.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Service Book & Report"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carte de Service & Raport"
+          }
+        }
+      }
+    },
     "RO": {},
     "RON": {},
+    "Scannerul live cu camera este disponibil pe iPhone-uri fizice. În Simulator, poți alege o imagine sau fotografie cu documentul pentru a testa recunoașterea OCR.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Live camera scanning is available on physical iPhones. In Simulator, you can pick a document image to test OCR recognition."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scannerul live cu camera este disponibil pe iPhone-uri fizice. În Simulator, poți alege o imagine sau fotografie cu documentul pentru a testa recunoașterea OCR."
+          }
+        }
+      }
+    },
+    "Schimb Ulei & Filtre": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oil & Filter Change"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schimb Ulei & Filtre"
+          }
+        }
+      }
+    },
+    "Serv: %@": {},
     "service.add.attach_invoice_prompt": {
       "extractionState": "manual",
       "localizations": {
@@ -2069,6 +3850,125 @@
         }
       }
     },
+    "service.card.factor.balanced": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BALANCED"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ECHILIBRAT"
+          }
+        }
+      }
+    },
+    "service.card.factor.balanced_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mileage and time are progressing at a similar pace."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometrajul și timpul avansează într-un ritm similar."
+          }
+        }
+      }
+    },
+    "service.card.factor.mileage": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MILEAGE"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "KILOMETRAJUL"
+          }
+        }
+      }
+    },
+    "service.card.factor.mileage_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At current driving pace, you will reach the mileage limit before the calendar deadline."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La ritmul actual de condus, vei atinge limita de kilometri înaintea datei din calendar."
+          }
+        }
+      }
+    },
+    "service.card.factor.time": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TIME"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TIMPUL"
+          }
+        }
+      }
+    },
+    "service.card.factor.time_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low driving frequency; calendar deadline will arrive before the mileage limit."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mașina rulează puțin; termenul calendaristic va expira înaintea limitei de kilometri."
+          }
+        }
+      }
+    },
+    "service.card.first_to_expire": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Will reach limit first:"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Va atinge pragul mai întâi:"
+          }
+        }
+      }
+    },
     "service.card.km_progress": {
       "extractionState": "manual",
       "localizations": {
@@ -2086,6 +3986,40 @@
         }
       }
     },
+    "service.card.km_remaining_pill": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ km remaining"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ km rămași"
+          }
+        }
+      }
+    },
+    "service.card.log_service_button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log service entry (invoice/price)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Înregistrează service (factură/cost)"
+          }
+        }
+      }
+    },
     "service.card.maintenance_title": {
       "extractionState": "manual",
       "localizations": {
@@ -2099,6 +4033,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Schimb Ulei & Revizie"
+          }
+        }
+      }
+    },
+    "service.card.months_remaining_pill": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld months left"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld luni rămase"
           }
         }
       }
@@ -2171,227 +4122,6 @@
         }
       }
     },
-    "service.card.time_progress": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Due date"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Termen limită"
-          }
-        }
-      }
-    },
-    "service.card.quick_complete_button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quick mark as done"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Marchează rapid ca efectuat"
-          }
-        }
-      }
-    },
-    "service.quick.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mark Oil Service Done"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Marchează Schimb Ulei"
-          }
-        }
-      }
-    },
-    "service.quick.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter the current odometer reading shown on your dashboard to reset the maintenance interval:"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Introdu kilometrajul curent afișat pe bordul mașinii pentru a reseta intervalul de revizie:"
-          }
-        }
-      }
-    },
-    "service.quick.mileage_placeholder": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "e.g. 147500"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ex: 147500"
-          }
-        }
-      }
-    },
-    "service.quick.current_km_label": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dashboard Mileage"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilometraj din bord"
-          }
-        }
-      }
-    },
-    "service.quick.confirm_button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirm & Reset Interval"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirmă & Resetează Intervalul"
-          }
-        }
-      }
-    },
-    "service.quick.last_oil_info": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last recorded oil change: %@ km"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ultimul schimb înregistrat: %@ km"
-          }
-        }
-      }
-    },
-    "service.quick.mileage_lower_warning": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Entered mileage is lower than the previous service reading."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilometrajul introdus este mai mic decât ultima revizie înregistrată."
-          }
-        }
-      }
-    },
-    "service.card.log_service_button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log service entry (invoice/price)"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Înregistrează service (factură/cost)"
-          }
-        }
-      }
-    },
-    "service.card.quick_complete_alert_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirm Oil Service"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirmare Schimb Ulei"
-          }
-        }
-      }
-    },
-    "service.card.quick_complete_alert_message": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This will record an oil service completed today and reset the maintenance interval."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se va înregistra schimbul de ulei efectuat astăzi și se va reseta intervalul de mentenanță."
-          }
-        }
-      }
-    },
-    "service.card.quick_complete_confirm": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirm & Reset"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confirmă & Resetează"
-          }
-        }
-      }
-    },
     "service.card.overdue_action_prompt": {
       "extractionState": "manual",
       "localizations": {
@@ -2405,159 +4135,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ai făcut deja revizia?"
-          }
-        }
-      }
-    },
-    "service.card.first_to_expire": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Will reach limit first:"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Va atinge pragul mai întâi:"
-          }
-        }
-      }
-    },
-    "service.card.factor.mileage": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MILEAGE"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "KILOMETRAJUL"
-          }
-        }
-      }
-    },
-    "service.card.factor.time": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "TIME"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "TIMPUL"
-          }
-        }
-      }
-    },
-    "service.card.factor.balanced": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "BALANCED"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ECHILIBRAT"
-          }
-        }
-      }
-    },
-    "service.card.factor.mileage_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "At current driving pace, you will reach the mileage limit before the calendar deadline."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La ritmul actual de condus, vei atinge limita de kilometri înaintea datei din calendar."
-          }
-        }
-      }
-    },
-    "service.card.factor.time_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Low driving frequency; calendar deadline will arrive before the mileage limit."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mașina rulează puțin; termenul calendaristic va expira înaintea limitei de kilometri."
-          }
-        }
-      }
-    },
-    "service.card.factor.balanced_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mileage and time are progressing at a similar pace."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilometrajul și timpul avansează într-un ritm similar."
-          }
-        }
-      }
-    },
-    "service.card.km_remaining_pill": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ km remaining"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%@ km rămași"
-          }
-        }
-      }
-    },
-    "service.card.months_remaining_pill": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld months left"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld luni rămase"
           }
         }
       }
@@ -2613,12 +4190,227 @@
         }
       }
     },
-    "service.category.brakes": {},
-    "service.category.general": {},
-    "service.category.oil_and_filters": {},
-    "service.category.suspension": {},
-    "service.category.timing_belt": {},
-    "service.category.tires": {},
+    "service.card.progress.km_label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mileage"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometraj"
+          }
+        }
+      }
+    },
+    "service.card.progress.time_label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time Period"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perioadă"
+          }
+        }
+      }
+    },
+    "service.card.quick_complete_alert_message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This will record an oil service completed today and reset the maintenance interval."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se va înregistra schimbul de ulei efectuat astăzi și se va reseta intervalul de mentenanță."
+          }
+        }
+      }
+    },
+    "service.card.quick_complete_alert_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm Oil Service"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmare Schimb Ulei"
+          }
+        }
+      }
+    },
+    "service.card.quick_complete_button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick mark as done"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marchează rapid ca efectuat"
+          }
+        }
+      }
+    },
+    "service.card.quick_complete_confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm & Reset"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmă & Resetează"
+          }
+        }
+      }
+    },
+    "service.card.time_progress": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Due date"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termen limită"
+          }
+        }
+      }
+    },
+    "service.category.brakes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brakes"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sistem Frânare"
+          }
+        }
+      }
+    },
+    "service.category.general": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General Maintenance"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mentenanță Generală"
+          }
+        }
+      }
+    },
+    "service.category.oil_and_filters": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oil & Filters"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ulei & Filtre"
+          }
+        }
+      }
+    },
+    "service.category.suspension": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suspension & Steering"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Direcție & Suspensie"
+          }
+        }
+      }
+    },
+    "service.category.timing_belt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timing Belt"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kit Distribuție"
+          }
+        }
+      }
+    },
+    "service.category.tires": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tires & Wheels"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anvelope & Roți"
+          }
+        }
+      }
+    },
     "service.empty.subtitle": {
       "extractionState": "manual",
       "localizations": {
@@ -2976,6 +4768,125 @@
         }
       }
     },
+    "service.quick.confirm_button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm & Reset Interval"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmă & Resetează Intervalul"
+          }
+        }
+      }
+    },
+    "service.quick.current_km_label": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dashboard Mileage"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometraj din bord"
+          }
+        }
+      }
+    },
+    "service.quick.last_oil_info": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last recorded oil change: %@ km"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultimul schimb înregistrat: %@ km"
+          }
+        }
+      }
+    },
+    "service.quick.mileage_lower_warning": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entered mileage is lower than the previous service reading."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilometrajul introdus este mai mic decât ultima revizie înregistrată."
+          }
+        }
+      }
+    },
+    "service.quick.mileage_placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "e.g. 147500"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ex: 147500"
+          }
+        }
+      }
+    },
+    "service.quick.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter the current odometer reading shown on your dashboard to reset the maintenance interval:"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introdu kilometrajul curent afișat pe bordul mașinii pentru a reseta intervalul de revizie:"
+          }
+        }
+      }
+    },
+    "service.quick.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mark Oil Service Done"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marchează Schimb Ulei"
+          }
+        }
+      }
+    },
     "service.row.view_invoice": {
       "extractionState": "manual",
       "localizations": {
@@ -3006,6 +4917,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Service & Întreținere"
+          }
+        }
+      }
+    },
+    "settings.about.view_tour": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App Presentation Tour"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghid de prezentare a aplicației"
           }
         }
       }
@@ -3044,87 +4972,138 @@
         }
       }
     },
-    "settings.section.about": {
+    "settings.notifications.day": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "About"
+            "value": "Day"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Despre"
+            "value": "Ziua"
           }
         }
       }
     },
-    "settings.section.language": {
+    "settings.notifications.day.friday": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Language & Region"
+            "value": "Friday"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Limbă & Regiune"
+            "value": "Vineri"
           }
         }
       }
     },
-    "notification.weekly_mileage.title": {
+    "settings.notifications.day.saturday": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Update your mileage 🚗"
+            "value": "Saturday"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Actualizează kilometrajul 🚗"
+            "value": "Sâmbătă"
           }
         }
       }
     },
-    "notification.weekly_mileage.body": {
+    "settings.notifications.day.sunday": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "It's the end of the week! Log your odometer reading to keep maintenance tracking up to date."
+            "value": "Sunday"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Este sfârșitul săptămânii! Înregistrează kilometrajul din bord pentru a ține evidența reviziilor și consumului."
+            "value": "Duminică"
           }
         }
       }
     },
-    "settings.section.notifications": {
+    "settings.notifications.open_settings": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Notifications & Reminders"
+            "value": "Open Settings"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Notificări & Memento"
+            "value": "Deschide Configurări"
+          }
+        }
+      }
+    },
+    "settings.notifications.permission_alert_message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To receive weekly reminders, please enable notifications for the app in iOS Settings."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pentru a primi memento-ul săptămânal, activează notificările pentru aplicație din Configurări iOS."
+          }
+        }
+      }
+    },
+    "settings.notifications.permission_alert_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notification Permission Required"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permisiune notificări necesară"
+          }
+        }
+      }
+    },
+    "settings.notifications.time": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ora"
           }
         }
       }
@@ -3163,138 +5142,53 @@
         }
       }
     },
-    "settings.notifications.day": {
+    "settings.section.about": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Day"
+            "value": "About"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ziua"
+            "value": "Despre"
           }
         }
       }
     },
-    "settings.notifications.time": {
+    "settings.section.language": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Time"
+            "value": "Language & Region"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ora"
+            "value": "Limbă & Regiune"
           }
         }
       }
     },
-    "settings.notifications.day.sunday": {
+    "settings.section.notifications": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sunday"
+            "value": "Notifications & Reminders"
           }
         },
         "ro": {
           "stringUnit": {
             "state": "translated",
-            "value": "Duminică"
-          }
-        }
-      }
-    },
-    "settings.notifications.day.saturday": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saturday"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sâmbătă"
-          }
-        }
-      }
-    },
-    "settings.notifications.day.friday": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Friday"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vineri"
-          }
-        }
-      }
-    },
-    "settings.notifications.permission_alert_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notification Permission Required"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Permisiune notificări necesară"
-          }
-        }
-      }
-    },
-    "settings.notifications.permission_alert_message": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To receive weekly reminders, please enable notifications for the app in iOS Settings."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pentru a primi memento-ul săptămânal, activează notificările pentru aplicație din Configurări iOS."
-          }
-        }
-      }
-    },
-    "settings.notifications.open_settings": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Settings"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Deschide Configurări"
+            "value": "Notificări & Memento"
           }
         }
       }
@@ -3363,6 +5257,57 @@
           "stringUnit": {
             "state": "translated",
             "value": "Versiune"
+          }
+        }
+      }
+    },
+    "SITUAȚIA ACTELOR & ASIGURĂRILOR": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DOCUMENTS & INSURANCE STATUS"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SITUAȚIA ACTELOR & ASIGURĂRILOR"
+          }
+        }
+      }
+    },
+    "Sumă": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amount"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sumă"
+          }
+        }
+      }
+    },
+    "SUMAR CONSUM & CHELTUIELI TOTALE": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FUEL CONSUMPTION & TOTAL EXPENSES SUMMARY"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SUMAR CONSUM & CHELTUIELI TOTALE"
           }
         }
       }
@@ -3452,7 +5397,60 @@
         }
       }
     },
+    "Torpedou": {},
     "Torpedou / GloveBox": {},
+    "TORPEDOU / GLOVEBOX": {},
+    "Total service: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total service: %@"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total service: %@"
+          }
+        }
+      }
+    },
+    "Ultimul km înregistrat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last logged odometer"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultimul km înregistrat"
+          }
+        }
+      }
+    },
+    "Valabil": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valid"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valabil"
+          }
+        }
+      }
+    },
     "vehicle_details.section.documents": {
       "extractionState": "manual",
       "localizations": {
@@ -3521,6 +5519,7 @@
         }
       }
     },
+    "VIN: %@": {},
     "vin.empty": {
       "extractionState": "manual",
       "localizations": {
@@ -3551,1145 +5550,6 @@
           "stringUnit": {
             "state": "needs_review",
             "value": "VIN (Serie de șasiu)"
-          }
-        }
-      }
-    },
-    "onboarding.skip": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Skip"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Omite"
-          }
-        }
-      }
-    },
-    "onboarding.next": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continue"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continuă"
-          }
-        }
-      }
-    },
-    "onboarding.get_started": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Get Started"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Începe acum"
-          }
-        }
-      }
-    },
-    "onboarding.privacy_note": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Private and 100% offline on your device"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Confidențial și 100% offline pe dispozitivul tău"
-          }
-        }
-      }
-    },
-    "onboarding.slide1.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "All car documents in one place"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toate actele mașinii într-un singur loc"
-          }
-        }
-      }
-    },
-    "onboarding.slide1.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Keep your RCA, ITP, and vignettes organized and accessible anytime, with digital copies attached."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Polițele RCA, inspecția ITP și rovinieta sunt mereu organizate și la îndemână, cu copii digitale atașate."
-          }
-        }
-      }
-    },
-    "onboarding.slide1.tag": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stress-Free"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fără stres"
-          }
-        }
-      }
-    },
-    "onboarding.slide2.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Smart alerts before expiration"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alerte exacte înainte să expire"
-          }
-        }
-      }
-    },
-    "onboarding.slide2.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Get smart reminders 30 days, 7 days, and 1 day before expiration, always staying protected."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Primești notificări clare la 30 de zile, 7 zile și cu o zi înainte de scadență, ca să fii mereu protejat de amenzi."
-          }
-        }
-      }
-    },
-    "onboarding.slide2.tag": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zero Penalties"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zero amenzi"
-          }
-        }
-      }
-    },
-    "onboarding.slide2.enable_notif": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enable Notifications"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Activează notificările"
-          }
-        }
-      }
-    },
-    "onboarding.slide2.notif_enabled": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notifications Enabled"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notificări activate"
-          }
-        }
-      }
-    },
-    "onboarding.slide3.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Maintenance & mileage under control"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Revizii & kilometraj sub control"
-          }
-        }
-      }
-    },
-    "onboarding.slide3.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Track miles and elapsed time until your next oil change. See at a glance which threshold arrives first."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Monitorizează paralel kilometrii și timpul rămas până la schimbul de ulei. Știi din timp ce limită se va atinge prima."
-          }
-        }
-      }
-    },
-    "onboarding.slide3.tag": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Engine Care"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Motor protejat"
-          }
-        }
-      }
-    },
-    "settings.about.view_tour": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "App Presentation Tour"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ghid de prezentare a aplicației"
-          }
-        }
-      }
-    },
-    "fuel.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fuel Log"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jurnal Alimentare"
-          }
-        }
-      }
-    },
-    "fuel.section.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fuel & Consumption"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alimentare & Consum"
-          }
-        }
-      }
-    },
-    "fuel.add.button": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log Fuel"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Adaugă Alimentare"
-          }
-        }
-      }
-    },
-    "fuel.add.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Record Fuel Fill-up"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Înregistrează Alimentare"
-          }
-        }
-      }
-    },
-    "fuel.history.view_all": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "View Full History"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vezi tot istoricul"
-          }
-        }
-      }
-    },
-    "fuel.history.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fuel History"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Istoric Alimentări"
-          }
-        }
-      }
-    },
-    "fuel.stats.avg_consumption": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avg Consumption"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Consum Mediu"
-          }
-        }
-      }
-    },
-    "fuel.stats.total_spent": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total Fuel"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total Carburant"
-          }
-        }
-      }
-    },
-    "fuel.stats.total_liters": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total Volume"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total Volum"
-          }
-        }
-      }
-    },
-    "fuel.stats.calculated_after_two": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calculated after 2 full tanks"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Disponibil după 2 plinuri"
-          }
-        }
-      }
-    },
-    "fuel.field.odometer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odometer Reading"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kilometraj Bord"
-          }
-        }
-      }
-    },
-    "fuel.field.liters": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fuel Quantity"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cantitate Alimentată"
-          }
-        }
-      }
-    },
-    "fuel.field.total_price": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total Price"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cost Total"
-          }
-        }
-      }
-    },
-    "fuel.field.price_per_liter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Price per unit"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preț pe litru"
-          }
-        }
-      }
-    },
-    "fuel.field.type": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fuel Type"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tip Carburant"
-          }
-        }
-      }
-    },
-    "fuel.field.full_tank": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Full tank"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plin complet (rezervor plin)"
-          }
-        }
-      }
-    },
-    "fuel.field.full_tank_footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Full tanks enable exact calculation of fuel consumption between fill-ups."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plinurile complete permit calcularea exactă a consumului de combustibil între alimentări."
-          }
-        }
-      }
-    },
-    "fuel.field.notes": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Station / Notes"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stație PECO / Notițe"
-          }
-        }
-      }
-    },
-    "fuel.field.notes_placeholder": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "e.g. Shell, BP, OMV"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ex: OMV, Petrom, Rompetrol"
-          }
-        }
-      }
-    },
-    "fuel.entry.distance": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distance covered"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distanță parcursă"
-          }
-        }
-      }
-    },
-    "fuel.type.petrol95": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Regular Unleaded (95)"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Benzină 95"
-          }
-        }
-      }
-    },
-    "fuel.type.petrol98": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premium Unleaded (98/100)"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Benzină Premium (98/100)"
-          }
-        }
-      }
-    },
-    "fuel.type.diesel": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Standard Diesel"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Motorină Standard"
-          }
-        }
-      }
-    },
-    "fuel.type.premium_diesel": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premium Diesel"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Motorină Premium"
-          }
-        }
-      }
-    },
-    "fuel.type.lpg": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "LPG"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GPL"
-          }
-        }
-      }
-    },
-    "fuel.type.cng": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "CNG"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GNC"
-          }
-        }
-      }
-    },
-    "fuel.type.electric": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Electricity (kWh)"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Electricitate (kWh)"
-          }
-        }
-      }
-    },
-    "fuel.empty.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No fuel entries yet"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nicio alimentare înregistrată"
-          }
-        }
-      }
-    },
-    "fuel.empty.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log every fill-up at the pump to track fuel consumption and costs."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Înregistrează fiecare vizită la pompă pentru a urmări consumul și cheltuielile."
-          }
-        }
-      }
-    },
-    "ocr.scan_vin.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan VIN"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scanare Serie Șasiu (VIN)"
-          }
-        }
-      }
-    },
-    "ocr.scan_vin.instruction": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Point camera at the VIN on document or windshield"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Îndreaptă camera spre seria de șasiu din talon sau parbriz"
-          }
-        }
-      }
-    },
-    "ocr.scan_plate.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan License Plate"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scanare Număr Înmatriculare"
-          }
-        }
-      }
-    },
-    "ocr.scan_plate.instruction": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Point camera at license plate"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Îndreaptă camera spre numărul de înmatriculare"
-          }
-        }
-      }
-    },
-    "ocr.scan_date.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan Expiration Date"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scanare Dată Expirare"
-          }
-        }
-      }
-    },
-    "ocr.scan_date.instruction": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Point camera at the expiration date on document"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Îndreaptă camera spre data de expirare din document"
-          }
-        }
-      }
-    },
-    "ocr.pick_from_photos": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pick Photo from Library"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alege o fotografie din Galerie"
-          }
-        }
-      }
-    },
-    "ocr.button.scan": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scan with camera"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scanează cu camera"
-          }
-        }
-      }
-    },
-    "analytics.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Costs & Analytics"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Statistici & Costuri"
-          }
-        }
-      }
-    },
-    "analytics.total_cost": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total Expenses"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Total Cheltuieli"
-          }
-        }
-      }
-    },
-    "analytics.cost_per_km": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cost per km"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cost per km"
-          }
-        }
-      }
-    },
-    "analytics.consumption_trend": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Consumption Trend"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Evoluție Consum"
-          }
-        }
-      }
-    },
-    "analytics.consumption_chart_footer": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Shows calculated consumption (L/100km) for each consecutive full tank."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Afișează consumul calculat (L/100km) pentru fiecare plin complet efectuat."
-          }
-        }
-      }
-    },
-    "analytics.expenses_by_category": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Expense Breakdown"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Distribuția Cheltuielilor"
-          }
-        }
-      }
-    },
-    "analytics.no_data_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Not enough data yet"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Date insuficiente pentru grafice"
-          }
-        }
-      }
-    },
-    "analytics.no_data_subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Log at least 2 full tanks or service invoices to unlock full financial charts."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Înregistrează cel puțin 2 plinuri de carburant sau revizii pentru a debloca graficele financiare."
-          }
-        }
-      }
-    },
-    "analytics.average_line": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Average"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Medie"
-          }
-        }
-      }
-    },
-    "analytics.section.summary": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Financial Summary"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sumar Financiar"
-          }
-        }
-      }
-    },
-    "analytics.button.view": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "View Analytics & Charts"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vezi statistici și grafice"
-          }
-        }
-      }
-    },
-    "report.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Service Book & Report"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Carte de Service & Raport"
-          }
-        }
-      }
-    },
-    "report.button.generate": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Export Service Book (PDF)"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Exportă Carte de Service (PDF)"
-          }
-        }
-      }
-    },
-    "report.button.share": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Share PDF Report"
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Partajează Raportul PDF"
           }
         }
       }

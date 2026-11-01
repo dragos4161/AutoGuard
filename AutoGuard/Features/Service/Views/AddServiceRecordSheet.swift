@@ -60,7 +60,7 @@ struct AddServiceRecordSheet: View {
                 Section("service.add.section.details") {
                     Picker("service.add.category", selection: $category) {
                         ForEach(ServiceCategory.allCases) { cat in
-                            Label(cat.localizedTitle, systemImage: cat.iconName)
+                            Label(cat.titleKey, systemImage: cat.iconName)
                                 .tag(cat)
                         }
                     }

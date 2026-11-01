@@ -151,5 +151,41 @@ private let assistantFallbackTranslations: [String: [String: String]] = [
     "assistant.answer.fallback": [
         "ro": "Pot să te ajut cu informații despre kilometraj, revizii de ulei sau expirarea actelor (RCA, ITP, Rovinietă). Alege una dintre sugestii sau formulează o întrebare legată de acestea!",
         "en": "I can help you with mileage information, oil changes, or document expirations (RCA, ITP, Vignette). Pick one of the suggestions or ask a related question!"
+    ],
+    "service.category.oil_and_filters": [
+        "ro": "Ulei & Filtre",
+        "en": "Oil & Filters"
+    ],
+    "service.category.brakes": [
+        "ro": "Sistem Frânare",
+        "en": "Brakes"
+    ],
+    "service.category.timing_belt": [
+        "ro": "Kit Distribuție",
+        "en": "Timing Belt"
+    ],
+    "service.category.tires": [
+        "ro": "Anvelope & Roți",
+        "en": "Tires & Wheels"
+    ],
+    "service.category.suspension": [
+        "ro": "Direcție & Suspensie",
+        "en": "Suspension & Steering"
+    ],
+    "service.category.general": [
+        "ro": "Mentenanță Generală",
+        "en": "General Maintenance"
+    ],
+    "common.car": [
+        "ro": "Vehicul",
+        "en": "Vehicle"
+    ],
+    "common.date": [
+        "ro": "Dată",
+        "en": "Date"
+    ],
+    "common.details": [
+        "ro": "Detalii suplimentare",
+        "en": "Details"
     ]
 ]
