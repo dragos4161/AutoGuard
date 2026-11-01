@@ -1,6 +1,6 @@
 //
 //  TorpedouWidget.swift
-//  AutoGuard
+//  TorpedouWidget
 //
 //  Definiția widget-ului WidgetKit pentru extensia de sistem (Home Screen & Lock Screen).
 //  Folosește datele sincronizate prin App Group din `WidgetDataManager`.

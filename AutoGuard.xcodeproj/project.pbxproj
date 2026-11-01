@@ -6,6 +6,12 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E6A80F4A3097D318007D7322 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6A80F493097D318007D7322 /* WidgetKit.framework */; };
+		E6A80F4C3097D318007D7322 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6A80F4B3097D318007D7322 /* SwiftUI.framework */; };
+		E6A80F5D3097D31A007D7322 /* TorpedouWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E6A80F473097D318007D7322 /* TorpedouWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E62EF5FD308D0A5600C26EE6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -21,12 +27,35 @@
 			remoteGlobalIDString = E62EF5EA308D0A5500C26EE6;
 			remoteInfo = AutoGuard;
 		};
+		E6A80F5B3097D31A007D7322 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E62EF5E3308D0A5500C26EE6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E6A80F463097D318007D7322;
+			remoteInfo = TorpedouWidgetExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E6A80F623097D31A007D7322 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			dstPath = "";
+			dstSubfolder = PlugIns;
+			files = (
+				E6A80F5D3097D31A007D7322 /* TorpedouWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		E62EF5EB308D0A5500C26EE6 /* AutoGuard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AutoGuard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E62EF5FC308D0A5600C26EE6 /* AutoGuardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoGuardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E62EF606308D0A5600C26EE6 /* AutoGuardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AutoGuardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6A80F473097D318007D7322 /* TorpedouWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TorpedouWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6A80F493097D318007D7322 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		E6A80F4B3097D318007D7322 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		E6A80F673097D592007D7322 /* TorpedouWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TorpedouWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +65,13 @@
 				Info.plist,
 			);
 			target = E62EF5EA308D0A5500C26EE6 /* AutoGuard */;
+		};
+		E6A80F613097D31A007D7322 /* Exceptions for "TorpedouWidget" folder in "TorpedouWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E6A80F463097D318007D7322 /* TorpedouWidgetExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -58,6 +94,14 @@
 			path = AutoGuardUITests;
 			sourceTree = "<group>";
 		};
+		E6A80F4D3097D318007D7322 /* TorpedouWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E6A80F613097D31A007D7322 /* Exceptions for "TorpedouWidget" folder in "TorpedouWidgetExtension" target */,
+			);
+			path = TorpedouWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,15 +120,25 @@
 			files = (
 			);
 		};
+		E6A80F443097D318007D7322 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				E6A80F4C3097D318007D7322 /* SwiftUI.framework in Frameworks */,
+				E6A80F4A3097D318007D7322 /* WidgetKit.framework in Frameworks */,
+			);
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		E62EF5E2308D0A5500C26EE6 = {
 			isa = PBXGroup;
 			children = (
+				E6A80F673097D592007D7322 /* TorpedouWidgetExtension.entitlements */,
 				E62EF5ED308D0A5500C26EE6 /* AutoGuard */,
 				E62EF5FF308D0A5600C26EE6 /* AutoGuardTests */,
 				E62EF609308D0A5600C26EE6 /* AutoGuardUITests */,
+				E6A80F4D3097D318007D7322 /* TorpedouWidget */,
+				E6A80F483097D318007D7322 /* Frameworks */,
 				E62EF5EC308D0A5500C26EE6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,8 +149,18 @@
 				E62EF5EB308D0A5500C26EE6 /* AutoGuard.app */,
 				E62EF5FC308D0A5600C26EE6 /* AutoGuardTests.xctest */,
 				E62EF606308D0A5600C26EE6 /* AutoGuardUITests.xctest */,
+				E6A80F473097D318007D7322 /* TorpedouWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E6A80F483097D318007D7322 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E6A80F493097D318007D7322 /* WidgetKit.framework */,
+				E6A80F4B3097D318007D7322 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -109,8 +173,12 @@
 				E62EF5E7308D0A5500C26EE6 /* Sources */,
 				E62EF5E8308D0A5500C26EE6 /* Frameworks */,
 				E62EF5E9308D0A5500C26EE6 /* Resources */,
+				E6A80F623097D31A007D7322 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
+			);
+			dependencies = (
+				E6A80F5C3097D31A007D7322 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				E62EF5ED308D0A5500C26EE6 /* AutoGuard */,
@@ -162,6 +230,24 @@
 			productReference = E62EF606308D0A5600C26EE6 /* AutoGuardUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		E6A80F463097D318007D7322 /* TorpedouWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E6A80F5E3097D31A007D7322 /* Build configuration list for PBXNativeTarget "TorpedouWidgetExtension" */;
+			buildPhases = (
+				E6A80F433097D318007D7322 /* Sources */,
+				E6A80F443097D318007D7322 /* Frameworks */,
+				E6A80F453097D318007D7322 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				E6A80F4D3097D318007D7322 /* TorpedouWidget */,
+			);
+			name = TorpedouWidgetExtension;
+			productName = TorpedouWidgetExtension;
+			productReference = E6A80F473097D318007D7322 /* TorpedouWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -183,6 +269,9 @@
 						CreatedOnToolsVersion = 27.1;
 						TestTargetID = E62EF5EA308D0A5500C26EE6;
 					};
+					E6A80F463097D318007D7322 = {
+						CreatedOnToolsVersion = 27.1;
+					};
 				};
 			};
 			buildConfigurationList = E62EF5E6308D0A5500C26EE6 /* Build configuration list for PBXProject "AutoGuard" */;
@@ -203,6 +292,7 @@
 				E62EF5EA308D0A5500C26EE6 /* AutoGuard */,
 				E62EF5FB308D0A5600C26EE6 /* AutoGuardTests */,
 				E62EF605308D0A5600C26EE6 /* AutoGuardUITests */,
+				E6A80F463097D318007D7322 /* TorpedouWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -219,6 +309,11 @@
 			);
 		};
 		E62EF604308D0A5600C26EE6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		E6A80F453097D318007D7322 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -241,6 +336,11 @@
 			files = (
 			);
 		};
+		E6A80F433097D318007D7322 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -253,6 +353,11 @@
 			isa = PBXTargetDependency;
 			target = E62EF5EA308D0A5500C26EE6 /* AutoGuard */;
 			targetProxy = E62EF607308D0A5600C26EE6 /* PBXContainerItemProxy */;
+		};
+		E6A80F5C3097D31A007D7322 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E6A80F463097D318007D7322 /* TorpedouWidgetExtension */;
+			targetProxy = E6A80F5B3097D31A007D7322 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -270,6 +375,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoGuard/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Avem nevoie de acces la cameră pentru a scana automat seria de șasiu (VIN) și datele de expirare ale actelor.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -306,6 +412,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AutoGuard/Info.plist;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Avem nevoie de acces la cameră pentru a scana automat seria de șasiu (VIN) și datele de expirare ale actelor.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -536,6 +643,70 @@
 			};
 			name = Release;
 		};
+		E6A80F5F3097D31A007D7322 /* Debug configuration for PBXNativeTarget "TorpedouWidgetExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TorpedouWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V7LM828CW2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TorpedouWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TorpedouWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard.TorpedouWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E6A80F603097D31A007D7322 /* Release configuration for PBXNativeTarget "TorpedouWidgetExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TorpedouWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = V7LM828CW2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TorpedouWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TorpedouWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard.TorpedouWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -568,6 +739,14 @@
 			buildConfigurations = (
 				E62EF616308D0A5600C26EE6 /* Debug configuration for PBXNativeTarget "AutoGuardUITests" */,
 				E62EF617308D0A5600C26EE6 /* Release configuration for PBXNativeTarget "AutoGuardUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		E6A80F5E3097D31A007D7322 /* Build configuration list for PBXNativeTarget "TorpedouWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E6A80F5F3097D31A007D7322 /* Debug configuration for PBXNativeTarget "TorpedouWidgetExtension" */,
+				E6A80F603097D31A007D7322 /* Release configuration for PBXNativeTarget "TorpedouWidgetExtension" */,
 			);
 			defaultConfigurationName = Release;
 		};

@@ -198,6 +198,9 @@ struct VehicleDetailsView: View {
         // Vizualizator nativ iOS QuickLook (cu Zoom, Share, AirDrop, Print)
         .quickLookPreview($viewModel.previewURL)
         .quickLookPreview($invoicePreviewURL)
+        .onAppear {
+            WidgetDataManager.shared.updateWidgetData(for: vehicle)
+        }
     }
 
     private func openInvoice(for record: ServiceRecord) {

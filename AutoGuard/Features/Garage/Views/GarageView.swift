@@ -150,6 +150,16 @@ struct GarageView: View {
             .sheet(isPresented: $isShowingQuickFuelSheet) {
                 AddFuelEntrySheet()
             }
+            .onAppear {
+                if let first = vehicles.first {
+                    WidgetDataManager.shared.updateWidgetData(for: first)
+                }
+            }
+            .onChange(of: vehicles) { _, newVehicles in
+                if let first = newVehicles.first {
+                    WidgetDataManager.shared.updateWidgetData(for: first)
+                }
+            }
         }
     }
 

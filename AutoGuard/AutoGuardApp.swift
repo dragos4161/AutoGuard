@@ -53,6 +53,12 @@ struct AutoGuardApp: App {
                 .id(appLanguage)
                 .environment(\.locale, appLanguage.locale)
                 .task {
+                    // Actualizăm widget-urile imediat la lansarea aplicației pentru primul vehicul
+                    let context = sharedModelContainer.mainContext
+                    if let vehicles = try? context.fetch(FetchDescriptor<Vehicle>()), let first = vehicles.first {
+                        WidgetDataManager.shared.updateWidgetData(for: first)
+                    }
+
                     let status = await NotificationManager.shared.checkAuthorizationStatus()
                     if status == .authorized || status == .provisional {
                         if weeklyMileageReminderEnabled {
@@ -65,12 +71,8 @@ struct AutoGuardApp: App {
                         }
 
                         // Reîmprospătăm alertele pentru documente și revizii la pornirea aplicației
-                        let context = sharedModelContainer.mainContext
                         if let vehicles = try? context.fetch(FetchDescriptor<Vehicle>()) {
                             NotificationManager.shared.rescheduleAllReminders(for: vehicles, language: appLanguage)
-                            if let first = vehicles.first {
-                                WidgetDataManager.shared.updateWidgetData(for: first)
-                            }
                         }
                     }
                 }

@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>LSHasLocalizedDisplayName</key>
-	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Avem nevoie de acces la cameră pentru a scana automat seria de șasiu (VIN) și datele de expirare ale actelor.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -22,6 +14,12 @@
 				<string>torpedou</string>
 			</array>
 		</dict>
+	</array>
+	<key>LSHasLocalizedDisplayName</key>
+	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
 	</array>
 </dict>
 </plist>

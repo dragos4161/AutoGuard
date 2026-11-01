@@ -135,10 +135,7 @@ final class WidgetDataManager {
 
     /// Actualizează datele widget-ului pentru cel mai relevant vehicul (sau vehiculul specificat)
     func updateWidgetData(for vehicle: Vehicle) {
-        guard let status = vehicle.oilChangeStatus else {
-            clearWidgetData()
-            return
-        }
+        let status = vehicle.oilChangeStatus
 
         // Calculăm cel mai urgent document activ
         var nextDocTitle: String? = nil
@@ -166,21 +163,31 @@ final class WidgetDataManager {
             consumptionString = String(format: "%.1f L/100km", avg)
         }
 
+        let kmProgress = status?.kmProgress ?? 0.0
+        let timeProgress = status?.timeProgress ?? 0.0
+        let kmUsed = status?.kmUsed ?? 0
+        let remainingKm = status?.remainingKm ?? vehicle.oilChangeIntervalKm
+        let remainingDays = status?.remainingDays ?? (vehicle.oilChangeIntervalMonths * 30)
+        let dueDateFormatted = status?.dueDate.formatted(.dateTime.month().year()) ?? "Revizie nouă"
+        let limitingFactor = status?.limitingFactor == .time ? "time" : "mileage"
+        let isOverdue = status?.isOverdue ?? false
+        let isDueSoon = status?.isDueSoon ?? false
+
         let data = MaintenanceWidgetData(
             vehicleId: vehicle.id.uuidString,
             vehicleName: vehicle.displayName,
             plateNumber: vehicle.plateNumber,
             odometer: vehicle.currentMileage ?? 0,
-            kmProgress: status.kmProgress,
-            timeProgress: status.timeProgress,
-            kmUsed: status.kmUsed,
+            kmProgress: kmProgress,
+            timeProgress: timeProgress,
+            kmUsed: kmUsed,
             intervalKm: vehicle.oilChangeIntervalKm,
-            remainingKm: status.remainingKm,
-            remainingDays: status.remainingDays,
-            dueDateFormatted: status.dueDate.formatted(.dateTime.month().year()),
-            limitingFactor: status.limitingFactor == .mileage ? "mileage" : "time",
-            isOverdue: status.isOverdue,
-            isDueSoon: status.isDueSoon,
+            remainingKm: remainingKm,
+            remainingDays: remainingDays,
+            dueDateFormatted: dueDateFormatted,
+            limitingFactor: limitingFactor,
+            isOverdue: isOverdue,
+            isDueSoon: isDueSoon,
             nextDocTitle: nextDocTitle,
             nextDocDaysLeft: nextDocDaysLeft,
             nextDocIsOverdue: nextDocIsOverdue,
