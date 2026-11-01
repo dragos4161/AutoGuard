@@ -213,6 +213,75 @@ final class Vehicle {
         return "\(formatted) L / 100 km"
     }
 
+    // MARK: - Statistici Financiare și Costuri
+    /// Total cheltuieli de service înregistrate (lei)
+    var totalServiceSpent: Double {
+        (serviceRecords ?? []).compactMap { $0.price }.reduce(0.0, +)
+    }
+
+    /// Total general cheltuieli (Carburant + Service)
+    var totalOverallSpent: Double {
+        totalFuelSpent + totalServiceSpent
+    }
+
+    /// Cost mediu per kilometru (dacă avem kilometraj monitorizat)
+    var costPerKm: Double? {
+        let entries = sortedMileageEntries
+        guard let latest = entries.first?.mileage,
+              let earliest = entries.last?.mileage,
+              latest > earliest else {
+            return nil
+        }
+        let totalKm = latest - earliest
+        guard totalKm > 0 else { return nil }
+        return totalOverallSpent / Double(totalKm)
+    }
+
+    /// Istoricul valorilor de consum înregistrate la fiecare plin (pentru grafic)
+    var consumptionChartData: [ConsumptionPoint] {
+        var points: [ConsumptionPoint] = []
+        for entry in chronologicalFuelEntries {
+            let calc = calculation(for: entry)
+            if let consumption = calc.consumption {
+                points.append(ConsumptionPoint(date: entry.date, consumption: consumption, odometer: entry.odometer))
+            }
+        }
+        return points
+    }
+
+    /// Structura cheltuielilor pe categorii (pentru grafic pie / sector)
+    var expenseBreakdownData: [ExpenseCategorySlice] {
+        var slices: [ExpenseCategorySlice] = []
+
+        if totalFuelSpent > 0 {
+            slices.append(ExpenseCategorySlice(
+                categoryName: "Carburant",
+                amount: totalFuelSpent,
+                color: .orange,
+                iconName: "fuelpump.fill"
+            ))
+        }
+
+        // Grupăm service-urile pe categorii
+        var serviceCategoryTotals: [ServiceCategory: Double] = [:]
+        for record in (serviceRecords ?? []) {
+            if let price = record.price, price > 0 {
+                serviceCategoryTotals[record.category, default: 0.0] += price
+            }
+        }
+
+        for (cat, amount) in serviceCategoryTotals.sorted(by: { $0.value > $1.value }) {
+            slices.append(ExpenseCategorySlice(
+                categoryName: cat.localizedTitle,
+                amount: amount,
+                color: cat.color,
+                iconName: cat.iconName
+            ))
+        }
+
+        return slices
+    }
+
     // MARK: - Istoric Service & Mentenanță
     /// Înregistrările de service sortate descrescător după dată
     var sortedServiceRecords: [ServiceRecord] {
@@ -311,5 +380,30 @@ struct MaintenanceStatus {
         } else {
             return .green
         }
+    }
+}
+
+/// Punct de date pentru graficul de evoluție a consumului de carburant
+struct ConsumptionPoint: Identifiable {
+    var id: UUID = UUID()
+    let date: Date
+    let consumption: Double
+    let odometer: Int
+}
+
+/// Felie de date pentru distribuția cheltuielilor pe categorii
+struct ExpenseCategorySlice: Identifiable {
+    var id: String { categoryName }
+    let categoryName: String
+    let amount: Double
+    let color: Color
+    let iconName: String
+
+    var formattedAmount: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        let formatted = formatter.string(from: NSNumber(value: amount)) ?? String(format: "%.0f", amount)
+        return "\(formatted) lei"
     }
 }

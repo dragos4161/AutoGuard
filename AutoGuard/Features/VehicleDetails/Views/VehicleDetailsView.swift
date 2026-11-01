@@ -22,6 +22,7 @@ struct VehicleDetailsView: View {
     @State private var isShowingMaintenanceIntervalSheet = false
     @State private var isShowingAddFuelSheet = false
     @State private var isShowingFuelHistory = false
+    @State private var isShowingAnalytics = false
     @State private var invoicePreviewURL: URL? = nil
     @State private var isScanningDate: Bool = false
     @State private var dateScanDestination: DateScanDestination = .renewal
@@ -157,7 +158,21 @@ struct VehicleDetailsView: View {
                 }
 
                 // --------------------------------------------------
-                // SECȚIUNEA 5: Istoric Documente (Arhivate la reînnoire)
+                // SECȚIUNEA 5: Statistici & Costuri
+                // --------------------------------------------------
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("analytics.title")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 4)
+
+                    AnalyticsCardView(vehicle: vehicle) {
+                        isShowingAnalytics = true
+                    }
+                }
+
+                // --------------------------------------------------
+                // SECȚIUNEA 6: Istoric Documente (Arhivate la reînnoire)
                 // --------------------------------------------------
                 if !vehicle.archivedDocuments.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
@@ -208,6 +223,10 @@ struct VehicleDetailsView: View {
         // Navigare Ecran Istoric Alimentări
         .navigationDestination(isPresented: $isShowingFuelHistory) {
             FuelHistoryView(vehicle: vehicle)
+        }
+        // Navigare Ecran Statistici & Grafice
+        .navigationDestination(isPresented: $isShowingAnalytics) {
+            VehicleAnalyticsView(vehicle: vehicle)
         }
         // Modal 1: Corectarea datei curente (fără istoric)
         .sheet(isPresented: $viewModel.isShowingCorrectionSheet) {
