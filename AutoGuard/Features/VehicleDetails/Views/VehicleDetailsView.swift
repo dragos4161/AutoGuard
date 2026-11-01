@@ -25,6 +25,7 @@ struct VehicleDetailsView: View {
     @State private var isShowingAnalytics = false
     @State private var isShowingReportPreview = false
     @State private var isShowingPaywall = false
+    @State private var isShowingWallet = false
     @State private var generatedReportURL: URL? = nil
     @State private var invoicePreviewURL: URL? = nil
     @State private var isScanningDate: Bool = false
@@ -44,6 +45,7 @@ struct VehicleDetailsView: View {
                         // Coloana 1: Vehicul & Documente Legale
                         VStack(alignment: .leading, spacing: 20) {
                             infoSection
+                            walletBannerCard
                             documentsSection
                             if !vehicle.archivedDocuments.isEmpty {
                                 historySection
@@ -63,6 +65,7 @@ struct VehicleDetailsView: View {
                     // Layout iPhone: Coloană unică verticală
                     VStack(alignment: .leading, spacing: 20) {
                         infoSection
+                        walletBannerCard
                         documentsSection
                         maintenanceSection
                         fuelSection
@@ -80,20 +83,37 @@ struct VehicleDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
+                HStack(spacing: 8) {
                     Button {
-                        generateAndShowReport()
+                        isShowingWallet = true
                     } label: {
-                        Label("report.button.generate", systemImage: "doc.richtext")
+                        HStack(spacing: 4) {
+                            Image(systemName: "wallet.pass.fill")
+                                .font(.subheadline)
+                        }
                     }
 
-                    Button {
-                        isShowingEditSheet = true
+                    Menu {
+                        Button {
+                            isShowingWallet = true
+                        } label: {
+                            Label("wallet.open_button", systemImage: "wallet.pass.fill")
+                        }
+
+                        Button {
+                            generateAndShowReport()
+                        } label: {
+                            Label("report.button.generate", systemImage: "doc.richtext")
+                        }
+
+                        Button {
+                            isShowingEditSheet = true
+                        } label: {
+                            Label("common.edit", systemImage: "pencil")
+                        }
                     } label: {
-                        Label("common.edit", systemImage: "pencil")
+                        Image(systemName: "ellipsis.circle")
                     }
-                } label: {
-                    Image(systemName: "ellipsis.circle")
                 }
             }
         }
@@ -153,6 +173,9 @@ struct VehicleDetailsView: View {
         }
         .sheet(isPresented: $isShowingPaywall) {
             PaywallView()
+        }
+        .fullScreenCover(isPresented: $isShowingWallet) {
+            DigitalWalletView(vehicle: vehicle)
         }
         // Selector nativ de fișiere (PDF / Imagini din Files / iCloud Drive)
         .fileImporter(
@@ -221,6 +244,49 @@ struct VehicleDetailsView: View {
                 isShowingMileageSheet = true
             }
         }
+    }
+
+    @ViewBuilder
+    private var walletBannerCard: some View {
+        Button {
+            isShowingWallet = true
+        } label: {
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle()
+                        .fill(Color.blue.gradient)
+                        .frame(width: 44, height: 44)
+                    Image(systemName: "wallet.pass.fill")
+                        .font(.title3)
+                        .foregroundStyle(.white)
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("wallet.banner.title")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+
+                    Text("wallet.banner.subtitle")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Text("wallet.banner.open")
+                        .font(.subheadline.bold())
+                    Image(systemName: "chevron.right")
+                        .font(.caption.bold())
+                }
+                .foregroundStyle(.blue)
+            }
+            .padding(14)
+            .background(Color(uiColor: .secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
+        }
+        .buttonStyle(.plain)
     }
 
     @ViewBuilder

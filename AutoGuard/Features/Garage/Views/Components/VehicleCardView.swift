@@ -10,6 +10,7 @@ import SwiftUI
 
 struct VehicleCardView: View {
     let vehicle: Vehicle
+    var onOpenWallet: (() -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -120,6 +121,38 @@ struct VehicleCardView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
                 }
+            }
+
+            // Footer cu Buton Rapid Portofel Acte
+            Divider()
+
+            HStack {
+                Button {
+                    onOpenWallet?()
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: "wallet.pass.fill")
+                            .font(.caption.bold())
+                        Text("wallet.navigation_title")
+                            .font(.caption.bold())
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(Color.blue.opacity(0.12))
+                    .foregroundStyle(.blue)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.borderless)
+
+                Spacer()
+
+                HStack(spacing: 4) {
+                    Text("common.details")
+                        .font(.caption)
+                    Image(systemName: "chevron.right")
+                        .font(.caption2.bold())
+                }
+                .foregroundStyle(.secondary)
             }
         }
         .padding(16)

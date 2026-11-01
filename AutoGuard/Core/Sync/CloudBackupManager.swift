@@ -100,7 +100,11 @@ public final class CloudBackupManager {
                 documents: documentDTOs,
                 mileageEntries: mileageDTOs,
                 serviceRecords: serviceDTOs,
-                fuelEntries: fuelDTOs
+                fuelEntries: fuelDTOs,
+                registrationFrontBase64: vehicle.registrationFrontData?.base64EncodedString(),
+                registrationBackBase64: vehicle.registrationBackData?.base64EncodedString(),
+                driverLicenseFrontBase64: vehicle.driverLicenseFrontData?.base64EncodedString(),
+                driverLicenseBackBase64: vehicle.driverLicenseBackData?.base64EncodedString()
             )
         }
 
@@ -197,6 +201,20 @@ public final class CloudBackupManager {
                 newVehicle.oilChangeIntervalMonths = vDTO.oilChangeIntervalMonths
                 context.insert(newVehicle)
                 targetVehicle = newVehicle
+            }
+
+            // Restaurare acte portofel (talon & permis)
+            if let f = vDTO.registrationFrontBase64, !f.isEmpty {
+                targetVehicle.registrationFrontData = Data(base64Encoded: f)
+            }
+            if let b = vDTO.registrationBackBase64, !b.isEmpty {
+                targetVehicle.registrationBackData = Data(base64Encoded: b)
+            }
+            if let lf = vDTO.driverLicenseFrontBase64, !lf.isEmpty {
+                targetVehicle.driverLicenseFrontData = Data(base64Encoded: lf)
+            }
+            if let lb = vDTO.driverLicenseBackBase64, !lb.isEmpty {
+                targetVehicle.driverLicenseBackData = Data(base64Encoded: lb)
             }
 
             // Restaurare documente

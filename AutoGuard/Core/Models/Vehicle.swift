@@ -40,6 +40,20 @@ final class Vehicle {
     var oilChangeIntervalKm: Int = 10000
     var oilChangeIntervalMonths: Int = 12
 
+    // Stocare poze talon (față / verso) pentru Mod Control Rutier / Portofel Acte
+    @Attribute(.externalStorage)
+    var registrationFrontData: Data? = nil
+
+    @Attribute(.externalStorage)
+    var registrationBackData: Data? = nil
+
+    // Stocare opțională permis conducere
+    @Attribute(.externalStorage)
+    var driverLicenseFrontData: Data? = nil
+
+    @Attribute(.externalStorage)
+    var driverLicenseBackData: Data? = nil
+
     init(
         plateNumber: String,
         make: String,

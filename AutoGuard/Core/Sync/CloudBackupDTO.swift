@@ -67,6 +67,10 @@ public struct VehicleBackupDTO: Codable, Identifiable {
     public let mileageEntries: [MileageBackupDTO]
     public let serviceRecords: [ServiceBackupDTO]
     public let fuelEntries: [FuelBackupDTO]
+    public let registrationFrontBase64: String?
+    public let registrationBackBase64: String?
+    public let driverLicenseFrontBase64: String?
+    public let driverLicenseBackBase64: String?
 
     public init(
         id: UUID,
@@ -82,7 +86,11 @@ public struct VehicleBackupDTO: Codable, Identifiable {
         documents: [DocumentBackupDTO],
         mileageEntries: [MileageBackupDTO],
         serviceRecords: [ServiceBackupDTO],
-        fuelEntries: [FuelBackupDTO]
+        fuelEntries: [FuelBackupDTO],
+        registrationFrontBase64: String? = nil,
+        registrationBackBase64: String? = nil,
+        driverLicenseFrontBase64: String? = nil,
+        driverLicenseBackBase64: String? = nil
     ) {
         self.id = id
         self.plateNumber = plateNumber
@@ -98,6 +106,10 @@ public struct VehicleBackupDTO: Codable, Identifiable {
         self.mileageEntries = mileageEntries
         self.serviceRecords = serviceRecords
         self.fuelEntries = fuelEntries
+        self.registrationFrontBase64 = registrationFrontBase64
+        self.registrationBackBase64 = registrationBackBase64
+        self.driverLicenseFrontBase64 = driverLicenseFrontBase64
+        self.driverLicenseBackBase64 = driverLicenseBackBase64
     }
 }
 

@@ -20,6 +20,7 @@ struct GarageView: View {
     @State private var viewModel = GarageViewModel()
     @State private var subscriptionManager = SubscriptionManager.shared
     @State private var isShowingPaywall: Bool = false
+    @State private var walletVehicle: Vehicle? = nil
     
     @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -139,6 +140,9 @@ struct GarageView: View {
             .sheet(isPresented: $isShowingPaywall) {
                 PaywallView()
             }
+            .fullScreenCover(item: $walletVehicle) { selectedVehicle in
+                DigitalWalletView(vehicle: selectedVehicle)
+            }
         }
     }
 
@@ -176,7 +180,12 @@ struct GarageView: View {
     @ViewBuilder
     private func vehicleCardItem(_ vehicle: Vehicle) -> some View {
         NavigationLink(value: vehicle) {
-            VehicleCardView(vehicle: vehicle)
+            VehicleCardView(
+                vehicle: vehicle,
+                onOpenWallet: {
+                    walletVehicle = vehicle
+                }
+            )
         }
         .buttonStyle(.plain)
         .contextMenu {
