@@ -140,6 +140,14 @@ private let assistantFallbackTranslations: [String: [String: String]] = [
         "ro": "zile rămase",
         "en": "days remaining"
     ],
+    "notification.weekly_mileage.title": [
+        "ro": "Actualizează kilometrajul 🚗",
+        "en": "Update your mileage 🚗"
+    ],
+    "notification.weekly_mileage.body": [
+        "ro": "Este sfârșitul săptămânii! Înregistrează kilometrajul din bord pentru a ține evidența reviziilor și consumului.",
+        "en": "It's the end of the week! Log your odometer reading to keep maintenance tracking up to date."
+    ],
     "assistant.answer.fallback": [
         "ro": "Pot să te ajut cu informații despre kilometraj, revizii de ulei sau expirarea actelor (RCA, ITP, Rovinietă). Alege una dintre sugestii sau formulează o întrebare legată de acestea!",
         "en": "I can help you with mileage information, oil changes, or document expirations (RCA, ITP, Vignette). Pick one of the suggestions or ask a related question!"

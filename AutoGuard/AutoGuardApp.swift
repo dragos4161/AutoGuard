@@ -12,6 +12,10 @@ import SwiftData
 struct AutoGuardApp: App {
     
     @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
+    @AppStorage("weeklyMileageReminderEnabled") private var weeklyMileageReminderEnabled: Bool = true
+    @AppStorage("weeklyMileageReminderWeekday") private var reminderWeekday: Int = 1
+    @AppStorage("weeklyMileageReminderHour") private var reminderHour: Int = 19
+    @AppStorage("weeklyMileageReminderMinute") private var reminderMinute: Int = 0
     
     // Configurația containerului SwiftData pentru stocarea locală (SQLite pe dispozitiv)
     var sharedModelContainer: ModelContainer = {
@@ -42,6 +46,19 @@ struct AutoGuardApp: App {
             MainTabView()
                 .id(appLanguage)
                 .environment(\.locale, appLanguage.locale)
+                .task {
+                    let status = await NotificationManager.shared.checkAuthorizationStatus()
+                    if status == .authorized || status == .provisional {
+                        if weeklyMileageReminderEnabled {
+                            NotificationManager.shared.scheduleWeeklyMileageReminder(
+                                weekday: reminderWeekday,
+                                hour: reminderHour,
+                                minute: reminderMinute,
+                                language: appLanguage
+                            )
+                        }
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
     }

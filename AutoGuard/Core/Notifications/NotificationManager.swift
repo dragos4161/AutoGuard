@@ -101,4 +101,42 @@ final class NotificationManager {
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         center.add(request)
     }
+
+    // MARK: - Memento Săptămânal Kilometraj
+
+    private let weeklyReminderIdentifier = "weekly_mileage_reminder"
+
+    /// Programează notificarea recurentă săptămânală pentru actualizarea kilometrajului
+    func scheduleWeeklyMileageReminder(weekday: Int = 1, hour: Int = 19, minute: Int = 0, language: AppLanguage) {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [weeklyReminderIdentifier])
+
+        let content = UNMutableNotificationContent()
+        content.title = language.string("notification.weekly_mileage.title")
+        content.body = language.string("notification.weekly_mileage.body")
+        content.sound = .default
+
+        var components = DateComponents()
+        components.weekday = weekday
+        components.hour = hour
+        components.minute = minute
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let request = UNNotificationRequest(
+            identifier: weeklyReminderIdentifier,
+            content: content,
+            trigger: trigger
+        )
+
+        center.add(request) { error in
+            if let error {
+                print("Eroare la programarea notificării săptămânale: \(error)")
+            }
+        }
+    }
+
+    /// Anulează notificarea recurentă săptămânală
+    func cancelWeeklyMileageReminder() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [weeklyReminderIdentifier])
+    }
 }
