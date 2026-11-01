@@ -121,7 +121,23 @@ final class TextRecognitionService {
     // MARK: - Recunoaștere Text dintr-o Imagine (Offline Apple Vision)
     /// Rulează VNRecognizeTextRequest pe o imagine locală și returnează tot textul extras
     func recognizeText(from image: UIImage) async -> String {
-        guard let cgImage = image.cgImage else { return "" }
+        // Obținem un CGImage valid chiar dacă imaginea provine din CIImage sau alt format
+        let cgImage: CGImage?
+        if let directCg = image.cgImage {
+            cgImage = directCg
+        } else if let ciImage = image.ciImage {
+            let context = CIContext(options: nil)
+            cgImage = context.createCGImage(ciImage, from: ciImage.extent)
+        } else {
+            let format = UIGraphicsImageRendererFormat.default()
+            let renderer = UIGraphicsImageRenderer(size: image.size, format: format)
+            let renderedImage = renderer.image { _ in
+                image.draw(in: CGRect(origin: .zero, size: image.size))
+            }
+            cgImage = renderedImage.cgImage
+        }
+
+        guard let validCgImage = cgImage else { return "" }
 
         return await withCheckedContinuation { continuation in
             let request = VNRecognizeTextRequest { request, error in
@@ -146,12 +162,30 @@ final class TextRecognitionService {
             request.usesLanguageCorrection = false
             request.recognitionLanguages = ["ro", "en"]
 
-            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            let orientation = CGImagePropertyOrientation(image.imageOrientation)
+            let handler = VNImageRequestHandler(cgImage: validCgImage, orientation: orientation, options: [:])
             do {
                 try handler.perform([request])
             } catch {
                 continuation.resume(returning: "")
             }
+        }
+    }
+}
+
+// MARK: - Mapare Orientare UIImage -> CGImagePropertyOrientation
+private extension CGImagePropertyOrientation {
+    init(_ uiOrientation: UIImage.Orientation) {
+        switch uiOrientation {
+        case .up: self = .up
+        case .upMirrored: self = .upMirrored
+        case .down: self = .down
+        case .downMirrored: self = .downMirrored
+        case .left: self = .left
+        case .leftMirrored: self = .leftMirrored
+        case .right: self = .right
+        case .rightMirrored: self = .rightMirrored
+        @unknown default: self = .up
         }
     }
 }

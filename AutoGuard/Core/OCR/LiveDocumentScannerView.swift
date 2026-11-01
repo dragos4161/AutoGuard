@@ -58,6 +58,7 @@ struct LiveDocumentScannerView: View {
 
     @State private var selectedPhotoItem: PhotosPickerItem? = nil
     @State private var isProcessingPhoto: Bool = false
+    @State private var showingNoTextAlert: Bool = false
     @State private var detectedResultPreview: String? = nil
 
     private var isCameraSupported: Bool {
@@ -71,11 +72,13 @@ struct LiveDocumentScannerView: View {
                     // 1. Scanner Camera Live pe iPhone real
                     DataScannerRepresentable(
                         target: target,
-                        onResultFound: handleDetectedText
+                        onResultFound: { text in
+                            handleDetectedText(text)
+                        }
                     )
                     .ignoresSafeArea(edges: .bottom)
 
-                    // Overlay cu instrucțiuni
+                    // Overlay cu instrucțiuni și buton de Galerie
                     VStack {
                         instructionBanner
                             .padding(.top, 16)
@@ -93,13 +96,39 @@ struct LiveDocumentScannerView: View {
                             .padding(14)
                             .background(.ultraThinMaterial)
                             .clipShape(Capsule())
-                            .padding(.bottom, 30)
+                            .padding(.bottom, 16)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
+
+                        // Buton plutitor accesibil pentru alegerea unei poze salvate
+                        galleryFloatingButton
+                            .padding(.bottom, 28)
                     }
                 } else {
                     // 2. Fallback inteligent pentru Simulator / dispozitive fără scanner live
                     simulatorFallbackView
+                }
+
+                // Overlay de procesare OCR pentru pozele din galerie
+                if isProcessingPhoto {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+
+                    VStack(spacing: 14) {
+                        ProgressView()
+                            .tint(.white)
+                            .scaleEffect(1.2)
+
+                        Text("ocr.processing_image")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.white)
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 18)
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(color: .black.opacity(0.25), radius: 10)
+                    .transition(.opacity)
                 }
             }
             .navigationTitle(target.titleKey)
@@ -110,8 +139,49 @@ struct LiveDocumentScannerView: View {
                         dismiss()
                     }
                 }
+
+                ToolbarItem(placement: .primaryAction) {
+                    PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                        Label("ocr.gallery.title", systemImage: "photo.on.rectangle.angled")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .disabled(isProcessingPhoto)
+                }
+            }
+            .onChange(of: selectedPhotoItem) { _, newItem in
+                guard let newItem else { return }
+                processPhotoPickerItem(newItem)
+            }
+            .alert(
+                Text("ocr.no_text_found.title"),
+                isPresented: $showingNoTextAlert
+            ) {
+                Button("OK", role: .cancel) {
+                    selectedPhotoItem = nil
+                }
+            } message: {
+                Text("ocr.no_text_found.message")
             }
         }
+    }
+
+    // MARK: - Buton Plutitor Galerie
+    private var galleryFloatingButton: some View {
+        PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+            HStack(spacing: 8) {
+                Image(systemName: "photo.on.rectangle.angled")
+                    .font(.subheadline.bold())
+                Text("ocr.pick_from_photos")
+                    .font(.subheadline.weight(.semibold))
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
+            .background(.ultraThinMaterial)
+            .foregroundStyle(.primary)
+            .clipShape(Capsule())
+            .shadow(color: .black.opacity(0.18), radius: 8, x: 0, y: 4)
+        }
+        .disabled(isProcessingPhoto)
     }
 
     // MARK: - Banner instrucțiuni
@@ -135,7 +205,7 @@ struct LiveDocumentScannerView: View {
 
     // MARK: - Fallback Simulator
     private var simulatorFallbackView: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             Spacer()
 
             Image(systemName: "camera.viewfinder")
@@ -146,7 +216,7 @@ struct LiveDocumentScannerView: View {
                 Text(target.titleKey)
                     .font(.title3.bold())
 
-                Text("Scannerul live cu camera este disponibil pe iPhone-uri fizice. În Simulator, poți alege o imagine sau fotografie cu documentul pentru a testa recunoașterea OCR.")
+                Text("Scannerul live cu camera este disponibil pe iPhone-uri fizice. Poți alege o imagine sau fotografie cu documentul pentru a extrage automat datele.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -171,10 +241,6 @@ struct LiveDocumentScannerView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 14))
             }
             .disabled(isProcessingPhoto)
-            .onChange(of: selectedPhotoItem) { _, newItem in
-                guard let newItem else { return }
-                processPhotoPickerItem(newItem)
-            }
 
             Spacer()
         }
@@ -182,7 +248,8 @@ struct LiveDocumentScannerView: View {
     }
 
     // MARK: - Procesare text detectat
-    private func handleDetectedText(_ rawText: String) {
+    @discardableResult
+    private func handleDetectedText(_ rawText: String) -> Bool {
         let service = TextRecognitionService.shared
 
         switch target {
@@ -191,12 +258,14 @@ struct LiveDocumentScannerView: View {
                 notifySuccess(preview: vin) {
                     onVinDetected?(vin)
                 }
+                return true
             }
         case .plateNumber:
             if let plate = service.extractPlateNumber(from: rawText) {
                 notifySuccess(preview: plate) {
                     onPlateDetected?(plate)
                 }
+                return true
             }
         case .expirationDate:
             if let date = service.extractExpirationDate(from: rawText) {
@@ -204,8 +273,10 @@ struct LiveDocumentScannerView: View {
                 notifySuccess(preview: formatted) {
                     onDateDetected?(date)
                 }
+                return true
             }
         }
+        return false
     }
 
     private func notifySuccess(preview: String, completion: @escaping () -> Void) {
@@ -227,11 +298,21 @@ struct LiveDocumentScannerView: View {
                 let recognizedText = await TextRecognitionService.shared.recognizeText(from: uiImage)
                 await MainActor.run {
                     isProcessingPhoto = false
-                    handleDetectedText(recognizedText)
+                    selectedPhotoItem = nil
+                    let found = handleDetectedText(recognizedText)
+                    if !found {
+                        let generator = UINotificationFeedbackGenerator()
+                        generator.notificationOccurred(.warning)
+                        showingNoTextAlert = true
+                    }
                 }
             } else {
                 await MainActor.run {
                     isProcessingPhoto = false
+                    selectedPhotoItem = nil
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.error)
+                    showingNoTextAlert = true
                 }
             }
         }

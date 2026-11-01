@@ -7015,6 +7015,74 @@
           }
         }
       }
+    },
+    "ocr.gallery.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Galerie"
+          }
+        }
+      }
+    },
+    "ocr.processing_image": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analyzing photo..."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se analizează fotografia..."
+          }
+        }
+      }
+    },
+    "ocr.no_text_found.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Document Not Recognized"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Documentul nu a putut fi citit"
+          }
+        }
+      }
+    },
+    "ocr.no_text_found.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matching details were found in the selected photo. Please make sure the document is clear, well-lit, and try again."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nu am găsit date valide în această fotografie. Asigură-te că documentul este clar, bine luminat și încearcă din nou."
+          }
+        }
+      }
     }
   },
   "version": "1.3"
