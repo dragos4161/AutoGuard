@@ -9,6 +9,8 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab: AppTab = .garage
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding: Bool = false
+    @State private var showingOnboarding: Bool = false
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -35,6 +37,17 @@ struct MainTabView: View {
                     Label(AppTab.settings.titleKey, systemImage: AppTab.settings.iconName)
                 }
                 .tag(AppTab.settings)
+        }
+        .fullScreenCover(isPresented: $showingOnboarding) {
+            OnboardingView(onFinish: {
+                hasCompletedOnboarding = true
+                showingOnboarding = false
+            })
+        }
+        .onAppear {
+            if !hasCompletedOnboarding {
+                showingOnboarding = true
+            }
         }
     }
 }

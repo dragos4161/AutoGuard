@@ -18,6 +18,7 @@ struct SettingsView: View {
     @AppStorage("weeklyMileageReminderMinute") private var reminderMinute: Int = 0
 
     @State private var showingPermissionAlert: Bool = false
+    @State private var showingOnboardingTour: Bool = false
 
     private var reminderTimeBinding: Binding<Date> {
         Binding(
@@ -89,6 +90,19 @@ struct SettingsView: View {
 
                 // Secțiunea 3: Despre aplicație & Confidențialitate
                 Section("settings.section.about") {
+                    Button {
+                        showingOnboardingTour = true
+                    } label: {
+                        HStack {
+                            Label("settings.about.view_tour", systemImage: "sparkles.tv")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption2.bold())
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
                     HStack {
                         Text("settings.app_name")
                         Spacer()
@@ -126,6 +140,11 @@ struct SettingsView: View {
                 Button("common.cancel", role: .cancel) {}
             } message: {
                 Text("settings.notifications.permission_alert_message")
+            }
+            .sheet(isPresented: $showingOnboardingTour) {
+                OnboardingView(onFinish: {
+                    showingOnboardingTour = false
+                })
             }
         }
     }
