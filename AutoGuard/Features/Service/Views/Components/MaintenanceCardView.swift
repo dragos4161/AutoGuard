@@ -18,7 +18,7 @@ struct MaintenanceCardView: View {
     var onConfigureIntervalsTap: () -> Void
 
     private let repository: VehicleRepositoryProtocol
-    @State private var showingQuickMarkAlert: Bool = false
+    @State private var showingQuickOilChangeSheet: Bool = false
 
     init(
         vehicle: Vehicle,
@@ -123,13 +123,8 @@ struct MaintenanceCardView: View {
         .padding(16)
         .background(Color(uiColor: .secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .alert("service.card.quick_complete_alert_title", isPresented: $showingQuickMarkAlert) {
-            Button("service.card.quick_complete_confirm") {
-                performQuickOilChange()
-            }
-            Button("common.cancel", role: .cancel) {}
-        } message: {
-            Text("service.card.quick_complete_alert_message")
+        .sheet(isPresented: $showingQuickOilChangeSheet) {
+            QuickOilChangeSheet(vehicle: vehicle)
         }
     }
 
@@ -164,9 +159,9 @@ struct MaintenanceCardView: View {
             }
             .buttonStyle(.plain)
 
-            // Butonul Secundar: 1-Tap Quick Mark (Marchează rapid la km curenți fără alte eforturi)
+            // Butonul Secundar: Introducere rapidă kilometraj bord & resetare
             Button {
-                showingQuickMarkAlert = true
+                showingQuickOilChangeSheet = true
             } label: {
                 HStack {
                     Image(systemName: "bolt.fill")
@@ -174,7 +169,7 @@ struct MaintenanceCardView: View {
                     Text("service.card.quick_complete_button")
                         .foregroundStyle(.primary)
                     Spacer()
-                    Image(systemName: "checkmark.circle")
+                    Image(systemName: "chevron.right")
                         .foregroundStyle(.secondary)
                 }
                 .font(.caption.bold())
@@ -364,29 +359,6 @@ struct MaintenanceCardView: View {
             .buttonStyle(.plain)
             .padding(.top, 4)
         }
-    }
-
-    // MARK: - Marcarea Rapidă ca Efectuat (1-Tap Quick Action)
-    private func performQuickOilChange() {
-        let km = vehicle.currentMileage ?? (vehicle.lastOilChangeRecord?.mileage ?? 0)
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.success)
-
-        _ = repository.addServiceRecord(
-            title: String(localized: "service.category.oil_and_filters"),
-            category: .oilAndFilters,
-            date: Date(),
-            mileage: km,
-            notes: nil,
-            price: nil,
-            invoiceData: nil,
-            invoiceFileName: nil,
-            for: vehicle,
-            in: modelContext
-        )
-
-        NotificationManager.shared.scheduleMaintenanceReminder(for: vehicle)
-        WidgetDataManager.shared.updateWidgetData(for: vehicle)
     }
 
     // MARK: - Helperi Traduceri & Logică

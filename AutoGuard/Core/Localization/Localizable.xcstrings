@@ -2219,6 +2219,125 @@
         }
       }
     },
+    "service.quick.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark Oil Service Done"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marchează Schimb Ulei"
+          }
+        }
+      }
+    },
+    "service.quick.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter the current odometer reading shown on your dashboard to reset the maintenance interval:"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Introdu kilometrajul curent afișat pe bordul mașinii pentru a reseta intervalul de revizie:"
+          }
+        }
+      }
+    },
+    "service.quick.mileage_placeholder" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "e.g. 147500"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ex: 147500"
+          }
+        }
+      }
+    },
+    "service.quick.current_km_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dashboard Mileage"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilometraj din bord"
+          }
+        }
+      }
+    },
+    "service.quick.confirm_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm & Reset Interval"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirmă & Resetează Intervalul"
+          }
+        }
+      }
+    },
+    "service.quick.last_oil_info" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last recorded oil change: %@ km"
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultimul schimb înregistrat: %@ km"
+          }
+        }
+      }
+    },
+    "service.quick.mileage_lower_warning" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entered mileage is lower than the previous service reading."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilometrajul introdus este mai mic decât ultima revizie înregistrată."
+          }
+        }
+      }
+    },
     "service.card.log_service_button" : {
       "extractionState" : "manual",
       "localizations" : {
