@@ -12,6 +12,7 @@ struct VehicleAnalyticsView: View {
     let vehicle: Vehicle
 
     @State private var selectedPoint: ConsumptionPoint? = nil
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var hasAnyData: Bool {
         vehicle.totalOverallSpent > 0 || !vehicle.consumptionChartData.isEmpty
@@ -23,14 +24,22 @@ struct VehicleAnalyticsView: View {
                 if !hasAnyData {
                     emptyStateView
                 } else {
-                    // 1. Grid Sumar Financiar
+                    // 1. Grid Sumar Financiar (4 carduri pe iPad, 2x2 pe iPhone)
                     summaryCardsGrid
 
-                    // 2. Grafic Evoluție Consum
-                    consumptionChartSection
+                    // 2. Grafice (Paralele pe iPad, una sub alta pe iPhone)
+                    if horizontalSizeClass == .regular {
+                        HStack(alignment: .top, spacing: 20) {
+                            consumptionChartSection
+                                .frame(maxWidth: .infinity)
 
-                    // 3. Grafic Distribuție Cheltuieli pe Categorii
-                    expenseBreakdownSection
+                            expenseBreakdownSection
+                                .frame(maxWidth: .infinity)
+                        }
+                    } else {
+                        consumptionChartSection
+                        expenseBreakdownSection
+                    }
                 }
             }
             .padding(16)
@@ -42,43 +51,67 @@ struct VehicleAnalyticsView: View {
 
     // MARK: - Sumar Financiar (4 Carduri)
     private var summaryCardsGrid: some View {
-        VStack(spacing: 10) {
-            HStack(spacing: 10) {
-                statTile(
-                    title: "analytics.total_cost",
-                    value: String(format: "%.0f lei", vehicle.totalOverallSpent),
-                    subtitle: "Carburant + Service",
-                    color: .primary,
-                    icon: "creditcard.fill"
-                )
-
-                statTile(
-                    title: "analytics.cost_per_km",
-                    value: vehicle.costPerKm != nil ? String(format: "%.2f lei", vehicle.costPerKm!) : "—",
-                    subtitle: "Cost per kilometru",
-                    color: .blue,
-                    icon: "gauge.with.needle.fill"
-                )
-            }
-
-            HStack(spacing: 10) {
-                statTile(
-                    title: "fuel.title",
-                    value: String(format: "%.0f lei", vehicle.totalFuelSpent),
-                    subtitle: String(format: "%.1f L alimentați", vehicle.totalFuelLiters),
-                    color: .orange,
-                    icon: "fuelpump.fill"
-                )
-
-                statTile(
-                    title: "service.title",
-                    value: String(format: "%.0f lei", vehicle.totalServiceSpent),
-                    subtitle: "\(vehicle.sortedServiceRecords.count) revizii",
-                    color: .indigo,
-                    icon: "wrench.and.screwdriver.fill"
-                )
+        Group {
+            if horizontalSizeClass == .regular {
+                HStack(spacing: 12) {
+                    costStatTile
+                    costPerKmStatTile
+                    fuelStatTile
+                    serviceStatTile
+                }
+            } else {
+                VStack(spacing: 10) {
+                    HStack(spacing: 10) {
+                        costStatTile
+                        costPerKmStatTile
+                    }
+                    HStack(spacing: 10) {
+                        fuelStatTile
+                        serviceStatTile
+                    }
+                }
             }
         }
+    }
+
+    private var costStatTile: some View {
+        statTile(
+            title: "analytics.total_cost",
+            value: String(format: "%.0f lei", vehicle.totalOverallSpent),
+            subtitle: "Carburant + Service",
+            color: .primary,
+            icon: "creditcard.fill"
+        )
+    }
+
+    private var costPerKmStatTile: some View {
+        statTile(
+            title: "analytics.cost_per_km",
+            value: vehicle.costPerKm != nil ? String(format: "%.2f lei", vehicle.costPerKm!) : "—",
+            subtitle: "Cost per kilometru",
+            color: .blue,
+            icon: "gauge.with.needle.fill"
+        )
+    }
+
+    private var fuelStatTile: some View {
+        statTile(
+            title: "fuel.title",
+            value: String(format: "%.0f lei", vehicle.totalFuelSpent),
+            subtitle: String(format: "%.1f L alimentați", vehicle.totalFuelLiters),
+            color: .orange,
+            icon: "fuelpump.fill"
+        )
+    }
+
+    private var serviceStatTile: some View {
+        statTile(
+            title: "service.title",
+            value: String(format: "%.0f lei", vehicle.totalServiceSpent),
+            subtitle: "\(vehicle.sortedServiceRecords.count) revizii",
+            color: .indigo,
+            icon: "wrench.and.screwdriver.fill"
+        )
     }
 
     private func statTile(title: LocalizedStringKey, value: String, subtitle: String, color: Color, icon: String) -> some View {

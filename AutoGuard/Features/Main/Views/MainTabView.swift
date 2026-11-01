@@ -13,40 +13,72 @@ struct MainTabView: View {
     @State private var showingOnboarding: Bool = false
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            GarageView()
-                .tabItem {
-                    Label(AppTab.garage.titleKey, systemImage: AppTab.garage.iconName)
+        if #available(iOS 18.0, *) {
+            TabView(selection: $selectedTab) {
+                Tab(AppTab.garage.titleKey, systemImage: AppTab.garage.iconName, value: .garage) {
+                    GarageView()
                 }
-                .tag(AppTab.garage)
 
-            ServiceHubView()
-                .tabItem {
-                    Label(AppTab.service.titleKey, systemImage: AppTab.service.iconName)
+                Tab(AppTab.service.titleKey, systemImage: AppTab.service.iconName, value: .service) {
+                    ServiceHubView()
                 }
-                .tag(AppTab.service)
 
-            AssistantView()
-                .tabItem {
-                    Label(AppTab.assistant.titleKey, systemImage: AppTab.assistant.iconName)
+                Tab(AppTab.assistant.titleKey, systemImage: AppTab.assistant.iconName, value: .assistant) {
+                    AssistantView()
                 }
-                .tag(AppTab.assistant)
 
-            SettingsView()
-                .tabItem {
-                    Label(AppTab.settings.titleKey, systemImage: AppTab.settings.iconName)
+                Tab(AppTab.settings.titleKey, systemImage: AppTab.settings.iconName, value: .settings) {
+                    SettingsView()
                 }
-                .tag(AppTab.settings)
-        }
-        .fullScreenCover(isPresented: $showingOnboarding) {
-            OnboardingView(onFinish: {
-                hasCompletedOnboarding = true
-                showingOnboarding = false
-            })
-        }
-        .onAppear {
-            if !hasCompletedOnboarding {
-                showingOnboarding = true
+            }
+            .tabViewStyle(.sidebarAdaptable)
+            .fullScreenCover(isPresented: $showingOnboarding) {
+                OnboardingView(onFinish: {
+                    hasCompletedOnboarding = true
+                    showingOnboarding = false
+                })
+            }
+            .onAppear {
+                if !hasCompletedOnboarding {
+                    showingOnboarding = true
+                }
+            }
+        } else {
+            TabView(selection: $selectedTab) {
+                GarageView()
+                    .tabItem {
+                        Label(AppTab.garage.titleKey, systemImage: AppTab.garage.iconName)
+                    }
+                    .tag(AppTab.garage)
+
+                ServiceHubView()
+                    .tabItem {
+                        Label(AppTab.service.titleKey, systemImage: AppTab.service.iconName)
+                    }
+                    .tag(AppTab.service)
+
+                AssistantView()
+                    .tabItem {
+                        Label(AppTab.assistant.titleKey, systemImage: AppTab.assistant.iconName)
+                    }
+                    .tag(AppTab.assistant)
+
+                SettingsView()
+                    .tabItem {
+                        Label(AppTab.settings.titleKey, systemImage: AppTab.settings.iconName)
+                    }
+                    .tag(AppTab.settings)
+            }
+            .fullScreenCover(isPresented: $showingOnboarding) {
+                OnboardingView(onFinish: {
+                    hasCompletedOnboarding = true
+                    showingOnboarding = false
+                })
+            }
+            .onAppear {
+                if !hasCompletedOnboarding {
+                    showingOnboarding = true
+                }
             }
         }
     }

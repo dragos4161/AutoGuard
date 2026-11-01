@@ -20,6 +20,7 @@ struct GarageView: View {
     @State private var viewModel = GarageViewModel()
     
     @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         NavigationStack {
@@ -43,34 +44,33 @@ struct GarageView: View {
                         .padding(.top, 8)
                     }
                 } else {
-                    // Lista mașinilor din garaj
+                    // Lista mașinilor din garaj (adaptivă iPad & iPhone)
                     ScrollView {
-                        LazyVStack(spacing: 16) {
-                            // Banner de Design Emoțional (delegat la ViewModel)
+                        VStack(spacing: 20) {
+                            // Banner de Design Emoțional
                             peaceOfMindBanner
+                                .frame(maxWidth: horizontalSizeClass == .regular ? 800 : .infinity)
 
-                            // Cardurile pentru fiecare vehicul
-                            ForEach(vehicles) { vehicle in
-                                NavigationLink(value: vehicle) {  // <-- Trimite doar valoarea 'vehicle'!
-                                    VehicleCardView(vehicle: vehicle)
+                            // Cardurile vehiculelor
+                            if horizontalSizeClass == .regular {
+                                LazyVGrid(
+                                    columns: [GridItem(.adaptive(minimum: 360, maximum: 540), spacing: 16)],
+                                    spacing: 16
+                                ) {
+                                    ForEach(vehicles) { vehicle in
+                                        vehicleCardItem(vehicle)
+                                    }
                                 }
-                                .buttonStyle(.plain)
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        viewModel.deleteVehicle(
-                                            vehicle,
-                                            in: modelContext
-                                        )
-                                    } label: {
-                                        Label(
-                                            "garage.delete_vehicle",
-                                            systemImage: "trash"
-                                        )
+                            } else {
+                                LazyVStack(spacing: 16) {
+                                    ForEach(vehicles) { vehicle in
+                                        vehicleCardItem(vehicle)
                                     }
                                 }
                             }
                         }
                         .padding(16)
+                        .frame(maxWidth: .infinity)
                     }
                     .background(Color(uiColor: .systemGroupedBackground))
                 }
@@ -142,6 +142,27 @@ struct GarageView: View {
             (banner.isWarning ? Color.orange : Color.green).opacity(0.15)
         )
         .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    @ViewBuilder
+    private func vehicleCardItem(_ vehicle: Vehicle) -> some View {
+        NavigationLink(value: vehicle) {
+            VehicleCardView(vehicle: vehicle)
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button(role: .destructive) {
+                viewModel.deleteVehicle(
+                    vehicle,
+                    in: modelContext
+                )
+            } label: {
+                Label(
+                    "garage.delete_vehicle",
+                    systemImage: "trash"
+                )
+            }
+        }
     }
 }
 

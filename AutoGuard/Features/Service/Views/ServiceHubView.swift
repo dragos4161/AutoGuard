@@ -13,6 +13,7 @@ struct ServiceHubView: View {
 
     @State private var selectedVehicleForAdd: Vehicle? = nil
     @State private var selectedVehicleForIntervals: Vehicle? = nil
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         NavigationStack {
@@ -25,60 +26,22 @@ struct ServiceHubView: View {
                     }
                 } else {
                     ScrollView {
-                        VStack(spacing: 20) {
-                            // Secțiune pentru fiecare mașină: Card de Schimb Ulei & Mentenanță
-                            ForEach(vehicles) { vehicle in
-                                VStack(alignment: .leading, spacing: 10) {
-                                    HStack {
-                                        VStack(alignment: .leading, spacing: 2) {
-                                            Text(vehicle.displayName)
-                                                .font(.headline)
-                                                .foregroundStyle(.primary)
-                                            Text(vehicle.plateNumber)
-                                                .font(.caption.monospaced().bold())
-                                                .foregroundStyle(.secondary)
-                                        }
-
-                                        Spacer()
-
-                                        NavigationLink(destination: VehicleDetailsView(vehicle: vehicle)) {
-                                            HStack(spacing: 4) {
-                                                Text("service.hub.view_car_details")
-                                                Image(systemName: "chevron.right")
-                                            }
-                                            .font(.caption.bold())
-                                            .foregroundStyle(.blue)
-                                        }
-                                    }
-                                    .padding(.horizontal, 4)
-
-                                    MaintenanceCardView(
-                                        vehicle: vehicle,
-                                        onAddServiceTap: {
-                                            selectedVehicleForAdd = vehicle
-                                        },
-                                        onConfigureIntervalsTap: {
-                                            selectedVehicleForIntervals = vehicle
-                                        }
-                                    )
-
-                                    if !vehicle.sortedServiceRecords.isEmpty {
-                                        VStack(alignment: .leading, spacing: 6) {
-                                            Text("service.hub.recent_records")
-                                                .font(.caption2.bold())
-                                                .foregroundStyle(.secondary)
-                                                .padding(.leading, 4)
-
-                                            ForEach(vehicle.sortedServiceRecords.prefix(2)) { record in
-                                                ServiceRecordRowView(record: record)
-                                            }
-                                        }
-                                        .padding(.top, 4)
+                        Group {
+                            if horizontalSizeClass == .regular {
+                                LazyVGrid(
+                                    columns: [GridItem(.adaptive(minimum: 440, maximum: 620), spacing: 20)],
+                                    spacing: 20
+                                ) {
+                                    ForEach(vehicles) { vehicle in
+                                        vehicleServiceSection(vehicle)
                                     }
                                 }
-                                .padding(14)
-                                .background(Color(uiColor: .secondarySystemGroupedBackground).opacity(0.6))
-                                .clipShape(RoundedRectangle(cornerRadius: 18))
+                            } else {
+                                VStack(spacing: 20) {
+                                    ForEach(vehicles) { vehicle in
+                                        vehicleServiceSection(vehicle)
+                                    }
+                                }
                             }
                         }
                         .padding(16)
@@ -94,6 +57,61 @@ struct ServiceHubView: View {
                 MaintenanceIntervalSheet(vehicle: vehicle)
             }
         }
+    }
+
+    @ViewBuilder
+    private func vehicleServiceSection(_ vehicle: Vehicle) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(vehicle.displayName)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    Text(vehicle.plateNumber)
+                        .font(.caption.monospaced().bold())
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                NavigationLink(destination: VehicleDetailsView(vehicle: vehicle)) {
+                    HStack(spacing: 4) {
+                        Text("service.hub.view_car_details")
+                        Image(systemName: "chevron.right")
+                    }
+                    .font(.caption.bold())
+                    .foregroundStyle(.blue)
+                }
+            }
+            .padding(.horizontal, 4)
+
+            MaintenanceCardView(
+                vehicle: vehicle,
+                onAddServiceTap: {
+                    selectedVehicleForAdd = vehicle
+                },
+                onConfigureIntervalsTap: {
+                    selectedVehicleForIntervals = vehicle
+                }
+            )
+
+            if !vehicle.sortedServiceRecords.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("service.hub.recent_records")
+                        .font(.caption2.bold())
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 4)
+
+                    ForEach(vehicle.sortedServiceRecords.prefix(2)) { record in
+                        ServiceRecordRowView(record: record)
+                    }
+                }
+                .padding(.top, 4)
+            }
+        }
+        .padding(14)
+        .background(Color(uiColor: .secondarySystemGroupedBackground).opacity(0.6))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
     }
 }
 

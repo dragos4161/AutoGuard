@@ -105,7 +105,9 @@ struct AssistantView: View {
                             }
                         }
                     }
+                    .frame(maxWidth: 760)
                     .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .background(Color(uiColor: .systemGroupedBackground))
 
@@ -130,7 +132,9 @@ struct AssistantView: View {
                     }
                     .disabled(queryText.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
+                .frame(maxWidth: 760)
                 .padding(12)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .background(Color(uiColor: .secondarySystemGroupedBackground))
             }
             .navigationTitle("assistant.title")

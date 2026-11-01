@@ -28,6 +28,7 @@ struct VehicleDetailsView: View {
     @State private var invoicePreviewURL: URL? = nil
     @State private var isScanningDate: Bool = false
     @State private var dateScanDestination: DateScanDestination = .renewal
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private enum DateScanDestination {
         case correction, renewal
@@ -35,171 +36,38 @@ struct VehicleDetailsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // --------------------------------------------------
-                // SECȚIUNEA 1: Informații Mașină
-                // --------------------------------------------------
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("vehicle_details.section.info")
-                        .font(.caption.bold())
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 4)
-
-                    VehicleInfoCard(vehicle: vehicle) {
-                        isShowingMileageSheet = true
-                    }
-                }
-
-                // --------------------------------------------------
-                // SECȚIUNEA 2: Documente și Expirări
-                // --------------------------------------------------
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("vehicle_details.section.documents")
-                        .font(.caption.bold())
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 4)
-
-                    LazyVStack(spacing: 12) {
-                        ForEach(viewModel.sortDocuments(for: vehicle)) { doc in
-                            DocumentStatusRow(
-                                doc: doc,
-                                onRenewTap: {
-                                    viewModel.prepareRenewal(for: doc)
-                                },
-                                onEditDateTap: {
-                                    viewModel.prepareDateCorrection(for: doc)
-                                },
-                                onViewAttachmentTap: {
-                                    viewModel.openAttachment(for: doc)
-                                },
-                                onAttachFileTap: {
-                                    viewModel.triggerFileImport(for: doc)
-                                },
-                                onAttachPhotoTap: {
-                                    viewModel.triggerPhotoPicker(for: doc)
-                                },
-                                onRemoveAttachmentTap: {
-                                    viewModel.removeAttachment(for: doc, in: modelContext)
-                                }
-                            )
-                        }
-                    }
-                }
-
-                // --------------------------------------------------
-                // SECȚIUNEA 3: Mentenanță & Istoric Service
-                // --------------------------------------------------
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("vehicle_details.section.maintenance")
-                            .font(.caption.bold())
-                            .foregroundStyle(.secondary)
-                            .padding(.leading, 4)
-
-                        Spacer()
-
-                        Button {
-                            generateAndShowReport()
-                        } label: {
-                            HStack(spacing: 3) {
-                                Image(systemName: "doc.richtext")
-                                Text("PDF")
-                            }
-                            .font(.caption.bold())
-                            .foregroundStyle(.indigo)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.trailing, 8)
-
-                        Button {
-                            isShowingAddServiceSheet = true
-                        } label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: "plus.circle.fill")
-                                Text("service.button.add_entry")
-                            }
-                            .font(.caption.bold())
-                            .foregroundStyle(.blue)
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    MaintenanceCardView(
-                        vehicle: vehicle,
-                        onAddServiceTap: {
-                            isShowingAddServiceSheet = true
-                        },
-                        onConfigureIntervalsTap: {
-                            isShowingMaintenanceIntervalSheet = true
-                        }
-                    )
-
-                    if !vehicle.sortedServiceRecords.isEmpty {
-                        LazyVStack(spacing: 10) {
-                            ForEach(vehicle.sortedServiceRecords) { record in
-                                ServiceRecordRowView(
-                                    record: record,
-                                    onViewInvoice: {
-                                        openInvoice(for: record)
-                                    },
-                                    onDelete: {
-                                        deleteServiceRecord(record)
-                                    }
-                                )
+            Group {
+                if horizontalSizeClass == .regular {
+                    // Layout Adaptiv iPad: 2 Coloane Paralele
+                    HStack(alignment: .top, spacing: 20) {
+                        // Coloana 1: Vehicul & Documente Legale
+                        VStack(alignment: .leading, spacing: 20) {
+                            infoSection
+                            documentsSection
+                            if !vehicle.archivedDocuments.isEmpty {
+                                historySection
                             }
                         }
-                        .padding(.top, 4)
-                    }
-                }
+                        .frame(maxWidth: .infinity)
 
-                // --------------------------------------------------
-                // SECȚIUNEA 4: Alimentare & Consum Carburant
-                // --------------------------------------------------
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("fuel.section.title")
-                        .font(.caption.bold())
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 4)
-
-                    FuelSummaryCardView(
-                        vehicle: vehicle,
-                        onAddFuelTap: {
-                            isShowingAddFuelSheet = true
-                        },
-                        onViewHistoryTap: {
-                            isShowingFuelHistory = true
+                        // Coloana 2: Mentenanță, Carburant & Analitice
+                        VStack(alignment: .leading, spacing: 20) {
+                            maintenanceSection
+                            fuelSection
+                            analyticsSection
                         }
-                    )
-                }
-
-                // --------------------------------------------------
-                // SECȚIUNEA 5: Statistici & Costuri
-                // --------------------------------------------------
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("analytics.title")
-                        .font(.caption.bold())
-                        .foregroundStyle(.secondary)
-                        .padding(.leading, 4)
-
-                    AnalyticsCardView(vehicle: vehicle) {
-                        isShowingAnalytics = true
+                        .frame(maxWidth: .infinity)
                     }
-                }
-
-                // --------------------------------------------------
-                // SECȚIUNEA 6: Istoric Documente (Arhivate la reînnoire)
-                // --------------------------------------------------
-                if !vehicle.archivedDocuments.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("vehicle_details.section.history")
-                            .font(.caption.bold())
-                            .foregroundStyle(.secondary)
-                            .padding(.leading, 4)
-
-                        LazyVStack(spacing: 10) {
-                            ForEach(vehicle.archivedDocuments) { archivedDoc in
-                                archivedDocumentRow(for: archivedDoc)
-                            }
+                } else {
+                    // Layout iPhone: Coloană unică verticală
+                    VStack(alignment: .leading, spacing: 20) {
+                        infoSection
+                        documentsSection
+                        maintenanceSection
+                        fuelSection
+                        analyticsSection
+                        if !vehicle.archivedDocuments.isEmpty {
+                            historySection
                         }
                     }
                 }
@@ -329,6 +197,173 @@ struct VehicleDetailsView: View {
         if let url = VehicleReportGenerator.shared.generatePdf(for: vehicle) {
             generatedReportURL = url
             isShowingReportPreview = true
+        }
+    }
+
+    // MARK: - Secțiuni Modulare Dashboard (Adaptabile iPad & iPhone)
+    @ViewBuilder
+    private var infoSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("vehicle_details.section.info")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            VehicleInfoCard(vehicle: vehicle) {
+                isShowingMileageSheet = true
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var documentsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("vehicle_details.section.documents")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            LazyVStack(spacing: 12) {
+                ForEach(viewModel.sortDocuments(for: vehicle)) { doc in
+                    DocumentStatusRow(
+                        doc: doc,
+                        onRenewTap: {
+                            viewModel.prepareRenewal(for: doc)
+                        },
+                        onEditDateTap: {
+                            viewModel.prepareDateCorrection(for: doc)
+                        },
+                        onViewAttachmentTap: {
+                            viewModel.openAttachment(for: doc)
+                        },
+                        onAttachFileTap: {
+                            viewModel.triggerFileImport(for: doc)
+                        },
+                        onAttachPhotoTap: {
+                            viewModel.triggerPhotoPicker(for: doc)
+                        },
+                        onRemoveAttachmentTap: {
+                            viewModel.removeAttachment(for: doc, in: modelContext)
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var maintenanceSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("vehicle_details.section.maintenance")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
+                    .padding(.leading, 4)
+
+                Spacer()
+
+                Button {
+                    generateAndShowReport()
+                } label: {
+                    HStack(spacing: 3) {
+                        Image(systemName: "doc.richtext")
+                        Text("PDF")
+                    }
+                    .font(.caption.bold())
+                    .foregroundStyle(.indigo)
+                }
+                .buttonStyle(.plain)
+                .padding(.trailing, 8)
+
+                Button {
+                    isShowingAddServiceSheet = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "plus.circle.fill")
+                        Text("service.button.add_entry")
+                    }
+                    .font(.caption.bold())
+                    .foregroundStyle(.blue)
+                }
+                .buttonStyle(.plain)
+            }
+
+            MaintenanceCardView(
+                vehicle: vehicle,
+                onAddServiceTap: {
+                    isShowingAddServiceSheet = true
+                },
+                onConfigureIntervalsTap: {
+                    isShowingMaintenanceIntervalSheet = true
+                }
+            )
+
+            if !vehicle.sortedServiceRecords.isEmpty {
+                LazyVStack(spacing: 10) {
+                    ForEach(vehicle.sortedServiceRecords) { record in
+                        ServiceRecordRowView(
+                            record: record,
+                            onViewInvoice: {
+                                openInvoice(for: record)
+                            },
+                            onDelete: {
+                                deleteServiceRecord(record)
+                            }
+                        )
+                    }
+                }
+                .padding(.top, 4)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var fuelSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("fuel.section.title")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            FuelSummaryCardView(
+                vehicle: vehicle,
+                onAddFuelTap: {
+                    isShowingAddFuelSheet = true
+                },
+                onViewHistoryTap: {
+                    isShowingFuelHistory = true
+                }
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var analyticsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("analytics.title")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            AnalyticsCardView(vehicle: vehicle) {
+                isShowingAnalytics = true
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var historySection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("vehicle_details.section.history")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+                .padding(.leading, 4)
+
+            LazyVStack(spacing: 10) {
+                ForEach(vehicle.archivedDocuments) { archivedDoc in
+                    archivedDocumentRow(for: archivedDoc)
+                }
+            }
         }
     }
 

@@ -116,6 +116,8 @@ struct OnboardingView: View {
                     .padding(.bottom, 12)
                 }
             }
+            .frame(maxWidth: 560)
+            .frame(maxWidth: .infinity, alignment: .center)
         }
         .task {
             checkCurrentNotificationStatus()
