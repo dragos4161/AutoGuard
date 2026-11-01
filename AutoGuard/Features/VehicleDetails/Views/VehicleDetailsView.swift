@@ -20,6 +20,8 @@ struct VehicleDetailsView: View {
     @State private var isShowingMileageSheet = false
     @State private var isShowingAddServiceSheet = false
     @State private var isShowingMaintenanceIntervalSheet = false
+    @State private var isShowingAddFuelSheet = false
+    @State private var isShowingFuelHistory = false
     @State private var invoicePreviewURL: URL? = nil
 
     var body: some View {
@@ -129,7 +131,27 @@ struct VehicleDetailsView: View {
                 }
 
                 // --------------------------------------------------
-                // SECȚIUNEA 4: Istoric Documente (Arhivate la reînnoire)
+                // SECȚIUNEA 4: Alimentare & Consum Carburant
+                // --------------------------------------------------
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("fuel.section.title")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                        .padding(.leading, 4)
+
+                    FuelSummaryCardView(
+                        vehicle: vehicle,
+                        onAddFuelTap: {
+                            isShowingAddFuelSheet = true
+                        },
+                        onViewHistoryTap: {
+                            isShowingFuelHistory = true
+                        }
+                    )
+                }
+
+                // --------------------------------------------------
+                // SECȚIUNEA 5: Istoric Documente (Arhivate la reînnoire)
                 // --------------------------------------------------
                 if !vehicle.archivedDocuments.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
@@ -172,6 +194,14 @@ struct VehicleDetailsView: View {
         // Modal Configurare Intervale Mentenanță
         .sheet(isPresented: $isShowingMaintenanceIntervalSheet) {
             MaintenanceIntervalSheet(vehicle: vehicle)
+        }
+        // Modal Înregistrare Alimentare Carburant
+        .sheet(isPresented: $isShowingAddFuelSheet) {
+            AddFuelEntrySheet(vehicle: vehicle)
+        }
+        // Navigare Ecran Istoric Alimentări
+        .navigationDestination(isPresented: $isShowingFuelHistory) {
+            FuelHistoryView(vehicle: vehicle)
         }
         // Modal 1: Corectarea datei curente (fără istoric)
         .sheet(isPresented: $viewModel.isShowingCorrectionSheet) {

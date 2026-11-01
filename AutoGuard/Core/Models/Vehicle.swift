@@ -32,6 +32,10 @@ final class Vehicle {
     @Relationship(deleteRule: .cascade, inverse: \ServiceRecord.vehicle)
     var serviceRecords: [ServiceRecord]? = []
 
+    // Relație one-to-many cu istoricul de alimentare și consum
+    @Relationship(deleteRule: .cascade, inverse: \FuelEntry.vehicle)
+    var fuelEntries: [FuelEntry]? = []
+
     // Setări intervale mentenanță (schimb ulei)
     var oilChangeIntervalKm: Int = 10000
     var oilChangeIntervalMonths: Int = 12
@@ -101,6 +105,112 @@ final class Vehicle {
         formatter.groupingSeparator = "."
         let formattedNumber = formatter.string(from: NSNumber(value: currentMileage)) ?? "\(currentMileage)"
         return "\(formattedNumber) km"
+    }
+
+    // MARK: - Jurnal Alimentare & Consum
+    /// Intrările de alimentare sortate descrescător după dată (cea mai recentă prima)
+    var sortedFuelEntries: [FuelEntry] {
+        (fuelEntries ?? []).sorted { $0.date > $1.date }
+    }
+
+    /// Intrările de alimentare sortate cronologic (de la cea mai veche la cea mai nouă)
+    var chronologicalFuelEntries: [FuelEntry] {
+        (fuelEntries ?? []).sorted { $0.date < $1.date }
+    }
+
+    /// Total cheltuit pe carburant (lei)
+    var totalFuelSpent: Double {
+        (fuelEntries ?? []).reduce(0.0) { $0 + $1.totalPrice }
+    }
+
+    /// Total litri alimentați
+    var totalFuelLiters: Double {
+        (fuelEntries ?? []).reduce(0.0) { $0 + $1.liters }
+    }
+
+    /// Preț mediu pe litru
+    var averagePricePerLiter: Double? {
+        guard totalFuelLiters > 0 else { return nil }
+        return totalFuelSpent / totalFuelLiters
+    }
+
+    /// Calcul consum individual și distanță pentru o alimentare specifică
+    func calculation(for entry: FuelEntry) -> (consumption: Double?, distance: Int?) {
+        let entries = chronologicalFuelEntries
+        guard let currentIndex = entries.firstIndex(where: { $0.id == entry.id }) else {
+            return (nil, nil)
+        }
+
+        // Căutăm cel mai recent plin anterior
+        var previousFullTankIndex: Int? = nil
+        for i in stride(from: currentIndex - 1, through: 0, by: -1) {
+            if entries[i].isFullTank {
+                previousFullTankIndex = i
+                break
+            }
+        }
+
+        guard let prevIndex = previousFullTankIndex else {
+            // Nu există un plin anterior de referință
+            if currentIndex > 0 {
+                let dist = entry.odometer - entries[currentIndex - 1].odometer
+                return (nil, dist > 0 ? dist : nil)
+            }
+            return (nil, nil)
+        }
+
+        let distance = entry.odometer - entries[prevIndex].odometer
+        guard distance > 0 else { return (nil, nil) }
+
+        // Dacă intrarea curentă este plin, consumul este cantitatea cumulată de la plinul anterior împărțită la distanță
+        if entry.isFullTank {
+            var accumulatedLiters = 0.0
+            for i in (prevIndex + 1)...currentIndex {
+                accumulatedLiters += entries[i].liters
+            }
+            let consumption = (accumulatedLiters / Double(distance)) * 100.0
+            return (consumption, distance)
+        } else {
+            return (nil, distance)
+        }
+    }
+
+    /// Consum mediu general (l/100km) calculat între primul și ultimul plin complet
+    var averageConsumption: Double? {
+        let fullTanks = chronologicalFuelEntries.filter { $0.isFullTank }
+        guard fullTanks.count >= 2,
+              let firstFull = fullTanks.first,
+              let lastFull = fullTanks.last else {
+            return nil
+        }
+
+        let totalDistance = lastFull.odometer - firstFull.odometer
+        guard totalDistance > 0 else { return nil }
+
+        let entries = chronologicalFuelEntries
+        guard let firstIdx = entries.firstIndex(where: { $0.id == firstFull.id }),
+              let lastIdx = entries.firstIndex(where: { $0.id == lastFull.id }),
+              lastIdx > firstIdx else {
+            return nil
+        }
+
+        var totalLiters = 0.0
+        for i in (firstIdx + 1)...lastIdx {
+            totalLiters += entries[i].liters
+        }
+
+        return (totalLiters / Double(totalDistance)) * 100.0
+    }
+
+    /// Consum mediu formatat frumos (ex: "6.8 L / 100 km")
+    var formattedAverageConsumption: String? {
+        guard let avg = averageConsumption else { return nil }
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 1
+        formatter.maximumFractionDigits = 2
+        let formatted = formatter.string(from: NSNumber(value: avg)) ?? String(format: "%.1f", avg)
+        return "\(formatted) L / 100 km"
     }
 
     // MARK: - Istoric Service & Mentenanță

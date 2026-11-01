@@ -163,6 +163,28 @@ struct AssistantView: View {
             return "\(appLanguage.string("assistant.answer.mileage_header"))\n\(summary)"
         }
 
+        if lower.contains("consum") || lower.contains("alimentar") || lower.contains("benzin") || lower.contains("motorin") || lower.contains("fuel") || lower.contains("gas") {
+            let answers = vehicles.map { vehicle -> String in
+                let isRo = appLanguage.resolvedLanguageCode == "ro"
+                if let avg = vehicle.formattedAverageConsumption {
+                    let totalSpent = String(format: "%.0f lei", vehicle.totalFuelSpent)
+                    let avgLabel = isRo ? "Consum mediu: " : "Average consumption: "
+                    let totalLabel = isRo ? "Total cheltuit: " : "Total fuel spent: "
+                    let entriesLabel = isRo ? "alimentări" : "fill-ups"
+                    return "⛽️ \(vehicle.displayName):\n• \(avgLabel)\(avg)\n• \(totalLabel)\(totalSpent) (\(vehicle.sortedFuelEntries.count) \(entriesLabel))"
+                } else if !vehicle.sortedFuelEntries.isEmpty {
+                    let totalSpent = String(format: "%.0f lei", vehicle.totalFuelSpent)
+                    let totalLabel = isRo ? "Total cheltuit: " : "Total fuel spent: "
+                    let entriesLabel = isRo ? "alimentări" : "fill-ups"
+                    let pendingMsg = isRo ? "Consumul mediu exact va fi disponibil după al 2-lea plin complet." : "Exact consumption will be available after your 2nd full tank."
+                    return "⛽️ \(vehicle.displayName):\n• \(totalLabel)\(totalSpent) (\(vehicle.sortedFuelEntries.count) \(entriesLabel))\n• \(pendingMsg)"
+                } else {
+                    return isRo ? "⛽️ \(vehicle.displayName): Nu ai înregistrat încă nicio alimentare." : "⛽️ \(vehicle.displayName): No fuel entries recorded yet."
+                }
+            }
+            return answers.joined(separator: "\n\n")
+        }
+
         if lower.contains("ulei") || lower.contains("oil") || lower.contains("revizi") || lower.contains("service") {
             let answers = vehicles.map { vehicle -> String in
                 if let lastOil = vehicle.lastOilChangeRecord {

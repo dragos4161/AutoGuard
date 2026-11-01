@@ -23,7 +23,8 @@ struct AutoGuardApp: App {
             Vehicle.self,
             VehicleDocument.self,
             MileageEntry.self,
-            ServiceRecord.self
+            ServiceRecord.self,
+            FuelEntry.self
         ])
 
         // Folosim `cloudKitDatabase: .none` pentru dezvoltare locală și Previews rapide în Simulator
