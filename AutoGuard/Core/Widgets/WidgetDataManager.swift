@@ -2,7 +2,8 @@
 //  WidgetDataManager.swift
 //  AutoGuard
 //
-//  Manager pentru sincronizarea stării de mentenanță către WidgetKit (Home Screen Widget).
+//  Manager pentru sincronizarea stării vehiculului și mentenanței către WidgetKit
+//  (Home Screen Widgets & Lock Screen Accessory Widgets).
 //  Partajează datele prin App Group (UserDefaults) și solicită reîncărcarea widget-urilor.
 //
 
@@ -10,37 +11,120 @@ import Foundation
 import SwiftUI
 import WidgetKit
 
-/// Model compact pentru datele afișate pe Home Screen Widget
-struct MaintenanceWidgetData: Codable {
-    let vehicleName: String
-    let plateNumber: String
-    let kmProgress: Double
-    let timeProgress: Double
-    let kmUsed: Int
-    let intervalKm: Int
-    let remainingKm: Int
-    let remainingDays: Int
-    let dueDateFormatted: String
-    let limitingFactor: String // "mileage" sau "time"
-    let isOverdue: Bool
-    let isDueSoon: Bool
-    let lastUpdated: Date
+/// Model complet pentru datele afișate pe widget-urile de Home Screen și Lock Screen
+public struct MaintenanceWidgetData: Codable, Equatable {
+    public let vehicleId: String
+    public let vehicleName: String
+    public let plateNumber: String
+    public let odometer: Int
+    public let kmProgress: Double
+    public let timeProgress: Double
+    public let kmUsed: Int
+    public let intervalKm: Int
+    public let remainingKm: Int
+    public let remainingDays: Int
+    public let dueDateFormatted: String
+    public let limitingFactor: String // "mileage" sau "time"
+    public let isOverdue: Bool
+    public let isDueSoon: Bool
 
-    var kmProgressPercent: Int {
+    // Documente expirabile (RCA, ITP, Rovinietă)
+    public let nextDocTitle: String?
+    public let nextDocDaysLeft: Int?
+    public let nextDocIsOverdue: Bool
+    public let nextDocIsUrgent: Bool
+
+    // Consum combustibil
+    public let lastConsumptionFormatted: String?
+
+    // Timestamp actualizare
+    public let lastUpdated: Date
+
+    public init(
+        vehicleId: String,
+        vehicleName: String,
+        plateNumber: String,
+        odometer: Int,
+        kmProgress: Double,
+        timeProgress: Double,
+        kmUsed: Int,
+        intervalKm: Int,
+        remainingKm: Int,
+        remainingDays: Int,
+        dueDateFormatted: String,
+        limitingFactor: String,
+        isOverdue: Bool,
+        isDueSoon: Bool,
+        nextDocTitle: String? = nil,
+        nextDocDaysLeft: Int? = nil,
+        nextDocIsOverdue: Bool = false,
+        nextDocIsUrgent: Bool = false,
+        lastConsumptionFormatted: String? = nil,
+        lastUpdated: Date = Date()
+    ) {
+        self.vehicleId = vehicleId
+        self.vehicleName = vehicleName
+        self.plateNumber = plateNumber
+        self.odometer = odometer
+        self.kmProgress = kmProgress
+        self.timeProgress = timeProgress
+        self.kmUsed = kmUsed
+        self.intervalKm = intervalKm
+        self.remainingKm = remainingKm
+        self.remainingDays = remainingDays
+        self.dueDateFormatted = dueDateFormatted
+        self.limitingFactor = limitingFactor
+        self.isOverdue = isOverdue
+        self.isDueSoon = isDueSoon
+        self.nextDocTitle = nextDocTitle
+        self.nextDocDaysLeft = nextDocDaysLeft
+        self.nextDocIsOverdue = nextDocIsOverdue
+        self.nextDocIsUrgent = nextDocIsUrgent
+        self.lastConsumptionFormatted = lastConsumptionFormatted
+        self.lastUpdated = lastUpdated
+    }
+
+    public var kmProgressPercent: Int {
         Int(min(1.0, max(0.0, kmProgress)) * 100)
     }
 
-    var timeProgressPercent: Int {
+    public var timeProgressPercent: Int {
         Int(min(1.0, max(0.0, timeProgress)) * 100)
+    }
+
+    /// Date demonstrative pentru previzualizări în Simulator / Xcode Previews
+    public static var sample: MaintenanceWidgetData {
+        MaintenanceWidgetData(
+            vehicleId: UUID().uuidString,
+            vehicleName: "Dacia Duster",
+            plateNumber: "B 123 ABC",
+            odometer: 48500,
+            kmProgress: 0.72,
+            timeProgress: 0.45,
+            kmUsed: 7200,
+            intervalKm: 10000,
+            remainingKm: 2800,
+            remainingDays: 195,
+            dueDateFormatted: "Iun 2027",
+            limitingFactor: "mileage",
+            isOverdue: false,
+            isDueSoon: false,
+            nextDocTitle: "RCA",
+            nextDocDaysLeft: 14,
+            nextDocIsOverdue: false,
+            nextDocIsUrgent: true,
+            lastConsumptionFormatted: "6.4 L/100km",
+            lastUpdated: Date()
+        )
     }
 }
 
 @MainActor
-final class WidgetDataManager {
-    static let shared = WidgetDataManager()
+public final class WidgetDataManager {
+    public static let shared = WidgetDataManager()
 
-    /// ID-ul App Group configurat în Xcode pentru partajarea datelor între App și Widget
-    static let appGroupSuiteName = "group.com.ascend.AutoGuard"
+    /// ID-ul App Group pentru partajarea datelor între aplicație și extensia WidgetKit
+    public static let appGroupSuiteName = "group.com.ascend.AutoGuard"
     private let widgetDataKey = "saved_maintenance_widget_data"
 
     private var sharedDefaults: UserDefaults {
@@ -50,15 +134,43 @@ final class WidgetDataManager {
     private init() {}
 
     /// Actualizează datele widget-ului pentru cel mai relevant vehicul (sau vehiculul specificat)
-    func updateWidgetData(for vehicle: Vehicle) {
+    public func updateWidgetData(for vehicle: Vehicle) {
         guard let status = vehicle.oilChangeStatus else {
             clearWidgetData()
             return
         }
 
+        // Calculăm cel mai urgent document activ
+        var nextDocTitle: String? = nil
+        var nextDocDaysLeft: Int? = nil
+        var nextDocIsOverdue: Bool = false
+        var nextDocIsUrgent: Bool = false
+
+        let activeDocs = (vehicle.documents ?? []).filter { !$0.isArchived }
+        if let earliestDoc = activeDocs.min(by: { $0.expirationDate < $1.expirationDate }) {
+            nextDocTitle = earliestDoc.type.displayName
+            let days = Calendar.current.dateComponents(
+                [.day],
+                from: Calendar.current.startOfDay(for: Date()),
+                to: Calendar.current.startOfDay(for: earliestDoc.expirationDate)
+            ).day ?? 0
+
+            nextDocDaysLeft = days
+            nextDocIsOverdue = days < 0
+            nextDocIsUrgent = days >= 0 && days <= 15
+        }
+
+        // Consum combustibil formatat
+        var consumptionString: String? = nil
+        if let avg = vehicle.averageConsumption {
+            consumptionString = String(format: "%.1f L/100km", avg)
+        }
+
         let data = MaintenanceWidgetData(
+            vehicleId: vehicle.id.uuidString,
             vehicleName: vehicle.displayName,
             plateNumber: vehicle.plateNumber,
+            odometer: vehicle.currentMileage,
             kmProgress: status.kmProgress,
             timeProgress: status.timeProgress,
             kmUsed: status.kmUsed,
@@ -69,6 +181,11 @@ final class WidgetDataManager {
             limitingFactor: status.limitingFactor == .mileage ? "mileage" : "time",
             isOverdue: status.isOverdue,
             isDueSoon: status.isDueSoon,
+            nextDocTitle: nextDocTitle,
+            nextDocDaysLeft: nextDocDaysLeft,
+            nextDocIsOverdue: nextDocIsOverdue,
+            nextDocIsUrgent: nextDocIsUrgent,
+            lastConsumptionFormatted: consumptionString,
             lastUpdated: Date()
         )
 
@@ -79,7 +196,7 @@ final class WidgetDataManager {
     }
 
     /// Citește datele curente ale widget-ului (folosit de WidgetKit Extension)
-    func loadWidgetData() -> MaintenanceWidgetData? {
+    public func loadWidgetData() -> MaintenanceWidgetData? {
         guard let data = sharedDefaults.data(forKey: widgetDataKey),
               let decoded = try? JSONDecoder().decode(MaintenanceWidgetData.self, from: data) else {
             return nil
@@ -88,7 +205,7 @@ final class WidgetDataManager {
     }
 
     /// Șterge datele widget-ului
-    func clearWidgetData() {
+    public func clearWidgetData() {
         sharedDefaults.removeObject(forKey: widgetDataKey)
         WidgetCenter.shared.reloadAllTimelines()
     }

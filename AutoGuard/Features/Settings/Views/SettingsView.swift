@@ -19,6 +19,7 @@ struct SettingsView: View {
 
     @State private var showingPermissionAlert: Bool = false
     @State private var showingOnboardingTour: Bool = false
+    @State private var authService = AppleAuthService.shared
 
     private var reminderTimeBinding: Binding<Date> {
         Binding(
@@ -40,6 +41,50 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Secțiunea 0: Cont & Backup Cloud
+                Section {
+                    NavigationLink {
+                        AccountSyncSettingsView()
+                    } label: {
+                        HStack(spacing: 12) {
+                            ZStack {
+                                Circle()
+                                    .fill(authService.currentUser != nil ? Color.blue.gradient : Color.secondary.opacity(0.15).gradient)
+                                    .frame(width: 44, height: 44)
+
+                                if let user = authService.currentUser {
+                                    Text(user.initials)
+                                        .font(.subheadline.bold())
+                                        .foregroundStyle(.white)
+                                } else {
+                                    Image(systemName: "person.crop.circle.badge.plus")
+                                        .font(.title3)
+                                        .foregroundStyle(.blue)
+                                }
+                            }
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                if let user = authService.currentUser {
+                                    Text(user.displayName)
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+                                    Text("settings.account.cloud_sync_active")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                } else {
+                                    Text("settings.account.sign_in_title")
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+                                    Text("settings.account.sign_in_subtitle")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+
                 // Secțiunea 1: Limbă & Regional
                 Section("settings.section.language") {
                     Picker("settings.language", selection: $appLanguage) {
@@ -88,7 +133,16 @@ struct SettingsView: View {
                     Text("settings.notifications.weekly_mileage_footer")
                 }
 
-                // Secțiunea 3: Despre aplicație & Confidențialitate
+                // Secțiunea 3: Widget-uri Ecran Principal & Blocat
+                Section("settings.section.widgets") {
+                    NavigationLink {
+                        WidgetPreviewGalleryView()
+                    } label: {
+                        Label("settings.widgets.preview_and_setup", systemImage: "square.grid.2x2.fill")
+                    }
+                }
+
+                // Secțiunea 4: Despre aplicație & Confidențialitate
                 Section("settings.section.about") {
                     Button {
                         showingOnboardingTour = true
@@ -120,7 +174,7 @@ struct SettingsView: View {
                     HStack {
                         Text("settings.storage")
                         Spacer()
-                        Text("settings.storage.local")
+                        Text(authService.currentUser != nil ? "settings.storage.cloud_local" : "settings.storage.local")
                             .foregroundStyle(.secondary)
                     }
                 }

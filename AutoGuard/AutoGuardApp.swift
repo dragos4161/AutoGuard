@@ -60,6 +60,14 @@ struct AutoGuardApp: App {
                         }
                     }
                 }
+                .onOpenURL { url in
+                    if url.scheme == "torpedou" {
+                        NotificationCenter.default.post(
+                            name: NSNotification.Name("HandleWidgetDeepLink"),
+                            object: url
+                        )
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
     }

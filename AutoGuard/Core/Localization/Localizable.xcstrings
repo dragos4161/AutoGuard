@@ -5553,6 +5553,737 @@
           }
         }
       }
+    },
+    "settings.account.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account & Cloud Sync"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cont & Sincronizare Cloud"
+          }
+        }
+      }
+    },
+    "settings.account.section_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "User Account"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cont Utilizator"
+          }
+        }
+      }
+    },
+    "settings.account.privacy_footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with Apple protects your privacy and enables fast data restoration."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autentificarea cu Apple ID îți protejează intimitatea și permite restaurarea rapidă a datelor."
+          }
+        }
+      }
+    },
+    "settings.account.cloud_sync_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloud Sync (Firebase / iCloud)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizare Cloud (Firebase / iCloud)"
+          }
+        }
+      }
+    },
+    "settings.account.backup_now": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back Up to Cloud Now"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fă Backup în Cloud Acum"
+          }
+        }
+      }
+    },
+    "settings.account.restore_cloud": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore from Cloud"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurează din Cloud"
+          }
+        }
+      }
+    },
+    "settings.account.last_backup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last backup"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ultimul backup"
+          }
+        }
+      }
+    },
+    "settings.account.never": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Never"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niciodată"
+          }
+        }
+      }
+    },
+    "settings.account.offline_backup_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Portable Backup File"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fișier de Siguranță Portabil"
+          }
+        }
+      }
+    },
+    "settings.account.offline_backup_footer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can export a full JSON snapshot at any time to save to Files, iCloud Drive or transfer to another phone."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Poți exporta oricând o copie completă JSON pentru salvare în Files, iCloud Drive sau transfer pe alt telefon."
+          }
+        }
+      }
+    },
+    "settings.account.export_backup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export backup file (.json)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportă fișier de siguranță (.json)"
+          }
+        }
+      }
+    },
+    "settings.account.import_backup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import backup file"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importă fișier de siguranță"
+          }
+        }
+      }
+    },
+    "settings.account.firebase_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloud Infrastructure"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Infrastructură Cloud"
+          }
+        }
+      }
+    },
+    "settings.account.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activ"
+          }
+        }
+      }
+    },
+    "settings.account.ready_for_setup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready for setup"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pregătit pentru configurare"
+          }
+        }
+      }
+    },
+    "settings.account.how_firebase_works": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How to connect Google Firebase?"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cum se conectează Google Firebase?"
+          }
+        }
+      }
+    },
+    "settings.account.sign_out": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign out from account"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deconectare de la cont"
+          }
+        }
+      }
+    },
+    "settings.account.restore_confirm_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore data?"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurezi datele?"
+          }
+        }
+      }
+    },
+    "settings.account.restore_action": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurează"
+          }
+        }
+      }
+    },
+    "settings.account.restore_confirm_message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloud data will be merged with your current vehicles without losing existing entries."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datele din Cloud vor fi îmbinate cu vehiculele tale curente fără a pierde înregistrările existente."
+          }
+        }
+      }
+    },
+    "settings.account.sign_out_confirm_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Are you sure you want to sign out?"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sigur vrei să te deconectezi?"
+          }
+        }
+      }
+    },
+    "settings.account.sign_out_confirm_message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your local data will remain saved on the device."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datele tale locale vor rămâne salvate pe dispozitiv."
+          }
+        }
+      }
+    },
+    "settings.account.verified_apple_id": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verified Apple ID"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple ID Verificat"
+          }
+        }
+      }
+    },
+    "settings.account.backup_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secure Your Garage in the Cloud"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Securizează-ți Garajul în Cloud"
+          }
+        }
+      }
+    },
+    "settings.account.backup_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync across iPhone, iPad and automatic restore."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizare între iPhone, iPad și restaurare automată."
+          }
+        }
+      }
+    },
+    "settings.account.firebase_desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torpedou uses Google Firestore for real-time cloud storage of your vehicle records."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torpedou folosește Google Firestore pentru stocarea în timp real a înregistrărilor tale auto."
+          }
+        }
+      }
+    },
+    "settings.account.firebase_steps_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Simple steps to connect:"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pași simpli pentru conectare:"
+          }
+        }
+      }
+    },
+    "settings.account.firebase_step1_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a project in Firebase Console"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creează un proiect în Firebase Console"
+          }
+        }
+      }
+    },
+    "settings.account.firebase_step1_desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Go to console.firebase.google.com and add an iOS app with bundle id: com.ascend.AutoGuard"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mergi pe console.firebase.google.com și adaugă o aplicație iOS cu bundle id: com.ascend.AutoGuard"
+          }
+        }
+      }
+    },
+    "settings.account.firebase_step2_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download GoogleService-Info.plist"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descarcă fișierul GoogleService-Info.plist"
+          }
+        }
+      }
+    },
+    "settings.account.firebase_step2_desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Place the file in the AutoGuard project root folder in Xcode."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plasează fișierul în folderul rădăcină al proiectului AutoGuard în Xcode."
+          }
+        }
+      }
+    },
+    "settings.account.firebase_step3_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done! Sync becomes instantly active"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gata! Sincronizarea devine instant activă"
+          }
+        }
+      }
+    },
+    "settings.account.firebase_step3_desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your data will sync encrypted and automatically to the cloud."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datele tale se vor sincroniza criptat și automat în cloud."
+          }
+        }
+      }
+    },
+    "settings.account.cloud_sync_active": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloud Backup active"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cloud Backup activ"
+          }
+        }
+      }
+    },
+    "settings.account.sign_in_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account & Cloud Sync"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cont & Salvare în Cloud"
+          }
+        }
+      }
+    },
+    "settings.account.sign_in_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign in with Apple ID"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectează-te cu Apple ID"
+          }
+        }
+      }
+    },
+    "settings.storage.cloud_local": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud & Local (Secure)"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud & Local (Securizat)"
+          }
+        }
+      }
+    },
+    "settings.section.widgets": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Screen Widgets"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget-uri Ecran"
+          }
+        }
+      }
+    },
+    "settings.widgets.preview_and_setup": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget Preview & Setup"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Previzualizare & Ghid Widget-uri"
+          }
+        }
+      }
+    },
+    "widgets.gallery.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torpedou Widgets"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget-uri Torpedou"
+          }
+        }
+      }
+    },
+    "widgets.preview.select_vehicle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select vehicle for preview"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alege vehiculul pentru previzualizare"
+          }
+        }
+      }
+    },
+    "widgets.preview.vehicle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicle"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicul"
+          }
+        }
+      }
+    },
+    "widgets.preview.default_vehicle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default vehicle"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vehicul implicit"
+          }
+        }
+      }
     }
   },
   "version": "1.3"
