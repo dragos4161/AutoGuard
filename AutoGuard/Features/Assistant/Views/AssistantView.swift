@@ -22,10 +22,16 @@ struct AssistantView: View {
         let timestamp: Date = Date()
     }
 
-    private let suggestionKeys: [LocalizedStringResource] = [
-        "assistant.prompt.oil",
-        "assistant.prompt.mileage",
-        "assistant.prompt.expirations"
+    private struct QuickSuggestion: Identifiable {
+        let id: String
+        let titleKey: LocalizedStringKey
+        let localizationValue: String.LocalizationValue
+    }
+
+    private let suggestions: [QuickSuggestion] = [
+        QuickSuggestion(id: "oil", titleKey: "assistant.prompt.oil", localizationValue: "assistant.prompt.oil"),
+        QuickSuggestion(id: "mileage", titleKey: "assistant.prompt.mileage", localizationValue: "assistant.prompt.mileage"),
+        QuickSuggestion(id: "expirations", titleKey: "assistant.prompt.expirations", localizationValue: "assistant.prompt.expirations")
     ]
 
     var body: some View {
@@ -61,13 +67,13 @@ struct AssistantView: View {
                             .foregroundStyle(.secondary)
                             .padding(.top, 8)
 
-                        ForEach(suggestionKeys, id: \.key) { promptKey in
+                        ForEach(suggestions) { item in
                             Button {
-                                let localizedPrompt = String(localized: promptKey, locale: locale)
+                                let localizedPrompt = String(localized: item.localizationValue, locale: locale)
                                 sendQuery(localizedPrompt)
                             } label: {
                                 HStack {
-                                    Text(promptKey)
+                                    Text(item.titleKey)
                                         .font(.subheadline)
                                         .foregroundStyle(.primary)
                                     Spacer()
