@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct AssistantView: View {
-    @Environment(\.locale) private var locale
+    @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
     @Query private var vehicles: [Vehicle]
 
     @State private var queryText: String = ""
@@ -25,13 +25,13 @@ struct AssistantView: View {
     private struct QuickSuggestion: Identifiable {
         let id: String
         let titleKey: LocalizedStringKey
-        let localizationValue: String.LocalizationValue
+        let key: String
     }
 
     private let suggestions: [QuickSuggestion] = [
-        QuickSuggestion(id: "oil", titleKey: "assistant.prompt.oil", localizationValue: "assistant.prompt.oil"),
-        QuickSuggestion(id: "mileage", titleKey: "assistant.prompt.mileage", localizationValue: "assistant.prompt.mileage"),
-        QuickSuggestion(id: "expirations", titleKey: "assistant.prompt.expirations", localizationValue: "assistant.prompt.expirations")
+        QuickSuggestion(id: "oil", titleKey: "assistant.prompt.oil", key: "assistant.prompt.oil"),
+        QuickSuggestion(id: "mileage", titleKey: "assistant.prompt.mileage", key: "assistant.prompt.mileage"),
+        QuickSuggestion(id: "expirations", titleKey: "assistant.prompt.expirations", key: "assistant.prompt.expirations")
     ]
 
     var body: some View {
@@ -69,8 +69,8 @@ struct AssistantView: View {
 
                         ForEach(suggestions) { item in
                             Button {
-                                let localizedPrompt = String(localized: item.localizationValue, locale: locale)
-                                sendQuery(localizedPrompt)
+                                let promptText = appLanguage.string(item.key)
+                                sendQuery(promptText)
                             } label: {
                                 HStack {
                                     Text(item.titleKey)
@@ -152,39 +152,39 @@ struct AssistantView: View {
         let lower = query.lowercased()
 
         if vehicles.isEmpty {
-            return String(localized: "assistant.answer.no_vehicles", locale: locale)
+            return appLanguage.string("assistant.answer.no_vehicles")
         }
 
         if lower.contains("km") || lower.contains("kilometr") || lower.contains("mileage") {
             let summary = vehicles.map { vehicle in
-                let km = vehicle.formattedMileage ?? String(localized: "mileage.card.empty", locale: locale)
+                let km = vehicle.formattedMileage ?? appLanguage.string("mileage.card.empty")
                 return "\(vehicle.displayName): \(km)"
             }.joined(separator: "\n")
-            return "\(String(localized: "assistant.answer.mileage_header", locale: locale))\n\(summary)"
+            return "\(appLanguage.string("assistant.answer.mileage_header"))\n\(summary)"
         }
 
         if lower.contains("ulei") || lower.contains("oil") || lower.contains("revizi") || lower.contains("service") {
             let answers = vehicles.map { vehicle -> String in
                 if let lastOil = vehicle.lastOilChangeRecord {
-                    let dateStr = lastOil.date.formatted(.dateTime.day().month().year().locale(locale))
-                    let lastChangeLabel = String(localized: "assistant.answer.oil_last_change", locale: locale)
-                    let atLabel = String(localized: "assistant.answer.oil_at", locale: locale)
+                    let dateStr = lastOil.date.formatted(.dateTime.day().month().year().locale(appLanguage.locale))
+                    let lastChangeLabel = appLanguage.string("assistant.answer.oil_last_change")
+                    let atLabel = appLanguage.string("assistant.answer.oil_at")
                     var response = "🚗 \(vehicle.displayName):\n• \(lastChangeLabel)\(dateStr) \(atLabel) \(lastOil.formattedMileage)."
                     if let status = vehicle.oilChangeStatus {
                         if status.isOverdue {
-                            let overdueMsg = String(localized: "assistant.answer.oil_overdue", locale: locale)
+                            let overdueMsg = appLanguage.string("assistant.answer.oil_overdue")
                             response += "\n• \(overdueMsg)"
                         } else {
                             let monthsLeft = max(0, status.remainingDays / 30)
-                            let nextMsg = String(localized: "assistant.answer.oil_next", locale: locale)
-                            let monthsUnit = String(localized: "assistant.answer.oil_months", locale: locale)
-                            let kmLeftUnit = String(localized: "assistant.answer.oil_km_left", locale: locale)
+                            let nextMsg = appLanguage.string("assistant.answer.oil_next")
+                            let monthsUnit = appLanguage.string("assistant.answer.oil_months")
+                            let kmLeftUnit = appLanguage.string("assistant.answer.oil_km_left")
                             response += "\n• \(nextMsg) \(monthsLeft) \(monthsUnit) (\(status.remainingKm) \(kmLeftUnit))."
                         }
                     }
                     return response
                 } else {
-                    let noRec = String(localized: "assistant.answer.oil_no_records", locale: locale)
+                    let noRec = appLanguage.string("assistant.answer.oil_no_records")
                     return "🚗 \(vehicle.displayName): \(noRec)"
                 }
             }.joined(separator: "\n\n")
@@ -195,16 +195,16 @@ struct AssistantView: View {
         if lower.contains("expir") || lower.contains("rca") || lower.contains("itp") || lower.contains("roviniet") || lower.contains("doc") {
             let urgent = vehicles.compactMap { $0.mostUrgentDocument }
             if urgent.isEmpty {
-                return String(localized: "assistant.answer.all_good", locale: locale)
+                return appLanguage.string("assistant.answer.all_good")
             }
-            let daysUnit = String(localized: "assistant.answer.days_left", locale: locale)
+            let daysUnit = appLanguage.string("assistant.answer.days_left")
             let list = urgent.map { doc in
                 "\(doc.vehicle?.displayName ?? "") • \(doc.type.rawValue): \(doc.daysRemaining) \(daysUnit)"
             }.joined(separator: "\n")
-            return "\(String(localized: "assistant.answer.expiring_header", locale: locale))\n\(list)"
+            return "\(appLanguage.string("assistant.answer.expiring_header"))\n\(list)"
         }
 
-        return String(localized: "assistant.answer.fallback", locale: locale)
+        return appLanguage.string("assistant.answer.fallback")
     }
 }
 
