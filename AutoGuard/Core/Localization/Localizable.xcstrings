@@ -4319,6 +4319,142 @@
           }
         }
       }
+    },
+    "ocr.scan_vin.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan VIN"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanare Serie Șasiu (VIN)"
+          }
+        }
+      }
+    },
+    "ocr.scan_vin.instruction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point camera at the VIN on document or windshield"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Îndreaptă camera spre seria de șasiu din talon sau parbriz"
+          }
+        }
+      }
+    },
+    "ocr.scan_plate.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan License Plate"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanare Număr Înmatriculare"
+          }
+        }
+      }
+    },
+    "ocr.scan_plate.instruction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point camera at license plate"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Îndreaptă camera spre numărul de înmatriculare"
+          }
+        }
+      }
+    },
+    "ocr.scan_date.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Expiration Date"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanare Dată Expirare"
+          }
+        }
+      }
+    },
+    "ocr.scan_date.instruction": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Point camera at the expiration date on document"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Îndreaptă camera spre data de expirare din document"
+          }
+        }
+      }
+    },
+    "ocr.pick_from_photos": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick Photo from Library"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alege o fotografie din Galerie"
+          }
+        }
+      }
+    },
+    "ocr.button.scan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan with camera"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanează cu camera"
+          }
+        }
+      }
     }
   },
   "version": "1.3"

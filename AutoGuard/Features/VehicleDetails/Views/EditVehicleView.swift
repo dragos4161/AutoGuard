@@ -14,6 +14,7 @@ struct EditVehicleView: View {
 
     @State private var viewModel: EditVehicleViewModel
     @FocusState private var isVinFocused: Bool
+    @State private var activeScanTarget: ScanTarget? = nil
 
     init(vehicle: Vehicle) {
         _viewModel = State(initialValue: EditVehicleViewModel(vehicle: vehicle))
@@ -26,9 +27,19 @@ struct EditVehicleView: View {
             Form {
                 // Secțiunea 1: Date Principale
                 Section("edit_vehicle.section.main") {
-                    TextField("add_vehicle.plate_placeholder", text: $viewModel.plateNumber)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
+                    HStack {
+                        TextField("add_vehicle.plate_placeholder", text: $viewModel.plateNumber)
+                            .textInputAutocapitalization(.characters)
+                            .autocorrectionDisabled()
+
+                        Button {
+                            activeScanTarget = .plateNumber
+                        } label: {
+                            Image(systemName: "camera.viewfinder")
+                                .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
+                    }
 
                     TextField("add_vehicle.make_placeholder", text: $viewModel.make)
                     TextField("add_vehicle.model_placeholder", text: $viewModel.model)
@@ -43,18 +54,28 @@ struct EditVehicleView: View {
                         }
                     }
 
-                    TextField("add_vehicle.vin_placeholder", text: $viewModel.vin)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                        .focused($isVinFocused)
-                        .onChange(of: viewModel.vin) { _, newValue in
-                            if newValue.count >= 17 {
-                                if newValue.count > 17 {
-                                    viewModel.vin = String(newValue.prefix(17))
+                    HStack {
+                        TextField("add_vehicle.vin_placeholder", text: $viewModel.vin)
+                            .textInputAutocapitalization(.characters)
+                            .autocorrectionDisabled()
+                            .focused($isVinFocused)
+                            .onChange(of: viewModel.vin) { _, newValue in
+                                if newValue.count >= 17 {
+                                    if newValue.count > 17 {
+                                        viewModel.vin = String(newValue.prefix(17))
+                                    }
+                                    isVinFocused = false
                                 }
-                                isVinFocused = false
                             }
+
+                        Button {
+                            activeScanTarget = .vin
+                        } label: {
+                            Image(systemName: "camera.viewfinder")
+                                .foregroundStyle(.blue)
                         }
+                        .buttonStyle(.plain)
+                    }
 
                     if !viewModel.vin.isEmpty && !viewModel.isVinValid {
                         Text("edit_vehicle.vin_invalid_hint")
@@ -101,6 +122,17 @@ struct EditVehicleView: View {
                     .disabled(!viewModel.isFormValid)
                     .fontWeight(.bold)
                 }
+            }
+            .sheet(item: $activeScanTarget) { target in
+                LiveDocumentScannerView(
+                    target: target,
+                    onVinDetected: { vin in
+                        viewModel.vin = vin
+                    },
+                    onPlateDetected: { plate in
+                        viewModel.plateNumber = plate
+                    }
+                )
             }
         }
     }

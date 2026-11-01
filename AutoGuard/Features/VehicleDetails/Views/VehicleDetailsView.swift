@@ -23,6 +23,12 @@ struct VehicleDetailsView: View {
     @State private var isShowingAddFuelSheet = false
     @State private var isShowingFuelHistory = false
     @State private var invoicePreviewURL: URL? = nil
+    @State private var isScanningDate: Bool = false
+    @State private var dateScanDestination: DateScanDestination = .renewal
+
+    private enum DateScanDestination {
+        case correction, renewal
+    }
 
     var body: some View {
         ScrollView {
@@ -213,6 +219,17 @@ struct VehicleDetailsView: View {
             renewalSheet
                 .presentationDetents([.medium])
         }
+        // Modal Scanare Dată cu Camera (OCR)
+        .sheet(isPresented: $isScanningDate) {
+            LiveDocumentScannerView(target: .expirationDate) { date in
+                switch dateScanDestination {
+                case .correction:
+                    viewModel.correctionDate = date
+                case .renewal:
+                    viewModel.renewalDate = date
+                }
+            }
+        }
         // Selector nativ de fișiere (PDF / Imagini din Files / iCloud Drive)
         .fileImporter(
             isPresented: $viewModel.isShowingFileImporter,
@@ -357,6 +374,15 @@ struct VehicleDetailsView: View {
                         selection: $viewModel.correctionDate,
                         displayedComponents: .date
                     )
+
+                    Button {
+                        dateScanDestination = .correction
+                        isScanningDate = true
+                    } label: {
+                        Label("ocr.button.scan", systemImage: "camera.viewfinder")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.blue)
+                    }
                 } footer: {
                     Text("doc.correction.footer")
                 }
@@ -399,6 +425,15 @@ struct VehicleDetailsView: View {
                         selection: $viewModel.renewalDate,
                         displayedComponents: .date
                     )
+
+                    Button {
+                        dateScanDestination = .renewal
+                        isScanningDate = true
+                    } label: {
+                        Label("ocr.button.scan", systemImage: "camera.viewfinder")
+                            .font(.subheadline.bold())
+                            .foregroundStyle(.blue)
+                    }
                 } footer: {
                     Text("doc.renewal.footer")
                 }

@@ -16,37 +16,62 @@ struct AddVehicleView: View {
     // ViewModel-ul gestionează starea și validările (State Management)
     @State private var viewModel = AddVehicleViewModel()
     @FocusState private var isVinFocused: Bool
+
+    // OCR Scanner
+    @State private var activeScanTarget: ScanTarget? = nil
+    @State private var activeDateScanField: DateScanField? = nil
+
+    private enum DateScanField {
+        case rca, itp, rovinieta
+    }
     
     var body: some View {
         NavigationStack {
             Form {
                 // Secțiunea 1: Date generale
                 Section("add_vehicle.section.details") {
-                    TextField(
-                        "add_vehicle.vin_placeholder",
-                        text: $viewModel.vin
-                    )
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .focused($isVinFocused) // 1. Legăm focusul de câmp
-                    .onChange(of: viewModel.vin) { _, newValue in
-                        if newValue.count >= 17 {
-                            // Dacă a depășit (de ex. prin Paste), tăiem la fix 17
-                            if newValue.count > 17 {
-                                viewModel.vin = String(newValue.prefix(17))
+                    HStack {
+                        TextField(
+                            "add_vehicle.vin_placeholder",
+                            text: $viewModel.vin
+                        )
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+                        .focused($isVinFocused)
+                        .onChange(of: viewModel.vin) { _, newValue in
+                            if newValue.count >= 17 {
+                                if newValue.count > 17 {
+                                    viewModel.vin = String(newValue.prefix(17))
+                                }
+                                isVinFocused = false
                             }
-                            
-                            // 2. Închidem tastatura automat!
-                            isVinFocused = false
                         }
+
+                        Button {
+                            activeScanTarget = .vin
+                        } label: {
+                            Image(systemName: "camera.viewfinder")
+                                .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
                     }
                     
-                    TextField(
-                        "add_vehicle.plate_placeholder",
-                        text: $viewModel.plateNumber
-                    )
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
+                    HStack {
+                        TextField(
+                            "add_vehicle.plate_placeholder",
+                            text: $viewModel.plateNumber
+                        )
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+
+                        Button {
+                            activeScanTarget = .plateNumber
+                        } label: {
+                            Image(systemName: "camera.viewfinder")
+                                .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
+                    }
 
                     TextField(
                         "add_vehicle.make_placeholder",
@@ -64,21 +89,59 @@ struct AddVehicleView: View {
 
                 // Secțiunea 2: Termene de expirare
                 Section("add_vehicle.section.expirations") {
-                    DatePicker(
-                        "add_vehicle.rca_expiry",
-                        selection: $viewModel.rcaDate,
-                        displayedComponents: .date
-                    )
-                    DatePicker(
-                        "add_vehicle.itp_expiry",
-                        selection: $viewModel.itpDate,
-                        displayedComponents: .date
-                    )
-                    DatePicker(
-                        "add_vehicle.rovinieta_expiry",
-                        selection: $viewModel.rovinietaDate,
-                        displayedComponents: .date
-                    )
+                    HStack {
+                        DatePicker(
+                            "add_vehicle.rca_expiry",
+                            selection: $viewModel.rcaDate,
+                            displayedComponents: .date
+                        )
+
+                        Button {
+                            activeDateScanField = .rca
+                            activeScanTarget = .expirationDate
+                        } label: {
+                            Image(systemName: "camera.viewfinder")
+                                .font(.subheadline)
+                                .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    HStack {
+                        DatePicker(
+                            "add_vehicle.itp_expiry",
+                            selection: $viewModel.itpDate,
+                            displayedComponents: .date
+                        )
+
+                        Button {
+                            activeDateScanField = .itp
+                            activeScanTarget = .expirationDate
+                        } label: {
+                            Image(systemName: "camera.viewfinder")
+                                .font(.subheadline)
+                                .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    HStack {
+                        DatePicker(
+                            "add_vehicle.rovinieta_expiry",
+                            selection: $viewModel.rovinietaDate,
+                            displayedComponents: .date
+                        )
+
+                        Button {
+                            activeDateScanField = .rovinieta
+                            activeScanTarget = .expirationDate
+                        } label: {
+                            Image(systemName: "camera.viewfinder")
+                                .font(.subheadline)
+                                .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
             }
             .navigationTitle("add_vehicle.title")
@@ -99,6 +162,29 @@ struct AddVehicleView: View {
                     .disabled(!viewModel.isFormValid)
                     .fontWeight(.bold)
                 }
+            }
+            .sheet(item: $activeScanTarget) { target in
+                LiveDocumentScannerView(
+                    target: target,
+                    onVinDetected: { vin in
+                        viewModel.vin = vin
+                    },
+                    onPlateDetected: { plate in
+                        viewModel.plateNumber = plate
+                    },
+                    onDateDetected: { date in
+                        switch activeDateScanField {
+                        case .rca:
+                            viewModel.rcaDate = date
+                        case .itp:
+                            viewModel.itpDate = date
+                        case .rovinieta:
+                            viewModel.rovinietaDate = date
+                        case .none:
+                            break
+                        }
+                    }
+                )
             }
         }
     }
