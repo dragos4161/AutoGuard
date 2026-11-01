@@ -233,6 +233,8 @@ struct MileageSheet: View {
             in: modelContext
         )
 
+        WidgetDataManager.shared.updateWidgetData(for: vehicle)
+
         withAnimation(.spring) {
             hasSavedFeedback = true
         }

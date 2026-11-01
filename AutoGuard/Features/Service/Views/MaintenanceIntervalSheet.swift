@@ -184,6 +184,7 @@ struct MaintenanceIntervalSheet: View {
             in: modelContext
         )
         NotificationManager.shared.scheduleMaintenanceReminder(for: vehicle)
+        WidgetDataManager.shared.updateWidgetData(for: vehicle)
         dismiss()
     }
 }

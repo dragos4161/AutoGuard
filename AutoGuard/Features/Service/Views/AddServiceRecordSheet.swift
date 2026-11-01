@@ -231,8 +231,9 @@ struct AddServiceRecordSheet: View {
             in: modelContext
         )
 
-        // Actualizăm notificarea de revizie
+        // Actualizăm notificarea de revizie și datele pentru widget
         NotificationManager.shared.scheduleMaintenanceReminder(for: vehicle)
+        WidgetDataManager.shared.updateWidgetData(for: vehicle)
 
         dismiss()
     }
