@@ -41,6 +41,37 @@ protocol VehicleRepositoryProtocol: Sendable {
         in context: ModelContext
     )
     func deleteDocument(_ document: VehicleDocument, in context: ModelContext)
+
+    // MARK: - Kilometraj
+    func addMileageEntry(
+        _ mileage: Int,
+        date: Date,
+        note: String?,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) -> MileageEntry
+    func deleteMileageEntry(_ entry: MileageEntry, in context: ModelContext)
+
+    // MARK: - Service & Mentenanță
+    func addServiceRecord(
+        title: String,
+        category: ServiceCategory,
+        date: Date,
+        mileage: Int,
+        notes: String?,
+        price: Double?,
+        invoiceData: Data?,
+        invoiceFileName: String?,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) -> ServiceRecord
+    func deleteServiceRecord(_ record: ServiceRecord, in context: ModelContext)
+    func updateMaintenanceIntervals(
+        oilIntervalKm: Int,
+        oilIntervalMonths: Int,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    )
 }
 
 /// Implementarea concretă pentru SwiftData (stocare locală pe telefon)
@@ -127,6 +158,96 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
 
     func deleteDocument(_ document: VehicleDocument, in context: ModelContext) {
         context.delete(document)
+        try? context.save()
+    }
+
+    // MARK: - Kilometraj
+    @discardableResult
+    func addMileageEntry(
+        _ mileage: Int,
+        date: Date,
+        note: String?,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) -> MileageEntry {
+        let entry = MileageEntry(mileage: mileage, date: date, note: note)
+        entry.vehicle = vehicle
+
+        if vehicle.mileageEntries == nil {
+            vehicle.mileageEntries = []
+        }
+        vehicle.mileageEntries?.append(entry)
+
+        context.insert(entry)
+        try? context.save()
+        return entry
+    }
+
+    func deleteMileageEntry(_ entry: MileageEntry, in context: ModelContext) {
+        context.delete(entry)
+        try? context.save()
+    }
+
+    // MARK: - Service & Mentenanță
+    @discardableResult
+    func addServiceRecord(
+        title: String,
+        category: ServiceCategory,
+        date: Date,
+        mileage: Int,
+        notes: String?,
+        price: Double?,
+        invoiceData: Data?,
+        invoiceFileName: String?,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) -> ServiceRecord {
+        let record = ServiceRecord(
+            title: title,
+            category: category,
+            date: date,
+            mileage: mileage,
+            notes: notes,
+            price: price,
+            invoiceData: invoiceData,
+            invoiceFileName: invoiceFileName
+        )
+        record.vehicle = vehicle
+
+        if vehicle.serviceRecords == nil {
+            vehicle.serviceRecords = []
+        }
+        vehicle.serviceRecords?.append(record)
+        context.insert(record)
+
+        // Dacă km introduși la service sunt mai mari decât kilometrajul curent, actualizăm și odometrul
+        if mileage > (vehicle.currentMileage ?? 0) {
+            _ = addMileageEntry(
+                mileage,
+                date: date,
+                note: "Service: \(title)",
+                for: vehicle,
+                in: context
+            )
+        }
+
+        try? context.save()
+        return record
+    }
+
+    func deleteServiceRecord(_ record: ServiceRecord, in context: ModelContext) {
+        context.delete(record)
+        try? context.save()
+    }
+
+    func updateMaintenanceIntervals(
+        oilIntervalKm: Int,
+        oilIntervalMonths: Int,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) {
+        vehicle.oilChangeIntervalKm = oilIntervalKm
+        vehicle.oilChangeIntervalMonths = oilIntervalMonths
         try? context.save()
     }
 }

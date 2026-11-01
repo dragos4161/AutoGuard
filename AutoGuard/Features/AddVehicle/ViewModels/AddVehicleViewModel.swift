@@ -18,6 +18,7 @@ final class AddVehicleViewModel {
     var year: Int = Calendar.current.component(.year, from: Date())
     var nickname: String = ""
     var vin: String = ""
+    var initialMileageText: String = ""
 
     // Termene inițiale
     var rcaDate: Date =
@@ -81,7 +82,14 @@ final class AddVehicleViewModel {
 
         vehicle.documents = [rca, itp, rovinieta]
 
-        // 3. Salvăm prin Repository
+        // 3. Kilometraj inițial (opțional)
+        if let initialMileage = Int(initialMileageText.filter { $0.isNumber }) {
+            let mileageEntry = MileageEntry(mileage: initialMileage, date: Date())
+            mileageEntry.vehicle = vehicle
+            vehicle.mileageEntries = [mileageEntry]
+        }
+
+        // 4. Salvăm prin Repository
         repository.insertVehicle(vehicle, in: context)
         return true
     }

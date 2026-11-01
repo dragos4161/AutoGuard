@@ -56,10 +56,27 @@ struct VehicleCardView: View {
                         .font(.headline)
                         .foregroundStyle(.primary)
 
-                    if !vehicle.nickname.isEmpty {
-                        Text(vehicle.nickname)
-                            .font(.caption)
+                    HStack(spacing: 6) {
+                        if !vehicle.nickname.isEmpty {
+                            Text(vehicle.nickname)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        if let mileage = vehicle.formattedMileage {
+                            if !vehicle.nickname.isEmpty {
+                                Text("•")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            HStack(spacing: 3) {
+                                Image(systemName: "gauge.with.needle")
+                                    .font(.system(size: 9))
+                                Text(mileage)
+                            }
+                            .font(.caption.bold())
                             .foregroundStyle(.secondary)
+                        }
                     }
                 }
 

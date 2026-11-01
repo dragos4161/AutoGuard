@@ -71,4 +71,59 @@ struct AutoGuardTests {
         let archivedStatus = viewModel.statusBannerData(for: [vehicle])
         #expect(archivedStatus.isWarning == false)
     }
+
+    // MARK: - Teste Model (Kilometraj)
+    @Test func testVehicleMileageTracking() async throws {
+        let vehicle = Vehicle(plateNumber: "B 123 ABC", make: "Dacia", model: "Duster")
+        #expect(vehicle.currentMileage == nil)
+        #expect(vehicle.formattedMileage == nil)
+
+        let olderEntry = MileageEntry(mileage: 140000, date: Calendar.current.date(byAdding: .month, value: -1, to: Date())!)
+        let recentEntry = MileageEntry(mileage: 145200, date: Date())
+
+        vehicle.mileageEntries = [olderEntry, recentEntry]
+
+        #expect(vehicle.currentMileage == 145200)
+        #expect(vehicle.formattedMileage == "145.200 km")
+        #expect(vehicle.sortedMileageEntries.first?.mileage == 145200)
+    }
+
+    // MARK: - Teste Model (Service & Schimb Ulei)
+    @Test func testServiceRecordAndOilChangeCalculation() async throws {
+        let vehicle = Vehicle(plateNumber: "B 123 ABC", make: "Dacia", model: "Duster")
+        vehicle.oilChangeIntervalKm = 10000
+        vehicle.oilChangeIntervalMonths = 12
+
+        // Fără istoric de service -> statusul este nil
+        #expect(vehicle.oilChangeStatus == nil)
+
+        // Adăugăm revizie făcută acum 2 luni la 140.000 km
+        let twoMonthsAgo = Calendar.current.date(byAdding: .month, value: -2, to: Date())!
+        let service = ServiceRecord(
+            title: "Revizie Ulei & Filtre",
+            category: .oilAndFilters,
+            date: twoMonthsAgo,
+            mileage: 140000,
+            price: 650.0
+        )
+        vehicle.serviceRecords = [service]
+
+        // Setăm kilometrajul actual la 147.000 km
+        let currentMileage = MileageEntry(mileage: 147000, date: Date())
+        vehicle.mileageEntries = [currentMileage]
+
+        // Verificăm calculul: 140.000 + 10.000 = 150.000 -> mai sunt 3.000 km
+        let status = vehicle.oilChangeStatus
+        #expect(status != nil)
+        #expect(status?.remainingKm == 3000)
+        #expect(status?.isOverdue == false)
+
+        // Dacă parcurgem încă 4.000 km (total 151.000 km) -> revizia devine depășită!
+        let highMileage = MileageEntry(mileage: 151000, date: Date())
+        vehicle.mileageEntries?.append(highMileage)
+
+        let overdueStatus = vehicle.oilChangeStatus
+        #expect(overdueStatus?.isOverdue == true)
+        #expect((overdueStatus?.remainingKm ?? 0) < 0)
+    }
 }

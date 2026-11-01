@@ -17,6 +17,10 @@ struct VehicleDetailsView: View {
     @Bindable var vehicle: Vehicle
     @State private var viewModel = VehicleDetailsViewModel()
     @State private var isShowingEditSheet = false
+    @State private var isShowingMileageSheet = false
+    @State private var isShowingAddServiceSheet = false
+    @State private var isShowingMaintenanceIntervalSheet = false
+    @State private var invoicePreviewURL: URL? = nil
 
     var body: some View {
         ScrollView {
@@ -30,7 +34,9 @@ struct VehicleDetailsView: View {
                         .foregroundStyle(.secondary)
                         .padding(.leading, 4)
 
-                    VehicleInfoCard(vehicle: vehicle)
+                    VehicleInfoCard(vehicle: vehicle) {
+                        isShowingMileageSheet = true
+                    }
                 }
 
                 // --------------------------------------------------
@@ -70,7 +76,60 @@ struct VehicleDetailsView: View {
                 }
 
                 // --------------------------------------------------
-                // SECȚIUNEA 3: Istoric Documente (Arhivate la reînnoire)
+                // SECȚIUNEA 3: Mentenanță & Istoric Service
+                // --------------------------------------------------
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("vehicle_details.section.maintenance")
+                            .font(.caption.bold())
+                            .foregroundStyle(.secondary)
+                            .padding(.leading, 4)
+
+                        Spacer()
+
+                        Button {
+                            isShowingAddServiceSheet = true
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "plus.circle.fill")
+                                Text("service.button.add_entry")
+                            }
+                            .font(.caption.bold())
+                            .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    MaintenanceCardView(
+                        vehicle: vehicle,
+                        onAddServiceTap: {
+                            isShowingAddServiceSheet = true
+                        },
+                        onConfigureIntervalsTap: {
+                            isShowingMaintenanceIntervalSheet = true
+                        }
+                    )
+
+                    if !vehicle.sortedServiceRecords.isEmpty {
+                        LazyVStack(spacing: 10) {
+                            ForEach(vehicle.sortedServiceRecords) { record in
+                                ServiceRecordRowView(
+                                    record: record,
+                                    onViewInvoice: {
+                                        openInvoice(for: record)
+                                    },
+                                    onDelete: {
+                                        deleteServiceRecord(record)
+                                    }
+                                )
+                            }
+                        }
+                        .padding(.top, 4)
+                    }
+                }
+
+                // --------------------------------------------------
+                // SECȚIUNEA 4: Istoric Documente (Arhivate la reînnoire)
                 // --------------------------------------------------
                 if !vehicle.archivedDocuments.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
@@ -101,6 +160,18 @@ struct VehicleDetailsView: View {
         }
         .sheet(isPresented: $isShowingEditSheet) {
             EditVehicleView(vehicle: vehicle)
+        }
+        // Modal Kilometraj / Istoric Odometru
+        .sheet(isPresented: $isShowingMileageSheet) {
+            MileageSheet(vehicle: vehicle)
+        }
+        // Modal Înregistrare Service / Revizie
+        .sheet(isPresented: $isShowingAddServiceSheet) {
+            AddServiceRecordSheet(vehicle: vehicle)
+        }
+        // Modal Configurare Intervale Mentenanță
+        .sheet(isPresented: $isShowingMaintenanceIntervalSheet) {
+            MaintenanceIntervalSheet(vehicle: vehicle)
         }
         // Modal 1: Corectarea datei curente (fără istoric)
         .sheet(isPresented: $viewModel.isShowingCorrectionSheet) {
@@ -134,6 +205,25 @@ struct VehicleDetailsView: View {
         }
         // Vizualizator nativ iOS QuickLook (cu Zoom, Share, AirDrop, Print)
         .quickLookPreview($viewModel.previewURL)
+        .quickLookPreview($invoicePreviewURL)
+    }
+
+    private func openInvoice(for record: ServiceRecord) {
+        guard let data = record.invoiceData else { return }
+        let fileName = record.invoiceFileName ?? "Factura_\(record.title).pdf"
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("\(record.id.uuidString)_\(fileName)")
+        do {
+            try data.write(to: tempURL, options: .atomic)
+            invoicePreviewURL = tempURL
+        } catch {
+            print("Eroare la deschiderea facturii: \(error)")
+        }
+    }
+
+    private func deleteServiceRecord(_ record: ServiceRecord) {
+        let repository = SwiftDataVehicleRepository()
+        repository.deleteServiceRecord(record, in: modelContext)
     }
 
     // MARK: - Rând pentru un document din Istoric

@@ -10,6 +10,7 @@ import SwiftUI
 
 struct VehicleInfoCard: View {
     let vehicle: Vehicle
+    var onMileageTap: (() -> Void)? = nil
     @State private var hasCopiedVin = false
 
     var body: some View {
@@ -88,6 +89,46 @@ struct VehicleInfoCard: View {
                     .buttonStyle(.plain)
                 }
 
+            }
+
+            Divider()
+
+            // 3. Rândul de Kilometraj / Odometru
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("mileage.card.title")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+
+                    if let formatted = vehicle.formattedMileage {
+                        Text(formatted)
+                            .font(.system(.subheadline, design: .rounded, weight: .bold))
+                            .foregroundStyle(.primary)
+                    } else {
+                        Text("mileage.card.empty")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                Spacer()
+
+                Button {
+                    onMileageTap?()
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "gauge.with.needle")
+                            .font(.caption.bold())
+                        Text(vehicle.currentMileage == nil ? "mileage.card.set" : "mileage.card.update")
+                            .font(.caption2.bold())
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(Color.blue.opacity(0.12))
+                    .foregroundStyle(.blue)
+                    .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(16)

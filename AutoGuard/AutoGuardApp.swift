@@ -17,7 +17,9 @@ struct AutoGuardApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Vehicle.self,
-            VehicleDocument.self
+            VehicleDocument.self,
+            MileageEntry.self,
+            ServiceRecord.self
         ])
 
         // Folosim `cloudKitDatabase: .none` pentru dezvoltare locală și Previews rapide în Simulator
@@ -36,8 +38,8 @@ struct AutoGuardApp: App {
 
     var body: some Scene {
         WindowGroup {
-            // Ecranul inițial cu care pornește aplicația
-            GarageView()
+            // Containerul cu TabView nativ (Garaj, Service, Asistent, Setări)
+            MainTabView()
                 .id(appLanguage)
                 .environment(\.locale, appLanguage.locale)
         }

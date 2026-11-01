@@ -57,6 +57,9 @@ struct AddVehicleView: View {
                         text: $viewModel.model
                     )
                     TextField("add_vehicle.nickname_placeholder", text: $viewModel.nickname)
+
+                    TextField("add_vehicle.mileage_placeholder", text: $viewModel.initialMileageText)
+                        .keyboardType(.numberPad)
                 }
 
                 // Secțiunea 2: Termene de expirare
