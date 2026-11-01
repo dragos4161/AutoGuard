@@ -17,6 +17,21 @@ enum ServiceCategory: String, Codable, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
+    var titleResource: LocalizedStringResource {
+        switch self {
+        case .oilAndFilters: return "service.category.oil_and_filters"
+        case .brakes: return "service.category.brakes"
+        case .timingBelt: return "service.category.timing_belt"
+        case .tires: return "service.category.tires"
+        case .suspension: return "service.category.suspension"
+        case .general: return "service.category.general"
+        }
+    }
+
+    var localizedTitle: String {
+        String(localized: titleResource)
+    }
+
     var titleKey: LocalizedStringKey {
         switch self {
         case .oilAndFilters: return "service.category.oil_and_filters"

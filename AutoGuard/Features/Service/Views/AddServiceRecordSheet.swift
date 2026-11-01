@@ -60,13 +60,13 @@ struct AddServiceRecordSheet: View {
                 Section("service.add.section.details") {
                     Picker("service.add.category", selection: $category) {
                         ForEach(ServiceCategory.allCases) { cat in
-                            Label(cat.titleKey, systemImage: cat.iconName)
+                            Label(cat.localizedTitle, systemImage: cat.iconName)
                                 .tag(cat)
                         }
                     }
                     .onChange(of: category) { _, newCat in
-                        if title.isEmpty || ServiceCategory.allCases.contains(where: { String(localized: $0.titleKey) == title }) {
-                            title = String(localized: newCat.titleKey)
+                        if title.isEmpty || ServiceCategory.allCases.contains(where: { $0.localizedTitle == title }) {
+                            title = newCat.localizedTitle
                         }
                     }
 
@@ -167,7 +167,7 @@ struct AddServiceRecordSheet: View {
             }
             .onAppear {
                 if title.isEmpty {
-                    title = String(localized: category.titleKey)
+                    title = category.localizedTitle
                 }
                 if let km = vehicle.currentMileage {
                     mileageText = "\(km)"
