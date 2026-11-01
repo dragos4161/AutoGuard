@@ -3,6 +3,7 @@
 //  AutoGuard
 //
 //  Formular nativ pentru înregistrarea unei noi alimentări cu carburant.
+//  Suportă scanarea inteligentă a bonului fiscal cu OCR și selecția vehiculului pentru garaje multi-auto.
 //
 
 import SwiftData
@@ -12,8 +13,12 @@ struct AddFuelEntrySheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
-    let vehicle: Vehicle
+    @Query(sort: \Vehicle.createdAt, order: .reverse) private var allVehicles: [Vehicle]
 
+    let initialVehicle: Vehicle?
+    let initialScanResult: FuelReceiptScanResult?
+
+    @State private var selectedVehicle: Vehicle?
     @State private var odometerString: String = ""
     @State private var litersString: String = ""
     @State private var totalPriceString: String = ""
@@ -22,12 +27,41 @@ struct AddFuelEntrySheet: View {
     @State private var date: Date = Date()
     @State private var notes: String = ""
 
-    // Inițializare kilometraj recomandat din bordul actual al mașinii
-    init(vehicle: Vehicle) {
-        self.vehicle = vehicle
-        if let current = vehicle.currentMileage {
+    @State private var isShowingReceiptScanner: Bool = false
+    @State private var receiptScanSuccessBanner: Bool = false
+
+    // Inițializare flexibilă (pentru mașină specifică sau deschidere rapidă din garaj)
+    init(vehicle: Vehicle? = nil, initialScanResult: FuelReceiptScanResult? = nil) {
+        self.initialVehicle = vehicle
+        self.initialScanResult = initialScanResult
+        self._selectedVehicle = State(initialValue: vehicle)
+
+        if let vehicle, let current = vehicle.currentMileage {
             _odometerString = State(initialValue: "\(current)")
         }
+
+        if let scan = initialScanResult {
+            if let lit = scan.liters {
+                _litersString = State(initialValue: String(format: "%.2f", lit))
+            }
+            if let tot = scan.totalPrice {
+                _totalPriceString = State(initialValue: String(format: "%.2f", tot))
+            }
+            if let d = scan.date {
+                _date = State(initialValue: d)
+            }
+            if let t = scan.fuelType {
+                _selectedFuelType = State(initialValue: t)
+            }
+            if let st = scan.stationName {
+                _notes = State(initialValue: st)
+            }
+            _receiptScanSuccessBanner = State(initialValue: true)
+        }
+    }
+
+    private var activeVehicle: Vehicle? {
+        selectedVehicle ?? initialVehicle ?? allVehicles.first
     }
 
     private var parsedOdometer: Int? {
@@ -54,7 +88,8 @@ struct AddFuelEntrySheet: View {
     }
 
     private var isFormValid: Bool {
-        guard let odo = parsedOdometer, odo > 0,
+        guard activeVehicle != nil,
+              let odo = parsedOdometer, odo > 0,
               let lit = parsedLiters, lit > 0,
               let price = parsedTotalPrice, price > 0 else {
             return false
@@ -65,37 +100,93 @@ struct AddFuelEntrySheet: View {
     var body: some View {
         NavigationStack {
             Form {
+                // Banner Notificare Succes Scanare Bon
+                if receiptScanSuccessBanner {
+                    Section {
+                        HStack(spacing: 12) {
+                            Image(systemName: "checkmark.seal.fill")
+                                .font(.title3)
+                                .foregroundStyle(.green)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("fuel.scan.success_banner_title")
+                                    .font(.subheadline.bold())
+                                Text("fuel.scan.success_banner_subtitle")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Spacer()
+
+                            Button {
+                                receiptScanSuccessBanner = false
+                            } label: {
+                                Image(systemName: "xmark")
+                                    .font(.caption.bold())
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+
                 // Secțiunea 1: Mașină & Kilometraj
                 Section {
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(vehicle.displayName)
-                                .font(.headline)
-                            Text(vehicle.plateNumber)
-                                .font(.caption.monospaced().bold())
-                                .foregroundStyle(.secondary)
+                    // Selector Mașină pentru garaje cu mai multe vehicule
+                    if allVehicles.count > 1 {
+                        Picker("common.car", selection: $selectedVehicle) {
+                            ForEach(allVehicles) { v in
+                                HStack {
+                                    Text(v.displayName)
+                                    Text("(\(v.plateNumber))")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .tag(v as Vehicle?)
+                            }
                         }
-                        Spacer()
-                        if let current = vehicle.currentMileage {
-                            VStack(alignment: .trailing, spacing: 2) {
-                                Text("Ultimul km înregistrat")
-                                    .font(.caption2)
-                                    .foregroundStyle(.secondary)
-                                Text("\(current) km")
-                                    .font(.caption.bold())
-                                    .foregroundStyle(.blue)
+                        .onChange(of: selectedVehicle) { _, newVehicle in
+                            if let newVehicle, let current = newVehicle.currentMileage {
+                                odometerString = "\(current)"
                             }
                         }
                     }
-                    .padding(.vertical, 4)
 
+                    if let vehicle = activeVehicle {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(vehicle.displayName)
+                                    .font(.headline)
+                                Text(vehicle.plateNumber)
+                                    .font(.caption.monospaced().bold())
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            if let current = vehicle.currentMileage {
+                                VStack(alignment: .trailing, spacing: 2) {
+                                    Text("Ultimul km înregistrat")
+                                        .font(.caption2)
+                                        .foregroundStyle(.secondary)
+                                    Text("\(current) km")
+                                        .font(.caption.bold())
+                                        .foregroundStyle(.blue)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+
+                    // Kilometraj bord
                     HStack {
-                        Text("fuel.field.odometer")
+                        HStack(spacing: 4) {
+                            Text("fuel.field.odometer")
+                            Text("*")
+                                .foregroundStyle(.red)
+                        }
                         Spacer()
                         TextField("0", text: $odometerString)
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
-                            .font(.body.monospaced())
+                            .font(.body.monospaced().bold())
                         Text("km")
                             .foregroundStyle(.secondary)
                     }
@@ -151,7 +242,20 @@ struct AddFuelEntrySheet: View {
                         }
                     }
                 } header: {
-                    Text("fuel.section.title")
+                    HStack {
+                        Text("fuel.section.title")
+                        Spacer()
+                        Button {
+                            isShowingReceiptScanner = true
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "doc.viewfinder.fill")
+                                Text("fuel.scan_receipt_button")
+                            }
+                            .font(.caption.bold())
+                            .foregroundStyle(.orange)
+                        }
+                    }
                 }
 
                 // Secțiunea 3: Detalii suplimentare
@@ -174,6 +278,15 @@ struct AddFuelEntrySheet: View {
                     }
                 }
 
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        isShowingReceiptScanner = true
+                    } label: {
+                        Image(systemName: "doc.viewfinder.fill")
+                            .foregroundStyle(.orange)
+                    }
+                }
+
                 ToolbarItem(placement: .confirmationAction) {
                     Button("common.save") {
                         saveFuelEntry()
@@ -181,11 +294,46 @@ struct AddFuelEntrySheet: View {
                     .disabled(!isFormValid)
                 }
             }
+            .onAppear {
+                if selectedVehicle == nil {
+                    selectedVehicle = initialVehicle ?? allVehicles.first
+                    if let v = selectedVehicle, let current = v.currentMileage, odometerString.isEmpty {
+                        odometerString = "\(current)"
+                    }
+                }
+            }
+            .sheet(isPresented: $isShowingReceiptScanner) {
+                FuelReceiptScannerSheet { result in
+                    applyReceiptResult(result)
+                }
+            }
         }
     }
 
+    private func applyReceiptResult(_ result: FuelReceiptScanResult) {
+        if let liters = result.liters {
+            litersString = String(format: "%.2f", liters)
+        }
+        if let total = result.totalPrice {
+            totalPriceString = String(format: "%.2f", total)
+        }
+        if let date = result.date {
+            self.date = date
+        }
+        if let type = result.fuelType {
+            selectedFuelType = type
+        }
+        if let station = result.stationName, !station.isEmpty {
+            notes = station
+        }
+        receiptScanSuccessBanner = true
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+    }
+
     private func saveFuelEntry() {
-        guard let odo = parsedOdometer,
+        guard let vehicle = activeVehicle,
+              let odo = parsedOdometer,
               let liters = parsedLiters,
               let price = parsedTotalPrice else {
             return

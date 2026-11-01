@@ -10,6 +10,39 @@ import Foundation
 import UIKit
 import Vision
 
+// MARK: - Structură Rezultat Scanare Bon Combustibil
+struct FuelReceiptScanResult: Equatable {
+    var liters: Double?
+    var totalPrice: Double?
+    var unitPrice: Double?
+    var date: Date?
+    var fuelType: FuelType?
+    var stationName: String?
+    var rawText: String
+
+    init(
+        liters: Double? = nil,
+        totalPrice: Double? = nil,
+        unitPrice: Double? = nil,
+        date: Date? = nil,
+        fuelType: FuelType? = nil,
+        stationName: String? = nil,
+        rawText: String = ""
+    ) {
+        self.liters = liters
+        self.totalPrice = totalPrice
+        self.unitPrice = unitPrice
+        self.date = date
+        self.fuelType = fuelType
+        self.stationName = stationName
+        self.rawText = rawText
+    }
+
+    var hasUsableData: Bool {
+        liters != nil || totalPrice != nil
+    }
+}
+
 final class TextRecognitionService {
     static let shared = TextRecognitionService()
 
@@ -84,6 +117,105 @@ final class TextRecognitionService {
 
         // Dacă toate sunt în trecut, returnăm data cea mai recentă
         return dates.max()
+    }
+
+    // MARK: - Extragere Date Bon Fiscal Combustibil
+    /// Analizează textul scanat de pe un bon fiscal din benzinăriile din România și extrage:
+    /// cantitatea în litri, totalul de plată (lei), tipul de carburant, stația peco și data.
+    func extractFuelReceiptData(from text: String) -> FuelReceiptScanResult {
+        let clean = text.uppercased()
+
+        var result = FuelReceiptScanResult(rawText: text)
+
+        // 1. Extragere Litri (cantitate)
+        let litersPatterns = [
+            #"(?:CANTITATE|CANT\.?|VOLUM)?[\s:]*(\d{1,3}[.,]\d{2,3})\s*(?:L\b|LTR|LITRI|LITRE)"#,
+            #"(\d{1,3}[.,]\d{2,3})\s*(?:X|\*)\s*(\d{1,2}[.,]\d{2,3})"#
+        ]
+
+        for pattern in litersPatterns {
+            if let regex = try? NSRegularExpression(pattern: pattern) {
+                let range = NSRange(location: 0, length: clean.utf16.count)
+                if let match = regex.firstMatch(in: clean, range: range),
+                   let matchRange = Range(match.range(at: 1), in: clean) {
+                    let str = String(clean[matchRange]).replacingOccurrences(of: ",", with: ".")
+                    if let val = Double(str), val > 0 && val < 300 {
+                        result.liters = val
+                        if match.numberOfRanges > 2, let unitRange = Range(match.range(at: 2), in: clean) {
+                            let unitStr = String(clean[unitRange]).replacingOccurrences(of: ",", with: ".")
+                            if let unitVal = Double(unitStr), unitVal > 2 && unitVal < 20 {
+                                result.unitPrice = unitVal
+                            }
+                        }
+                        break
+                    }
+                }
+            }
+        }
+
+        // 2. Extragere Total (Preț Total în Lei)
+        let totalPatterns = [
+            #"(?:TOTAL\s*LEI|TOTAL\s*RON|VALOARE\s*TOTALA|DE\s*PLATA)[\s:]*(\d{1,5}[.,]\d{2})\b"#,
+            #"(?:TOTAL)[\s:]*([A-Z]{0,3})[\s:]*(\d{1,5}[.,]\d{2})\b"#,
+            #"(?:CARD|NUMERAR)[\s:]*(\d{1,5}[.,]\d{2})\s*(?:LEI|RON)?"#
+        ]
+
+        for pattern in totalPatterns {
+            if let regex = try? NSRegularExpression(pattern: pattern) {
+                let range = NSRange(location: 0, length: clean.utf16.count)
+                if let match = regex.firstMatch(in: clean, range: range) {
+                    let groupIndex = match.numberOfRanges > 2 ? 2 : 1
+                    if let matchRange = Range(match.range(at: groupIndex), in: clean) {
+                        let str = String(clean[matchRange]).replacingOccurrences(of: ",", with: ".")
+                        if let val = Double(str), val > 5 && val < 5000 {
+                            result.totalPrice = val
+                            break
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. Extragere Dată Bon
+        let dates = extractAllDates(from: text)
+        let now = Date()
+        let pastDates = dates.filter { $0 <= now }
+        result.date = pastDates.max() ?? dates.first
+
+        // 4. Detecție Nume Benzinărie / Stație Peco
+        let stations = [
+            ("OMV", "OMV"),
+            ("PETROM", "Petrom"),
+            ("ROMPETROL", "Rompetrol"),
+            ("MOL", "MOL"),
+            ("LUKOIL", "Lukoil"),
+            ("SOCAR", "Socar"),
+            ("GAZPROM", "Gazprom"),
+            ("TSV", "TSV")
+        ]
+        for (keyword, name) in stations {
+            if clean.contains(keyword) {
+                result.stationName = name
+                break
+            }
+        }
+
+        // 5. Detecție Tip Carburant
+        if clean.contains("100") || clean.contains("98") || clean.contains("MAXXMOTION 100") || clean.contains("EVO PLUS") {
+            result.fuelType = .petrol98
+        } else if clean.contains("EXTRA DIESEL") || clean.contains("MAXXMOTION DIESEL") || clean.contains("EVO DIESEL") || clean.contains("MOTORINA EXTRA") {
+            result.fuelType = .premiumDiesel
+        } else if clean.contains("DIESEL") || clean.contains("MOTORINA") {
+            result.fuelType = .diesel
+        } else if clean.contains("BENZIN") || clean.contains("95") {
+            result.fuelType = .petrol95
+        } else if clean.contains("GPL") || clean.contains("LPG") || clean.contains("AUTOGAS") {
+            result.fuelType = .lpg
+        } else if clean.contains("GNC") || clean.contains("CNG") {
+            result.fuelType = .cng
+        }
+
+        return result
     }
 
     /// Extrage toate datele dintr-un text în formatele dd.MM.yyyy, dd/MM/yyyy sau dd-MM-yyyy

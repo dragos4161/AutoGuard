@@ -7950,6 +7950,244 @@
           }
         }
       }
+    },
+    "fuel.quick_scan_fab": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuel / Receipt"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alimentează / Bon"
+          }
+        }
+      }
+    },
+    "fuel.ocr.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Fuel Receipt"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanare Bon Fiscal"
+          }
+        }
+      }
+    },
+    "fuel.ocr.prompt_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snap or choose a fuel receipt"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotografiază sau alege bonul de benzină"
+          }
+        }
+      }
+    },
+    "fuel.ocr.prompt_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We automatically extract liters, total cost, station, and date."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extragem automat cantitatea în litri, totalul de plată în lei, benzinăria și data."
+          }
+        }
+      }
+    },
+    "fuel.ocr.manual_entry": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter details manually"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Introdu manual datele"
+          }
+        }
+      }
+    },
+    "fuel.ocr.processing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Analyzing fuel receipt..."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se analizează bonul fiscal..."
+          }
+        }
+      }
+    },
+    "fuel.ocr.success_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data extracted from receipt:"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Date extrase din bon:"
+          }
+        }
+      }
+    },
+    "fuel.ocr.apply_button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apply to Form"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aplică în formular"
+          }
+        }
+      }
+    },
+    "fuel.ocr.station": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Station"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benzinărie"
+          }
+        }
+      }
+    },
+    "fuel.ocr.error_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receipt could not be read"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bonul nu a putut fi citit"
+          }
+        }
+      }
+    },
+    "fuel.ocr.error_message": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not detect liters or total amount on this receipt. Please ensure photo is sharp and well lit."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nu am putut detecta litrii sau totalul de pe acest bon. Asigură-te că poza este clară și bine luminată."
+          }
+        }
+      }
+    },
+    "fuel.scan.success_banner_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Receipt details applied!"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datele din bon au fost aplicate!"
+          }
+        }
+      }
+    },
+    "fuel.scan.success_banner_subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please verify values and enter current dashboard odometer."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te rugăm să verifici valorile și să introduci kilometrajul din bord."
+          }
+        }
+      }
+    },
+    "fuel.scan_receipt_button": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scan Receipt"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scanează Bon"
+          }
+        }
+      }
     }
   },
   "version": "1.3"

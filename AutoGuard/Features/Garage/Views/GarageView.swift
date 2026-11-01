@@ -21,6 +21,7 @@ struct GarageView: View {
     @State private var subscriptionManager = SubscriptionManager.shared
     @State private var isShowingPaywall: Bool = false
     @State private var walletVehicle: Vehicle? = nil
+    @State private var isShowingQuickFuelSheet: Bool = false
     
     @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -77,6 +78,9 @@ struct GarageView: View {
                     }
                     .background(Color(uiColor: .systemGroupedBackground))
                 }
+            }
+            .overlay(alignment: .bottomTrailing) {
+                quickFuelFAB
             }
             .navigationTitle("garage.title")
             .navigationDestination(for: Vehicle.self) { selectedVehicle in
@@ -143,6 +147,34 @@ struct GarageView: View {
             .fullScreenCover(item: $walletVehicle) { selectedVehicle in
                 DigitalWalletView(vehicle: selectedVehicle)
             }
+            .sheet(isPresented: $isShowingQuickFuelSheet) {
+                AddFuelEntrySheet()
+            }
+        }
+    }
+
+    /// Buton plutitor rapid pentru alimentări / scanare bon fiscal (FAB)
+    @ViewBuilder
+    private var quickFuelFAB: some View {
+        if !vehicles.isEmpty {
+            Button {
+                isShowingQuickFuelSheet = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "fuelpump.fill")
+                        .font(.headline)
+                    Text("fuel.quick_scan_fab")
+                        .font(.subheadline.bold())
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(Color.orange.gradient)
+                .foregroundStyle(.white)
+                .clipShape(Capsule())
+                .shadow(color: Color.orange.opacity(0.38), radius: 8, x: 0, y: 4)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 20)
         }
     }
 
