@@ -81,7 +81,8 @@ struct FuelSummaryCardView: View {
             }
 
             // Ultimele înregistrări sau link istoric
-            if let recentEntries = vehicle.sortedFuelEntries.prefix(2), !recentEntries.isEmpty {
+            if !vehicle.sortedFuelEntries.isEmpty {
+                let recentEntries = vehicle.sortedFuelEntries.prefix(2)
                 Divider()
 
                 VStack(spacing: 8) {
