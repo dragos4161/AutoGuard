@@ -105,6 +105,28 @@ struct MaintenanceCardView: View {
                 // Secțiunea 3: Butoane Acțiuni Rapide (când este depășit sau în curând)
                 if status.isOverdue || status.isDueSoon {
                     actionButtonsSection(for: status)
+                } else {
+                    // Buton când revizia este în parametri optimi
+                    Button {
+                        onAddServiceTap()
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(.blue)
+                            Text("service.card.log_service_button")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .font(.caption.bold())
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 9)
+                        .background(Color(uiColor: .tertiarySystemFill).opacity(0.6))
+                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 // Secțiunea 4: Footer cu Status Badge
