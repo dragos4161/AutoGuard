@@ -4,9 +4,10 @@
 //
 //  Sheet de detaliu complet pentru o intrare în service / revizie.
 //  Permite vizualizarea integrală a operațiunilor și pieselor folosite,
-//  a facturii/devizului atașat (QuickLook) și a costului.
+//  editarea datelor (titlu, km, preț, notițe) și atașarea/modificarea facturii (QuickLook).
 //
 
+import PhotosUI
 import QuickLook
 import SwiftData
 import SwiftUI
@@ -15,12 +16,18 @@ struct ServiceRecordDetailSheet: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    let record: ServiceRecord
+    @Bindable var record: ServiceRecord
     var onDelete: (() -> Void)? = nil
 
     @State private var invoicePreviewURL: URL? = nil
     @State private var isNotesCopied: Bool = false
     @State private var isShowingDeleteAlert: Bool = false
+    @State private var isShowingEditSheet: Bool = false
+
+    // Atașare rapidă factură direct din fișă
+    @State private var isShowingFileImporter: Bool = false
+    @State private var isShowingPhotoPicker: Bool = false
+    @State private var selectedPhotoItem: PhotosPickerItem? = nil
 
     var body: some View {
         NavigationStack {
@@ -49,14 +56,52 @@ struct ServiceRecordDetailSheet: View {
             .navigationTitle("service.detail.title")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
+                ToolbarItem(placement: .cancellationAction) {
                     Button("common.done") {
                         dismiss()
                     }
                     .fontWeight(.semibold)
                 }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button {
+                        isShowingEditSheet = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "pencil")
+                            Text("common.edit")
+                        }
+                        .font(.subheadline.bold())
+                    }
+                }
+            }
+            .sheet(isPresented: $isShowingEditSheet) {
+                EditServiceRecordSheet(record: record)
             }
             .quickLookPreview($invoicePreviewURL)
+            .fileImporter(
+                isPresented: $isShowingFileImporter,
+                allowedContentTypes: [.pdf, .image],
+                allowsMultipleSelection: false
+            ) { result in
+                handleDirectImportedFile(result: result)
+            }
+            .photosPicker(
+                isPresented: $isShowingPhotoPicker,
+                selection: $selectedPhotoItem,
+                matching: .images
+            )
+            .onChange(of: selectedPhotoItem) { _, newItem in
+                guard let newItem else { return }
+                Task {
+                    if let data = try? await newItem.loadTransferable(type: Data.self) {
+                        record.invoiceData = data
+                        record.invoiceFileName = "Factura_\(record.category.rawValue).jpg"
+                        persistInvoiceUpdate()
+                    }
+                    selectedPhotoItem = nil
+                }
+            }
             .alert("service.detail.delete_confirm_title", isPresented: $isShowingDeleteAlert) {
                 Button("common.cancel", role: .cancel) {}
                 Button("common.delete", role: .destructive) {
@@ -291,6 +336,37 @@ struct ServiceRecordDetailSheet: View {
                         }
 
                         Spacer()
+
+                        // Meniu pentru acțiuni pe factură (Înlocuire / Ștergere)
+                        Menu {
+                            Button {
+                                isShowingFileImporter = true
+                            } label: {
+                                Label("doc.attach.pdf", systemImage: "doc.fill")
+                            }
+
+                            Button {
+                                isShowingPhotoPicker = true
+                            } label: {
+                                Label("doc.attach.photo", systemImage: "photo.on.rectangle")
+                            }
+
+                            Divider()
+
+                            Button(role: .destructive) {
+                                record.invoiceData = nil
+                                record.invoiceFileName = nil
+                                persistInvoiceUpdate()
+                            } label: {
+                                Label("service.detail.remove_invoice", systemImage: "trash")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                                .font(.title3)
+                                .foregroundStyle(.secondary)
+                                .padding(4)
+                        }
+                        .buttonStyle(.plain)
                     }
 
                     HStack(spacing: 10) {
@@ -323,14 +399,41 @@ struct ServiceRecordDetailSheet: View {
                     }
                 }
             } else {
-                HStack(spacing: 8) {
-                    Image(systemName: "doc.badge.plus")
-                        .foregroundStyle(.secondary)
-                    Text("service.detail.no_invoice_attached")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("service.detail.no_invoice_attached")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    Menu {
+                        Button {
+                            isShowingFileImporter = true
+                        } label: {
+                            Label("doc.attach.pdf", systemImage: "doc.fill")
+                        }
+
+                        Button {
+                            isShowingPhotoPicker = true
+                        } label: {
+                            Label("doc.attach.photo", systemImage: "photo.on.rectangle")
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "paperclip")
+                            Text("service.detail.attach_invoice")
+                        }
+                        .font(.caption.bold())
+                        .foregroundStyle(.blue)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(Color.blue.opacity(0.1))
+                        .clipShape(Capsule())
+                    }
                 }
-                .padding(.vertical, 8)
+                .padding(.vertical, 4)
             }
         }
         .padding(16)
@@ -359,21 +462,41 @@ struct ServiceRecordDetailSheet: View {
         .padding(.top, 8)
     }
 
-    // MARK: - Helperi Factură & Ștergere
+    // MARK: - Helperi Factură & Gestiune
     private func prepareTempInvoiceURL() -> URL? {
         guard let data = record.invoiceData else { return nil }
         let fileName = record.invoiceFileName ?? "Factura_\(record.title).pdf"
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("\(record.id.uuidString)_\(fileName)")
-        if !FileManager.default.fileExists(atPath: tempURL.path) {
-            try? data.write(to: tempURL, options: .atomic)
-        }
+        try? data.write(to: tempURL, options: .atomic)
         return tempURL
     }
 
     private func openInvoice() {
         if let url = prepareTempInvoiceURL() {
             invoicePreviewURL = url
+        }
+    }
+
+    private func handleDirectImportedFile(result: Result<[URL], Error>) {
+        guard case .success(let urls) = result, let fileURL = urls.first else { return }
+        let canAccess = fileURL.startAccessingSecurityScopedResource()
+        defer {
+            if canAccess { fileURL.stopAccessingSecurityScopedResource() }
+        }
+
+        if let data = try? Data(contentsOf: fileURL) {
+            record.invoiceData = data
+            record.invoiceFileName = fileURL.lastPathComponent
+            persistInvoiceUpdate()
+        }
+    }
+
+    private func persistInvoiceUpdate() {
+        try? modelContext.save()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        if let vehicle = record.vehicle {
+            WidgetDataManager.shared.updateWidgetData(for: vehicle)
         }
     }
 

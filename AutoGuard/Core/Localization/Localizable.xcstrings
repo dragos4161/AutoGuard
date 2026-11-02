@@ -8798,6 +8798,57 @@
           }
         }
       }
+    },
+    "service.edit.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Service Record"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editează Intrarea în Service"
+          }
+        }
+      }
+    },
+    "service.detail.attach_invoice": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attach Invoice"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atașează Factură"
+          }
+        }
+      }
+    },
+    "service.detail.remove_invoice": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove Attached Invoice"
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Șterge Factura Atașată"
+          }
+        }
+      }
     }
   },
   "version": "1.3"
