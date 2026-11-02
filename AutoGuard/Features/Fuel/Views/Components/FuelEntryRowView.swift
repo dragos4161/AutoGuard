@@ -81,7 +81,7 @@ struct FuelEntryRowView: View {
                         .foregroundStyle(.green)
                         .clipShape(Capsule())
                 } else if entry.isFullTank {
-                    Text("Plin")
+                    Text(AppLanguage.tr("Plin", "Full"))
                         .font(.system(size: 10, weight: .bold))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)

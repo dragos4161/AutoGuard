@@ -14,10 +14,21 @@ enum AppLanguage: String, CaseIterable, Identifiable {
     
     var id: String { rawValue }
     
+    /// Limba curentă selectată în aplicație (sau limba sistemului dacă este pe .system)
+    static var current: AppLanguage {
+        let raw = UserDefaults.standard.string(forKey: "appLanguage") ?? AppLanguage.system.rawValue
+        return AppLanguage(rawValue: raw) ?? .system
+    }
+    
+    /// Helper rapid pentru alegerea textului în funcție de limba curentă a aplicației (Română vs Engleză)
+    static func tr(_ ro: String, _ en: String) -> String {
+        current.isRomanian ? ro : en
+    }
+    
     var displayName: String {
         switch self {
         case .system:
-            return "Automat (Sistem)"
+            return AppLanguage.tr("Automat (Sistem)", "Automatic (System)")
         case .romanian:
             return "Română 🇷🇴"
         case .english:

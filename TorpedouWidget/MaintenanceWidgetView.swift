@@ -22,6 +22,18 @@ public struct MaintenanceWidgetEntryView: View {
 
     private var family: WidgetFamily { familyOverride ?? systemFamily }
 
+    private var isRomanian: Bool {
+        if let lang = UserDefaults.standard.string(forKey: "appLanguage") {
+            if lang == "ro" { return true }
+            if lang == "en" { return false }
+        }
+        return (Locale.preferredLanguages.first ?? "en").hasPrefix("ro")
+    }
+
+    private func tr(_ ro: String, _ en: String) -> String {
+        isRomanian ? ro : en
+    }
+
     public init(data: MaintenanceWidgetData?) {
         self.data = data
     }
@@ -86,11 +98,11 @@ public struct MaintenanceWidgetEntryView: View {
             }
 
             if let docTitle = data.nextDocTitle, let days = data.nextDocDaysLeft, data.nextDocIsUrgent {
-                Text("\(docTitle) expiră în \(days)z")
+                Text(tr("\(docTitle) expiră în \(days)z", "\(docTitle) expires in \(days)d"))
                     .font(.caption2)
                     .lineLimit(1)
             } else {
-                Text("Revizie: \(data.remainingKm) km rămași")
+                Text(tr("Revizie: \(data.remainingKm) km rămași", "Service: \(data.remainingKm) km left"))
                     .font(.caption2)
                     .lineLimit(1)
             }
@@ -108,11 +120,11 @@ public struct MaintenanceWidgetEntryView: View {
         HStack(spacing: 3) {
             Image(systemName: "car.fill")
             if data.isOverdue {
-                Text("\(data.plateNumber): ⚠️ Revizie depășită")
+                Text(tr("\(data.plateNumber): ⚠️ Revizie depășită", "\(data.plateNumber): ⚠️ Service overdue"))
             } else if let doc = data.nextDocTitle, let days = data.nextDocDaysLeft, data.nextDocIsUrgent {
-                Text("\(data.plateNumber): \(doc) în \(days)z")
+                Text(tr("\(data.plateNumber): \(doc) în \(days)z", "\(data.plateNumber): \(doc) in \(days)d"))
             } else {
-                Text("\(data.plateNumber): \(data.remainingKm) km până la service")
+                Text(tr("\(data.plateNumber): \(data.remainingKm) km până la service", "\(data.plateNumber): \(data.remainingKm) km to service"))
             }
         }
     }
@@ -145,12 +157,14 @@ public struct MaintenanceWidgetEntryView: View {
             // Factor limită & alertă document
             HStack(spacing: 6) {
                 if data.isOverdue {
-                    Text("⚠️ REVIZIE DEPĂȘITĂ")
+                    Text(tr("⚠️ REVIZIE DEPĂȘITĂ", "⚠️ SERVICE OVERDUE"))
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(.red)
                 } else {
                     let isKm = data.limitingFactor == "mileage"
-                    Text(isKm ? "⚡️ Factor limită: Kilometraj" : "⚡️ Factor limită: Timp")
+                    Text(isKm
+                         ? tr("⚡️ Factor limită: Kilometraj", "⚡️ Limiting factor: Mileage")
+                         : tr("⚡️ Factor limită: Timp", "⚡️ Limiting factor: Time"))
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(.secondary)
                 }
@@ -161,7 +175,7 @@ public struct MaintenanceWidgetEntryView: View {
                     HStack(spacing: 3) {
                         Image(systemName: "exclamationmark.circle.fill")
                             .font(.system(size: 9))
-                        Text("\(doc): \(days)z")
+                        Text(tr("\(doc): \(days)z", "\(doc): \(days)d"))
                             .font(.system(size: 10, weight: .bold))
                     }
                     .padding(.horizontal, 6)
@@ -181,16 +195,22 @@ public struct MaintenanceWidgetEntryView: View {
                 title: "KM",
                 progress: data.kmProgress,
                 percent: data.kmProgressPercent,
-                subtitle: "\(data.kmUsed.formatted()) / \(data.intervalKm.formatted()) km (\(data.remainingKm) km rămași)",
+                subtitle: tr(
+                    "\(data.kmUsed.formatted()) / \(data.intervalKm.formatted()) km (\(data.remainingKm) km rămași)",
+                    "\(data.kmUsed.formatted()) / \(data.intervalKm.formatted()) km (\(data.remainingKm) km left)"
+                ),
                 color: data.isOverdue ? .red : (data.limitingFactor == "mileage" ? .orange : .blue)
             )
 
             // Bara 2: Timp
             miniProgressBar(
-                title: "Timp",
+                title: tr("Timp", "Time"),
                 progress: data.timeProgress,
                 percent: data.timeProgressPercent,
-                subtitle: "\(data.dueDateFormatted) (\(max(0, data.remainingDays / 30)) luni rămase)",
+                subtitle: tr(
+                    "\(data.dueDateFormatted) (\(max(0, data.remainingDays / 30)) luni rămase)",
+                    "\(data.dueDateFormatted) (\(max(0, data.remainingDays / 30)) months left)"
+                ),
                 color: data.isOverdue ? .red : (data.limitingFactor == "time" ? .orange : .purple)
             )
         }
@@ -225,7 +245,7 @@ public struct MaintenanceWidgetEntryView: View {
             let accentColor: Color = data.isOverdue ? .red : (isKm ? .orange : .purple)
 
             HStack {
-                Text(isKm ? "⚡️ Kilometri" : "⚡️ Timp")
+                Text(isKm ? tr("⚡️ Kilometri", "⚡️ Mileage") : tr("⚡️ Timp", "⚡️ Time"))
                     .font(.caption2.bold())
                     .foregroundStyle(accentColor)
                 Spacer()
@@ -250,7 +270,9 @@ public struct MaintenanceWidgetEntryView: View {
             }
             .frame(height: 6)
 
-            Text(isKm ? "\(data.remainingKm) km rămași" : "\(max(0, data.remainingDays / 30)) luni rămase")
+            Text(isKm
+                 ? tr("\(data.remainingKm) km rămași", "\(data.remainingKm) km left")
+                 : tr("\(max(0, data.remainingDays / 30)) luni rămase", "\(max(0, data.remainingDays / 30)) months left"))
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(.secondary)
 
@@ -258,7 +280,7 @@ public struct MaintenanceWidgetEntryView: View {
                 HStack(spacing: 2) {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .font(.system(size: 8))
-                    Text("\(doc) în \(days) zile")
+                    Text(tr("\(doc) în \(days) zile", "\(doc) in \(days) days"))
                         .font(.system(size: 9, weight: .bold))
                 }
                 .foregroundStyle(.red)
@@ -277,7 +299,7 @@ public struct MaintenanceWidgetEntryView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(data.vehicleName)
                         .font(.headline)
-                    Text("\(data.odometer.formatted()) km bord")
+                    Text(tr("\(data.odometer.formatted()) km bord", "\(data.odometer.formatted()) km odometer"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -297,12 +319,12 @@ public struct MaintenanceWidgetEntryView: View {
             // Secțiune Revizie Ulei & Filtre
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Label("Revizie & Schimb Ulei", systemImage: "drop.fill")
+                    Label(tr("Revizie & Schimb Ulei", "Oil & Service"), systemImage: "drop.fill")
                         .font(.subheadline.bold())
                         .foregroundStyle(.orange)
                     Spacer()
                     if data.isOverdue {
-                        Text("DEPĂȘIT")
+                        Text(tr("DEPĂȘIT", "OVERDUE"))
                             .font(.caption2.bold())
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
@@ -313,18 +335,24 @@ public struct MaintenanceWidgetEntryView: View {
                 }
 
                 miniProgressBar(
-                    title: "Kilometraj",
+                    title: tr("Kilometraj", "Mileage"),
                     progress: data.kmProgress,
                     percent: data.kmProgressPercent,
-                    subtitle: "\(data.kmUsed.formatted()) / \(data.intervalKm.formatted()) km (\(data.remainingKm) km rămași)",
+                    subtitle: tr(
+                        "\(data.kmUsed.formatted()) / \(data.intervalKm.formatted()) km (\(data.remainingKm) km rămași)",
+                        "\(data.kmUsed.formatted()) / \(data.intervalKm.formatted()) km (\(data.remainingKm) km left)"
+                    ),
                     color: data.isOverdue ? .red : .orange
                 )
 
                 miniProgressBar(
-                    title: "Timp calendaristic",
+                    title: tr("Timp calendaristic", "Calendar time"),
                     progress: data.timeProgress,
                     percent: data.timeProgressPercent,
-                    subtitle: "\(data.dueDateFormatted) (\(max(0, data.remainingDays / 30)) luni rămase)",
+                    subtitle: tr(
+                        "\(data.dueDateFormatted) (\(max(0, data.remainingDays / 30)) luni rămase)",
+                        "\(data.dueDateFormatted) (\(max(0, data.remainingDays / 30)) months left)"
+                    ),
                     color: data.isOverdue ? .red : .purple
                 )
             }
@@ -335,7 +363,7 @@ public struct MaintenanceWidgetEntryView: View {
             // Card Documente & Consum
             HStack(spacing: 8) {
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Următorul Document")
+                    Text(tr("Următorul Document", "Next Document"))
                         .font(.system(size: 10))
                         .foregroundStyle(.secondary)
 
@@ -344,11 +372,11 @@ public struct MaintenanceWidgetEntryView: View {
                             Circle()
                                 .fill(data.nextDocIsUrgent ? Color.red : Color.green)
                                 .frame(width: 8, height: 8)
-                            Text("\(doc) (\(days)z)")
+                            Text(tr("\(doc) (\(days)z)", "\(doc) (\(days)d)"))
                                 .font(.caption.bold())
                         }
                     } else {
-                        Text("Toate la zi ✓")
+                        Text(tr("Toate la zi ✓", "All up to date ✓"))
                             .font(.caption.bold())
                             .foregroundStyle(.green)
                     }
@@ -359,7 +387,7 @@ public struct MaintenanceWidgetEntryView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Consum Mediu")
+                    Text(tr("Consum Mediu", "Avg. Consumption"))
                         .font(.system(size: 10))
                         .foregroundStyle(.secondary)
 
@@ -378,7 +406,7 @@ public struct MaintenanceWidgetEntryView: View {
             // Buton Acțiune rapidă
             HStack {
                 Spacer()
-                Label("Deschide Garaj", systemImage: "arrow.right.circle.fill")
+                Label(tr("Deschide Garaj", "Open Garage"), systemImage: "arrow.right.circle.fill")
                     .font(.caption.bold())
                     .foregroundStyle(.blue)
             }
@@ -437,9 +465,9 @@ public struct MaintenanceWidgetEntryView: View {
             Image(systemName: "car.fill")
                 .font(.title2)
                 .foregroundStyle(.secondary)
-            Text("Torpedou")
+            Text(tr("Torpedou", "Glovebox"))
                 .font(.caption.bold())
-            Text("Deschide aplicația pentru a configura vehiculul.")
+            Text(tr("Deschide aplicația pentru a configura vehiculul.", "Open the app to set up your vehicle."))
                 .font(.system(size: 10))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

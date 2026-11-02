@@ -18,6 +18,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E6A80F463097D318007D7322"
                BuildableName = "TorpedouWidgetExtension.appex"
+               BlueprintName = "TorpedouWidgetExtension"
                ReferencedContainer = "container:AutoGuard.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -31,6 +32,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E62EF5EA308D0A5500C26EE6"
                BuildableName = "AutoGuard.app"
+               BlueprintName = "AutoGuard"
                ReferencedContainer = "container:AutoGuard.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -54,43 +56,17 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES"
-      launchAutomaticallySubstyle = "2"
-      queueDebuggingEnabled = "No">
-      <RemoteRunnable
-         runnableDebuggingMode = "2"
-         BundleIdentifier = "com.apple.springboard">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E6A80F463097D318007D7322"
-            BuildableName = "TorpedouWidgetExtension.appex"
-            ReferencedContainer = "container:AutoGuard.xcodeproj">
-         </BuildableReference>
-      </RemoteRunnable>
-      <MacroExpansion>
+      launchAutomaticallySubstyle = "2">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E62EF5EA308D0A5500C26EE6"
             BuildableName = "AutoGuard.app"
+            BlueprintName = "AutoGuard"
             ReferencedContainer = "container:AutoGuard.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
-      <EnvironmentVariables>
-         <EnvironmentVariable
-            key = "_XCWidgetKind"
-            value = ""
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "_XCWidgetDefaultView"
-            value = "timeline"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "_XCWidgetFamily"
-            value = "systemMedium"
-            isEnabled = "YES">
-         </EnvironmentVariable>
-      </EnvironmentVariables>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -106,6 +82,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E62EF5EA308D0A5500C26EE6"
             BuildableName = "AutoGuard.app"
+            BlueprintName = "AutoGuard"
             ReferencedContainer = "container:AutoGuard.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

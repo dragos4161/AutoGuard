@@ -10,6 +10,7 @@ import SwiftUI
 enum AppTab: String, CaseIterable, Identifiable {
     case garage
     case service
+    case costs
     case assistant
     case settings
 
@@ -19,6 +20,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         switch self {
         case .garage: return "tab.garage"
         case .service: return "tab.service"
+        case .costs: return "tab.costs"
         case .assistant: return "tab.assistant"
         case .settings: return "tab.settings"
         }
@@ -28,6 +30,7 @@ enum AppTab: String, CaseIterable, Identifiable {
         switch self {
         case .garage: return "car.2.fill"
         case .service: return "wrench.and.screwdriver.fill"
+        case .costs: return "chart.pie.fill"
         case .assistant: return "sparkles"
         case .settings: return "gearshape.fill"
         }

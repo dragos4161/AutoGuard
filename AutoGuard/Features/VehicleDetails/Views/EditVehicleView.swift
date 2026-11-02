@@ -84,18 +84,39 @@ struct EditVehicleView: View {
                     }
                 }
 
-                // Secțiunea 3: Corectare Termene de Expirare Curente
+                // Secțiunea 3: Corectare Termene de Expirare & Costuri Curente
                 if !viewModel.vehicle.activeDocuments.isEmpty {
                     Section {
                         ForEach(viewModel.vehicle.activeDocuments) { doc in
-                            DatePicker(
-                                doc.type.titleKey,
-                                selection: Binding(
-                                    get: { viewModel.documentDates[doc.id] ?? doc.expirationDate },
-                                    set: { viewModel.documentDates[doc.id] = $0 }
-                                ),
-                                displayedComponents: .date
-                            )
+                            VStack(spacing: 8) {
+                                DatePicker(
+                                    doc.type.titleKey,
+                                    selection: Binding(
+                                        get: { viewModel.documentDates[doc.id] ?? doc.expirationDate },
+                                        set: { viewModel.documentDates[doc.id] = $0 }
+                                    ),
+                                    displayedComponents: .date
+                                )
+
+                                HStack(spacing: 8) {
+                                    Image(systemName: "banknote")
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                    TextField(
+                                        "doc.price.placeholder",
+                                        text: Binding(
+                                            get: { viewModel.documentPrices[doc.id] ?? "" },
+                                            set: { viewModel.documentPrices[doc.id] = $0 }
+                                        )
+                                    )
+                                    .keyboardType(.decimalPad)
+                                    .font(.subheadline)
+                                    Spacer()
+                                    Text("lei")
+                                        .font(.caption.bold())
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
                         }
                     } header: {
                         Text("edit_vehicle.section.expirations")

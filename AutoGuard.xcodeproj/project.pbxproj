@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		173C9B1DABE16EC7BA3CCF65 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = E927C97FD2238086F040F6BE /* FirebaseFirestore */; };
+		3A91C84E7B2145F09D12A3B4 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 4B82D95F8C3256E1AE23B4C5 /* FirebaseStorage */; };
+		8C6A5970AC6814CEB5438AAA /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = CD9B1A516C287ADB8C40D6CA /* FirebaseAuth */; };
+		D3C42EA2D882107773204ED6 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 59B687AF06EAFAA65F136504 /* FirebaseCore */; };
 		E6A80F4A3097D318007D7322 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6A80F493097D318007D7322 /* WidgetKit.framework */; };
 		E6A80F4C3097D318007D7322 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6A80F4B3097D318007D7322 /* SwiftUI.framework */; };
 		E6A80F5D3097D31A007D7322 /* TorpedouWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E6A80F473097D318007D7322 /* TorpedouWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -39,12 +43,14 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		E6A80F623097D31A007D7322 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolder = PlugIns;
 			files = (
 				E6A80F5D3097D31A007D7322 /* TorpedouWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -59,14 +65,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E62EF60C308D0A5600C26EE6 /* Exceptions for "AutoGuard" folder in "AutoGuard" target */ = {
+		E62EF60C308D0A5600C26EE6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = E62EF5EA308D0A5500C26EE6 /* AutoGuard */;
 		};
-		E6A80F613097D31A007D7322 /* Exceptions for "TorpedouWidget" folder in "TorpedouWidgetExtension" target */ = {
+		E6A80F613097D31A007D7322 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -79,7 +85,7 @@
 		E62EF5ED308D0A5500C26EE6 /* AutoGuard */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E62EF60C308D0A5600C26EE6 /* Exceptions for "AutoGuard" folder in "AutoGuard" target */,
+				E62EF60C308D0A5600C26EE6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = AutoGuard;
 			sourceTree = "<group>";
@@ -97,7 +103,7 @@
 		E6A80F4D3097D318007D7322 /* TorpedouWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E6A80F613097D31A007D7322 /* Exceptions for "TorpedouWidget" folder in "TorpedouWidgetExtension" target */,
+				E6A80F613097D31A007D7322 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = TorpedouWidget;
 			sourceTree = "<group>";
@@ -107,25 +113,37 @@
 /* Begin PBXFrameworksBuildPhase section */
 		E62EF5E8308D0A5500C26EE6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
+				D3C42EA2D882107773204ED6 /* FirebaseCore in Frameworks */,
+				8C6A5970AC6814CEB5438AAA /* FirebaseAuth in Frameworks */,
+				173C9B1DABE16EC7BA3CCF65 /* FirebaseFirestore in Frameworks */,
+				3A91C84E7B2145F09D12A3B4 /* FirebaseStorage in Frameworks */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E62EF5F9308D0A5600C26EE6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E62EF603308D0A5600C26EE6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E6A80F443097D318007D7322 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 				E6A80F4C3097D318007D7322 /* SwiftUI.framework in Frameworks */,
 				E6A80F4A3097D318007D7322 /* WidgetKit.framework in Frameworks */,
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -184,6 +202,12 @@
 				E62EF5ED308D0A5500C26EE6 /* AutoGuard */,
 			);
 			name = AutoGuard;
+			packageProductDependencies = (
+				59B687AF06EAFAA65F136504 /* FirebaseCore */,
+				CD9B1A516C287ADB8C40D6CA /* FirebaseAuth */,
+				E927C97FD2238086F040F6BE /* FirebaseFirestore */,
+				4B82D95F8C3256E1AE23B4C5 /* FirebaseStorage */,
+			);
 			productName = AutoGuard;
 			productReference = E62EF5EB308D0A5500C26EE6 /* AutoGuard.app */;
 			productType = "com.apple.product-type.application";
@@ -240,6 +264,8 @@
 			);
 			buildRules = (
 			);
+			dependencies = (
+			);
 			fileSystemSynchronizedGroups = (
 				E6A80F4D3097D318007D7322 /* TorpedouWidget */,
 			);
@@ -284,6 +310,9 @@
 			);
 			mainGroup = E62EF5E2308D0A5500C26EE6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				01DD3FDF7732727B76D7975C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E62EF5EC308D0A5500C26EE6 /* Products */;
 			projectDirPath = "";
@@ -300,46 +329,62 @@
 /* Begin PBXResourcesBuildPhase section */
 		E62EF5E9308D0A5500C26EE6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E62EF5FA308D0A5600C26EE6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E62EF604308D0A5600C26EE6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E6A80F453097D318007D7322 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		E62EF5E7308D0A5500C26EE6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E62EF5F8308D0A5600C26EE6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E62EF602308D0A5600C26EE6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E6A80F433097D318007D7322 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
 			files = (
 			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -362,7 +407,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		E62EF60E308D0A5600C26EE6 /* Debug configuration for PBXNativeTarget "AutoGuard" */ = {
+		E62EF60E308D0A5600C26EE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -387,6 +432,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -399,7 +447,7 @@
 			};
 			name = Debug;
 		};
-		E62EF60F308D0A5600C26EE6 /* Release configuration for PBXNativeTarget "AutoGuard" */ = {
+		E62EF60F308D0A5600C26EE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -424,6 +472,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -436,7 +487,7 @@
 			};
 			name = Release;
 		};
-		E62EF610308D0A5600C26EE6 /* Debug configuration for PBXProject "AutoGuard" */ = {
+		E62EF610308D0A5600C26EE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -489,7 +540,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -501,7 +552,7 @@
 			};
 			name = Debug;
 		};
-		E62EF611308D0A5600C26EE6 /* Release configuration for PBXProject "AutoGuard" */ = {
+		E62EF611308D0A5600C26EE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -548,7 +599,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -559,7 +610,7 @@
 			};
 			name = Release;
 		};
-		E62EF613308D0A5600C26EE6 /* Debug configuration for PBXNativeTarget "AutoGuardTests" */ = {
+		E62EF613308D0A5600C26EE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -567,8 +618,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V7LM828CW2;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -581,7 +635,7 @@
 			};
 			name = Debug;
 		};
-		E62EF614308D0A5600C26EE6 /* Release configuration for PBXNativeTarget "AutoGuardTests" */ = {
+		E62EF614308D0A5600C26EE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -589,8 +643,11 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = V7LM828CW2;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -603,7 +660,7 @@
 			};
 			name = Release;
 		};
-		E62EF616308D0A5600C26EE6 /* Debug configuration for PBXNativeTarget "AutoGuardUITests" */ = {
+		E62EF616308D0A5600C26EE6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -623,7 +680,7 @@
 			};
 			name = Debug;
 		};
-		E62EF617308D0A5600C26EE6 /* Release configuration for PBXNativeTarget "AutoGuardUITests" */ = {
+		E62EF617308D0A5600C26EE6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
@@ -643,7 +700,7 @@
 			};
 			name = Release;
 		};
-		E6A80F5F3097D31A007D7322 /* Debug configuration for PBXNativeTarget "TorpedouWidgetExtension" */ = {
+		E6A80F5F3097D31A007D7322 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -675,7 +732,7 @@
 			};
 			name = Debug;
 		};
-		E6A80F603097D31A007D7322 /* Release configuration for PBXNativeTarget "TorpedouWidgetExtension" */ = {
+		E6A80F603097D31A007D7322 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -713,45 +770,83 @@
 		E62EF5E6308D0A5500C26EE6 /* Build configuration list for PBXProject "AutoGuard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E62EF610308D0A5600C26EE6 /* Debug configuration for PBXProject "AutoGuard" */,
-				E62EF611308D0A5600C26EE6 /* Release configuration for PBXProject "AutoGuard" */,
+				E62EF610308D0A5600C26EE6 /* Debug */,
+				E62EF611308D0A5600C26EE6 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		E62EF60D308D0A5600C26EE6 /* Build configuration list for PBXNativeTarget "AutoGuard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E62EF60E308D0A5600C26EE6 /* Debug configuration for PBXNativeTarget "AutoGuard" */,
-				E62EF60F308D0A5600C26EE6 /* Release configuration for PBXNativeTarget "AutoGuard" */,
+				E62EF60E308D0A5600C26EE6 /* Debug */,
+				E62EF60F308D0A5600C26EE6 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		E62EF612308D0A5600C26EE6 /* Build configuration list for PBXNativeTarget "AutoGuardTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E62EF613308D0A5600C26EE6 /* Debug configuration for PBXNativeTarget "AutoGuardTests" */,
-				E62EF614308D0A5600C26EE6 /* Release configuration for PBXNativeTarget "AutoGuardTests" */,
+				E62EF613308D0A5600C26EE6 /* Debug */,
+				E62EF614308D0A5600C26EE6 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		E62EF615308D0A5600C26EE6 /* Build configuration list for PBXNativeTarget "AutoGuardUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E62EF616308D0A5600C26EE6 /* Debug configuration for PBXNativeTarget "AutoGuardUITests" */,
-				E62EF617308D0A5600C26EE6 /* Release configuration for PBXNativeTarget "AutoGuardUITests" */,
+				E62EF616308D0A5600C26EE6 /* Debug */,
+				E62EF617308D0A5600C26EE6 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		E6A80F5E3097D31A007D7322 /* Build configuration list for PBXNativeTarget "TorpedouWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E6A80F5F3097D31A007D7322 /* Debug configuration for PBXNativeTarget "TorpedouWidgetExtension" */,
-				E6A80F603097D31A007D7322 /* Release configuration for PBXNativeTarget "TorpedouWidgetExtension" */,
+				E6A80F5F3097D31A007D7322 /* Debug */,
+				E6A80F603097D31A007D7322 /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		01DD3FDF7732727B76D7975C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4B82D95F8C3256E1AE23B4C5 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01DD3FDF7732727B76D7975C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+		59B687AF06EAFAA65F136504 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01DD3FDF7732727B76D7975C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		CD9B1A516C287ADB8C40D6CA /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01DD3FDF7732727B76D7975C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		E927C97FD2238086F040F6BE /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 01DD3FDF7732727B76D7975C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E62EF5E3308D0A5500C26EE6 /* Project object */;
-	validationLevel = 1;
 }

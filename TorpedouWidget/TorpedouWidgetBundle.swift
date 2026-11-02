@@ -12,7 +12,5 @@ import SwiftUI
 struct TorpedouWidgetBundle: WidgetBundle {
     var body: some Widget {
         TorpedouWidget()
-        TorpedouWidgetControl()
-        TorpedouWidgetLiveActivity()
     }
 }

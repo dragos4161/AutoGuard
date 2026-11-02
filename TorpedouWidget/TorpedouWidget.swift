@@ -57,11 +57,14 @@ public struct TorpedouWidget: Widget {
     public init() {}
 
     public var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: MaintenanceWidgetTimelineProvider()) { entry in
+        let isRo = (Locale.preferredLanguages.first ?? "en").hasPrefix("ro")
+        return StaticConfiguration(kind: kind, provider: MaintenanceWidgetTimelineProvider()) { entry in
             MaintenanceWidgetEntryView(data: entry.data)
         }
-        .configurationDisplayName("Torpedou")
-        .description("Monitorizează starea reviziei, alerte de expirare RCA/ITP și consumul de combustibil.")
+        .configurationDisplayName(isRo ? "Torpedou" : "Glovebox")
+        .description(isRo
+            ? "Monitorizează starea reviziei, alerte de expirare RCA/ITP și consumul de combustibil."
+            : "Track oil service progress, RCA/ITP expiration alerts, and fuel consumption.")
         .supportedFamilies([
             .systemSmall,
             .systemMedium,

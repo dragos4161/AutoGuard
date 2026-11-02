@@ -20,13 +20,35 @@ final class AddVehicleViewModel {
     var vin: String = ""
     var initialMileageText: String = ""
 
-    // Termene inițiale
+    // Termene inițiale și costuri (opționale)
     var rcaDate: Date =
         Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    var rcaPriceText: String = ""
+
     var itpDate: Date =
         Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    var itpPriceText: String = ""
+
     var rovinietaDate: Date =
         Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    var rovinietaPriceText: String = ""
+
+    // Documente opționale (Vinietă Străinătate, CASCO, Trusă & Stingător)
+    var includeForeignVignette: Bool = false
+    var foreignVignetteDate: Date =
+        Calendar.current.date(byAdding: .day, value: 10, to: Date()) ?? Date()
+    var foreignVignetteCountry: String = ""
+    var foreignVignettePriceText: String = ""
+
+    var includeCasco: Bool = false
+    var cascoDate: Date =
+        Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+    var cascoPriceText: String = ""
+
+    var includeExtinguisher: Bool = false
+    var extinguisherDate: Date =
+        Calendar.current.date(byAdding: .year, value: 2, to: Date()) ?? Date()
+    var extinguisherPriceText: String = ""
 
     // MARK: - Dependencies
     private let repository: VehicleRepositoryProtocol
@@ -58,6 +80,14 @@ final class AddVehicleViewModel {
         plateNumber.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     }
 
+    private func parsePrice(_ text: String) -> Double? {
+        let normalized = text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: ",", with: ".")
+        guard let value = Double(normalized), value > 0 else { return nil }
+        return value
+    }
+
     // MARK: - Business Logic: Salvare
     func saveVehicle(in context: ModelContext) -> Bool {
         guard isFormValid else { return false }
@@ -72,15 +102,55 @@ final class AddVehicleViewModel {
             nickname: nickname.trimmingCharacters(in: .whitespacesAndNewlines)
         )
 
-        // 2. Creăm documentele obligatorii
-        let rca = VehicleDocument(type: .rca, expirationDate: rcaDate)
-        let itp = VehicleDocument(type: .itp, expirationDate: itpDate)
+        // 2. Creăm documentele obligatorii + cele opționale bifate (împreună cu prețurile lor)
+        let rca = VehicleDocument(
+            type: .rca,
+            expirationDate: rcaDate,
+            price: parsePrice(rcaPriceText)
+        )
+        let itp = VehicleDocument(
+            type: .itp,
+            expirationDate: itpDate,
+            price: parsePrice(itpPriceText)
+        )
         let rovinieta = VehicleDocument(
             type: .rovinieta,
-            expirationDate: rovinietaDate
+            expirationDate: rovinietaDate,
+            price: parsePrice(rovinietaPriceText),
+            provider: AppLanguage.tr("România", "Romania")
         )
 
-        vehicle.documents = [rca, itp, rovinieta]
+        var createdDocs: [VehicleDocument] = [rca, itp, rovinieta]
+        if includeForeignVignette {
+            createdDocs.append(
+                VehicleDocument(
+                    type: .foreignVignette,
+                    expirationDate: foreignVignetteDate,
+                    price: parsePrice(foreignVignettePriceText),
+                    provider: foreignVignetteCountry.trimmingCharacters(in: .whitespacesAndNewlines)
+                )
+            )
+        }
+        if includeCasco {
+            createdDocs.append(
+                VehicleDocument(
+                    type: .casco,
+                    expirationDate: cascoDate,
+                    price: parsePrice(cascoPriceText)
+                )
+            )
+        }
+        if includeExtinguisher {
+            createdDocs.append(
+                VehicleDocument(
+                    type: .extinguisher,
+                    expirationDate: extinguisherDate,
+                    price: parsePrice(extinguisherPriceText)
+                )
+            )
+        }
+
+        vehicle.documents = createdDocs
 
         // 3. Kilometraj inițial (opțional)
         if let initialMileage = Int(initialMileageText.filter { $0.isNumber }) {
@@ -93,7 +163,7 @@ final class AddVehicleViewModel {
         repository.insertVehicle(vehicle, in: context)
 
         // 5. Programăm notificările pentru noile documente și revizie
-        for doc in [rca, itp, rovinieta] {
+        for doc in createdDocs {
             NotificationManager.shared.scheduleDocumentReminders(for: doc, vehicleName: vehicle.displayName)
         }
         NotificationManager.shared.scheduleMaintenanceReminder(for: vehicle)

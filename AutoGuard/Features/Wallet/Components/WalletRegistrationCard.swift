@@ -97,7 +97,7 @@ struct WalletRegistrationCard: View {
                         data: vehicle.registrationFrontData,
                         selection: $viewModel.registrationFrontItem,
                         onDelete: {
-                            vehicle.registrationFrontData = nil
+                            viewModel.removePhoto(for: \.registrationFrontData, in: vehicle)
                         }
                     )
                     .onChange(of: viewModel.registrationFrontItem) { _, newItem in
@@ -116,7 +116,7 @@ struct WalletRegistrationCard: View {
                         data: vehicle.registrationBackData,
                         selection: $viewModel.registrationBackItem,
                         onDelete: {
-                            vehicle.registrationBackData = nil
+                            viewModel.removePhoto(for: \.registrationBackData, in: vehicle)
                         }
                     )
                     .onChange(of: viewModel.registrationBackItem) { _, newItem in

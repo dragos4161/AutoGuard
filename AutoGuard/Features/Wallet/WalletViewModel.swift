@@ -10,6 +10,7 @@
 import Combine
 import Foundation
 import PhotosUI
+import SwiftData
 import SwiftUI
 import UIKit
 
@@ -126,9 +127,18 @@ final class WalletViewModel: ObservableObject {
         guard let item else { return }
         if let data = try? await item.loadTransferable(type: Data.self) {
             vehicle[keyPath: keyPath] = data
+            try? vehicle.modelContext?.save()
             let generator = UINotificationFeedbackGenerator()
             generator.notificationOccurred(.success)
         }
+    }
+
+    func removePhoto(
+        for keyPath: ReferenceWritableKeyPath<Vehicle, Data?>,
+        in vehicle: Vehicle
+    ) {
+        vehicle[keyPath: keyPath] = nil
+        try? vehicle.modelContext?.save()
     }
 
     // MARK: - Verificări Oficiale Online

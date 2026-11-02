@@ -14,8 +14,10 @@ final class VehicleDocument {
     var id: UUID = UUID()
     var typeRawValue: String = DocumentType.rca.rawValue
     var expirationDate: Date = Date()
-    var provider: String = ""  // Ex: Omniasig, Groupama, CNAIR
-    var policyNumber: String = ""  // Serie/Număr poliță sau bon
+    var createdAt: Date = Date()  // Data achiziției / înregistrării cheltuielii
+    var price: Double? = nil      // Costul documentului / taxei în RON
+    var provider: String = ""     // Ex: Omniasig, Groupama, CNAIR, sau Țara (Bulgaria, Ungaria, Austria)
+    var policyNumber: String = "" // Serie/Număr poliță sau bon
     var isArchived: Bool = false  // true dacă documentul a fost reînnoit și mutat în istoric
     var archivedAt: Date? = nil   // Data la care a fost arhivat
 
@@ -30,8 +32,10 @@ final class VehicleDocument {
     init(
         type: DocumentType,
         expirationDate: Date,
+        price: Double? = nil,
         provider: String = "",
         policyNumber: String = "",
+        createdAt: Date = Date(),
         isArchived: Bool = false,
         attachmentData: Data? = nil,
         attachmentFileName: String? = nil
@@ -39,11 +43,23 @@ final class VehicleDocument {
         self.id = UUID()
         self.typeRawValue = type.rawValue
         self.expirationDate = expirationDate
+        self.price = price
         self.provider = provider
         self.policyNumber = policyNumber
+        self.createdAt = createdAt
         self.isArchived = isArchived
         self.attachmentData = attachmentData
         self.attachmentFileName = attachmentFileName
+    }
+
+    /// Costul formatat în lei (ex: "850 lei")
+    var formattedPrice: String? {
+        guard let price, price > 0 else { return nil }
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        let formatted = formatter.string(from: NSNumber(value: price)) ?? String(format: "%.0f", price)
+        return "\(formatted) lei"
     }
 
     /// Indică dacă documentul are un fișier PDF sau o poză atașată

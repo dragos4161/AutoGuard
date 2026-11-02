@@ -27,12 +27,16 @@ protocol VehicleRepositoryProtocol: Sendable {
     func correctDocumentDate(
         _ document: VehicleDocument,
         correctedDate: Date,
+        price: Double?,
+        provider: String?,
         in context: ModelContext
     )
     @discardableResult
     func renewVehicleDocument(
         _ oldDocument: VehicleDocument,
         newExpiryDate: Date,
+        price: Double?,
+        provider: String?,
         in context: ModelContext
     ) -> VehicleDocument
     func updateDocumentAttachment(
@@ -41,6 +45,15 @@ protocol VehicleRepositoryProtocol: Sendable {
         fileName: String?,
         in context: ModelContext
     )
+    @discardableResult
+    func addDocument(
+        type: DocumentType,
+        expirationDate: Date,
+        price: Double?,
+        provider: String,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) -> VehicleDocument
     func deleteDocument(_ document: VehicleDocument, in context: ModelContext)
 
     // MARK: - Kilometraj
@@ -79,6 +92,7 @@ protocol VehicleRepositoryProtocol: Sendable {
 final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
     func insertVehicle(_ vehicle: Vehicle, in context: ModelContext) {
         context.insert(vehicle)
+        try? context.save()
     }
 
     func deleteVehicle(_ vehicle: Vehicle, in context: ModelContext) {
@@ -114,16 +128,24 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
         document.expirationDate = newExpiryDate
     }
 
-    /// Corectează data de expirare a unui document existent (fără a crea istoric)
+    /// Corectează data de expirare, prețul și furnizorul/țara unui document existent (fără a crea istoric)
     func correctDocumentDate(
         _ document: VehicleDocument,
         correctedDate: Date,
+        price: Double? = nil,
+        provider: String? = nil,
         in context: ModelContext
     ) {
         document.expirationDate = correctedDate
+        document.price = price
+        if let provider {
+            document.provider = provider.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
         try? context.save()
         if let vehicle = document.vehicle {
-            NotificationManager.shared.scheduleDocumentReminders(for: document, vehicleName: vehicle.displayName)
+            if !document.isArchived {
+                NotificationManager.shared.scheduleDocumentReminders(for: document, vehicleName: vehicle.displayName)
+            }
             WidgetDataManager.shared.updateWidgetData(for: vehicle)
         }
     }
@@ -133,17 +155,23 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
     func renewVehicleDocument(
         _ oldDocument: VehicleDocument,
         newExpiryDate: Date,
+        price: Double? = nil,
+        provider: String? = nil,
         in context: ModelContext
     ) -> VehicleDocument {
         oldDocument.isArchived = true
         oldDocument.archivedAt = Date()
         NotificationManager.shared.cancelDocumentReminders(for: oldDocument.id)
 
+        let resolvedProvider = provider?.trimmingCharacters(in: .whitespacesAndNewlines) ?? oldDocument.provider
+
         let newDocument = VehicleDocument(
             type: oldDocument.type,
             expirationDate: newExpiryDate,
-            provider: oldDocument.provider,
+            price: price,
+            provider: resolvedProvider,
             policyNumber: oldDocument.policyNumber,
+            createdAt: Date(),
             isArchived: false
         )
 
@@ -171,6 +199,34 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
         document.attachmentData = data
         document.attachmentFileName = fileName
         try? context.save()
+    }
+
+    @discardableResult
+    func addDocument(
+        type: DocumentType,
+        expirationDate: Date,
+        price: Double? = nil,
+        provider: String = "",
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) -> VehicleDocument {
+        let newDoc = VehicleDocument(
+            type: type,
+            expirationDate: expirationDate,
+            price: price,
+            provider: provider.trimmingCharacters(in: .whitespacesAndNewlines),
+            createdAt: Date()
+        )
+        if vehicle.documents == nil {
+            vehicle.documents = []
+        }
+        vehicle.documents?.append(newDoc)
+        newDoc.vehicle = vehicle
+        context.insert(newDoc)
+        try? context.save()
+        NotificationManager.shared.scheduleDocumentReminders(for: newDoc, vehicleName: vehicle.displayName)
+        WidgetDataManager.shared.updateWidgetData(for: vehicle)
+        return newDoc
     }
 
     func deleteDocument(_ document: VehicleDocument, in context: ModelContext) {

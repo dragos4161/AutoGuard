@@ -233,22 +233,90 @@ final class Vehicle {
         (serviceRecords ?? []).compactMap { $0.price }.reduce(0.0, +)
     }
 
-    /// Total general cheltuieli (Carburant + Service)
-    var totalOverallSpent: Double {
-        totalFuelSpent + totalServiceSpent
+    /// Total cheltuieli cu acte, asigurări și taxe de drum (RCA, ITP, Rovinietă RO/Străinătate, CASCO)
+    var totalDocumentsSpent: Double {
+        (documents ?? []).compactMap { $0.price }.filter { $0 > 0 }.reduce(0.0, +)
     }
 
-    /// Cost mediu per kilometru (dacă avem kilometraj monitorizat)
-    var costPerKm: Double? {
-        let entries = sortedMileageEntries
-        guard let latest = entries.first?.mileage,
-              let earliest = entries.last?.mileage,
-              latest > earliest else {
+    /// Total general cheltuieli (Carburant + Service + Acte & Taxe)
+    var totalOverallSpent: Double {
+        totalFuelSpent + totalServiceSpent + totalDocumentsSpent
+    }
+
+    /// Distanța totală monitorizată (km) calculată din toate citirile de odometru (kilometraj, alimentări, service)
+    var trackedDistanceKm: Int? {
+        var odometers: [Int] = []
+        odometers.append(contentsOf: (mileageEntries ?? []).map(\.mileage))
+        odometers.append(contentsOf: (fuelEntries ?? []).map(\.odometer))
+        odometers.append(contentsOf: (serviceRecords ?? []).map(\.mileage))
+        let valid = odometers.filter { $0 > 0 }
+        guard let minKm = valid.min(), let maxKm = valid.max(), maxKm > minKm else {
             return nil
         }
-        let totalKm = latest - earliest
-        guard totalKm > 0 else { return nil }
+        return maxKm - minKm
+    }
+
+    /// Cost mediu real per kilometru (Carburant + Service + RCA/ITP/Roviniete raportat la km parcurși)
+    var costPerKm: Double? {
+        guard let totalKm = trackedDistanceKm, totalKm > 0 else { return nil }
         return totalOverallSpent / Double(totalKm)
+    }
+
+    // MARK: - Filtrare Costuri pe Perioade de Timp
+
+    /// Calculează cheltuielile pe carburant începând de la o anumită dată (sau toate dacă `startDate == nil`)
+    func fuelSpent(since startDate: Date?) -> Double {
+        let list = (fuelEntries ?? []).filter { startDate == nil || $0.date >= startDate! }
+        return list.reduce(0.0) { $0 + $1.totalPrice }
+    }
+
+    /// Calculează litrii alimentați începând de la o anumită dată
+    func fuelLiters(since startDate: Date?) -> Double {
+        let list = (fuelEntries ?? []).filter { startDate == nil || $0.date >= startDate! }
+        return list.reduce(0.0) { $0 + $1.liters }
+    }
+
+    /// Calculează cheltuielile de service începând de la o anumită dată
+    func serviceSpent(since startDate: Date?) -> Double {
+        let list = (serviceRecords ?? []).filter { startDate == nil || $0.date >= startDate! }
+        return list.compactMap { $0.price }.reduce(0.0, +)
+    }
+
+    /// Returnează documentele cu preț înregistrate în perioada selectată
+    func pricedDocuments(since startDate: Date?) -> [VehicleDocument] {
+        (documents ?? [])
+            .filter { ($0.price ?? 0) > 0 && (startDate == nil || $0.createdAt >= startDate!) }
+            .sorted { $0.createdAt > $1.createdAt }
+    }
+
+    /// Calculează cheltuielile cu acte și taxe (RCA, ITP, Rovinietă RO/Străinătate, CASCO) începând de la o anumită dată
+    func documentsSpent(since startDate: Date?) -> Double {
+        pricedDocuments(since: startDate).compactMap { $0.price }.reduce(0.0, +)
+    }
+
+    /// Total cheltuieli (Carburant + Service + Acte/Taxe) începând de la o anumită dată
+    func overallSpent(since startDate: Date?) -> Double {
+        fuelSpent(since: startDate) + serviceSpent(since: startDate) + documentsSpent(since: startDate)
+    }
+
+    /// Distanța parcursă în perioada selectată (sau distanța totală dacă în perioada scurtă există < 2 citiri)
+    func trackedDistanceKm(since startDate: Date?) -> Int? {
+        guard let startDate else { return trackedDistanceKm }
+        var odometers: [Int] = []
+        odometers.append(contentsOf: (mileageEntries ?? []).filter { $0.date >= startDate }.map(\.mileage))
+        odometers.append(contentsOf: (fuelEntries ?? []).filter { $0.date >= startDate }.map(\.odometer))
+        odometers.append(contentsOf: (serviceRecords ?? []).filter { $0.date >= startDate }.map(\.mileage))
+        let valid = odometers.filter { $0 > 0 }
+        if let minKm = valid.min(), let maxKm = valid.max(), maxKm > minKm {
+            return maxKm - minKm
+        }
+        return trackedDistanceKm
+    }
+
+    /// Costul real per kilometru în perioada selectată
+    func costPerKm(since startDate: Date?) -> Double? {
+        guard let km = trackedDistanceKm(since: startDate), km > 0 else { return nil }
+        return overallSpent(since: startDate) / Double(km)
     }
 
     /// Istoricul valorilor de consum înregistrate la fiecare plin (pentru grafic)
@@ -263,22 +331,34 @@ final class Vehicle {
         return points
     }
 
-    /// Structura cheltuielilor pe categorii (pentru grafic pie / sector)
-    var expenseBreakdownData: [ExpenseCategorySlice] {
+    /// Structura cheltuielilor pe categorii (pentru grafic pie / sector), filtrabilă după dată
+    func expenseBreakdownData(since startDate: Date? = nil) -> [ExpenseCategorySlice] {
         var slices: [ExpenseCategorySlice] = []
 
-        if totalFuelSpent > 0 {
+        let fuelTotal = fuelSpent(since: startDate)
+        if fuelTotal > 0 {
             slices.append(ExpenseCategorySlice(
-                categoryName: "Carburant",
-                amount: totalFuelSpent,
+                categoryName: AppLanguage.tr("Carburant", "Fuel"),
+                amount: fuelTotal,
                 color: .orange,
                 iconName: "fuelpump.fill"
             ))
         }
 
+        // Grupăm documentele și taxele (RCA, ITP, Rovinietă RO / Străinătate, CASCO)
+        let docsTotal = documentsSpent(since: startDate)
+        if docsTotal > 0 {
+            slices.append(ExpenseCategorySlice(
+                categoryName: AppLanguage.tr("RCA, ITP & Taxe Drum", "RCA, ITP & Road Tolls"),
+                amount: docsTotal,
+                color: .teal,
+                iconName: "shield.lefthalf.filled"
+            ))
+        }
+
         // Grupăm service-urile pe categorii
         var serviceCategoryTotals: [ServiceCategory: Double] = [:]
-        for record in (serviceRecords ?? []) {
+        for record in (serviceRecords ?? []) where (startDate == nil || record.date >= startDate!) {
             if let price = record.price, price > 0 {
                 serviceCategoryTotals[record.category, default: 0.0] += price
             }
@@ -294,6 +374,10 @@ final class Vehicle {
         }
 
         return slices
+    }
+
+    var expenseBreakdownData: [ExpenseCategorySlice] {
+        expenseBreakdownData(since: nil)
     }
 
     // MARK: - Istoric Service & Mentenanță

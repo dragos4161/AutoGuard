@@ -40,7 +40,7 @@ public struct AppleUserProfile: Codable, Identifiable, Equatable {
         if let email, !email.isEmpty {
             return email.components(separatedBy: "@").first ?? email
         }
-        return "Utilizator Apple"
+        return AppLanguage.tr("Utilizator Apple", "Apple User")
     }
 
     /// Inițiale pentru avatar circular

@@ -29,19 +29,13 @@ enum ServiceCategory: String, Codable, CaseIterable, Identifiable {
     }
 
     var localizedTitle: String {
-        let localized = String(localized: titleResource)
-        if !localized.hasPrefix("service.category.") {
-            return localized
-        }
-        let preferred = Locale.preferredLanguages.first ?? "en"
-        let isRo = preferred.hasPrefix("ro")
         switch self {
-        case .oilAndFilters: return isRo ? "Ulei & Filtre" : "Oil & Filters"
-        case .brakes: return isRo ? "Sistem Frânare" : "Brakes"
-        case .timingBelt: return isRo ? "Kit Distribuție" : "Timing Belt"
-        case .tires: return isRo ? "Anvelope & Roți" : "Tires & Wheels"
-        case .suspension: return isRo ? "Direcție & Suspensie" : "Suspension & Steering"
-        case .general: return isRo ? "Mentenanță Generală" : "General Maintenance"
+        case .oilAndFilters: return AppLanguage.tr("Ulei & Filtre", "Oil & Filters")
+        case .brakes: return AppLanguage.tr("Sistem Frânare", "Brakes")
+        case .timingBelt: return AppLanguage.tr("Kit Distribuție", "Timing Belt")
+        case .tires: return AppLanguage.tr("Anvelope & Roți", "Tires & Wheels")
+        case .suspension: return AppLanguage.tr("Direcție & Suspensie", "Suspension & Steering")
+        case .general: return AppLanguage.tr("Mentenanță Generală", "General Maintenance")
         }
     }
 

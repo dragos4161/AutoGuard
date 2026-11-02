@@ -40,7 +40,7 @@ struct WalletDriverLicenseCard: View {
                         data: vehicle.driverLicenseFrontData,
                         selection: $viewModel.driverLicenseFrontItem,
                         onDelete: {
-                            vehicle.driverLicenseFrontData = nil
+                            viewModel.removePhoto(for: \.driverLicenseFrontData, in: vehicle)
                         }
                     )
                     .onChange(of: viewModel.driverLicenseFrontItem) { _, newItem in
@@ -58,7 +58,7 @@ struct WalletDriverLicenseCard: View {
                         data: vehicle.driverLicenseBackData,
                         selection: $viewModel.driverLicenseBackItem,
                         onDelete: {
-                            vehicle.driverLicenseBackData = nil
+                            viewModel.removePhoto(for: \.driverLicenseBackData, in: vehicle)
                         }
                     )
                     .onChange(of: viewModel.driverLicenseBackItem) { _, newItem in

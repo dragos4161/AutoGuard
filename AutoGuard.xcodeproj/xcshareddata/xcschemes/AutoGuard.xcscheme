@@ -17,6 +17,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E62EF5EA308D0A5500C26EE6"
                BuildableName = "AutoGuard.app"
+               BlueprintName = "AutoGuard"
                ReferencedContainer = "container:AutoGuard.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -36,6 +37,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E62EF5FB308D0A5600C26EE6"
                BuildableName = "AutoGuardTests.xctest"
+               BlueprintName = "AutoGuardTests"
                ReferencedContainer = "container:AutoGuard.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -46,13 +48,14 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E62EF605308D0A5600C26EE6"
                BuildableName = "AutoGuardUITests.xctest"
+               BlueprintName = "AutoGuardUITests"
                ReferencedContainer = "container:AutoGuard.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Release"
+      buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -60,14 +63,14 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
-      allowLocationSimulation = "YES"
-      queueDebuggingEnabled = "No">
+      allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E62EF5EA308D0A5500C26EE6"
             BuildableName = "AutoGuard.app"
+            BlueprintName = "AutoGuard"
             ReferencedContainer = "container:AutoGuard.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -84,6 +87,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E62EF5EA308D0A5500C26EE6"
             BuildableName = "AutoGuard.app"
+            BlueprintName = "AutoGuard"
             ReferencedContainer = "container:AutoGuard.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

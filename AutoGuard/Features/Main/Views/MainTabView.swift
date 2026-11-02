@@ -22,6 +22,10 @@ struct MainTabView: View {
                 ServiceHubView()
             }
 
+            Tab(AppTab.costs.titleKey, systemImage: AppTab.costs.iconName, value: .costs) {
+                CostsAndFuelHubView()
+            }
+
             Tab(AppTab.assistant.titleKey, systemImage: AppTab.assistant.iconName, value: .assistant) {
                 AssistantView()
             }

@@ -48,12 +48,17 @@ struct AnalyticsCardView: View {
                         .foregroundStyle(.primary)
 
                     HStack(spacing: 4) {
-                        Text("Carb: \(String(format: "%.0f", vehicle.totalFuelSpent))")
+                        Text("\(AppLanguage.tr("Carb", "Fuel")): \(String(format: "%.0f", vehicle.totalFuelSpent))")
                         Text("•")
                         Text("Serv: \(String(format: "%.0f", vehicle.totalServiceSpent))")
+                        if vehicle.totalDocumentsSpent > 0 {
+                            Text("•")
+                            Text("\(AppLanguage.tr("Acte", "Docs")): \(String(format: "%.0f", vehicle.totalDocumentsSpent))")
+                        }
                     }
                     .font(.system(size: 9))
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(12)
@@ -71,7 +76,7 @@ struct AnalyticsCardView: View {
                             .font(.subheadline.bold())
                             .foregroundStyle(.blue)
 
-                        Text("carburant & service")
+                        Text(AppLanguage.tr("carburant, service & acte", "fuel, service & docs"))
                             .font(.system(size: 9))
                             .foregroundStyle(.secondary)
                     } else {
@@ -83,7 +88,7 @@ struct AnalyticsCardView: View {
                             .font(.subheadline.bold())
                             .foregroundStyle(.secondary)
 
-                        Text("adaugă kilometraj")
+                        Text(AppLanguage.tr("adaugă kilometraj", "add mileage"))
                             .font(.system(size: 9))
                             .foregroundStyle(.secondary)
                     }

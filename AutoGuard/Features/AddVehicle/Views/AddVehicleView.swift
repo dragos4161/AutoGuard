@@ -22,7 +22,7 @@ struct AddVehicleView: View {
     @State private var activeDateScanField: DateScanField? = nil
 
     private enum DateScanField {
-        case rca, itp, rovinieta
+        case rca, itp, rovinieta, foreignVignette, casco, extinguisher
     }
     
     var body: some View {
@@ -55,6 +55,12 @@ struct AddVehicleView: View {
                         }
                         .buttonStyle(.plain)
                     }
+
+                    if !viewModel.vin.isEmpty && !viewModel.isVinValid {
+                        Text("edit_vehicle.vin_invalid_hint")
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
                     
                     HStack {
                         TextField(
@@ -81,66 +87,170 @@ struct AddVehicleView: View {
                         "add_vehicle.model_placeholder",
                         text: $viewModel.model
                     )
+
+                    let currentYear = Calendar.current.component(.year, from: Date())
+                    Picker("edit_vehicle.year", selection: $viewModel.year) {
+                        ForEach((1980...(currentYear + 1)).reversed(), id: \.self) { yr in
+                            Text(String(yr)).tag(yr)
+                        }
+                    }
+
                     TextField("add_vehicle.nickname_placeholder", text: $viewModel.nickname)
 
                     TextField("add_vehicle.mileage_placeholder", text: $viewModel.initialMileageText)
                         .keyboardType(.numberPad)
                 }
 
-                // Secțiunea 2: Termene de expirare
+                // Secțiunea 2: Termene de expirare & Costuri Acte
                 Section("add_vehicle.section.expirations") {
-                    HStack {
-                        DatePicker(
-                            "add_vehicle.rca_expiry",
-                            selection: $viewModel.rcaDate,
-                            displayedComponents: .date
-                        )
+                    // 1. RCA
+                    VStack(spacing: 8) {
+                        HStack {
+                            DatePicker(
+                                "add_vehicle.rca_expiry",
+                                selection: $viewModel.rcaDate,
+                                displayedComponents: .date
+                            )
 
-                        Button {
-                            activeDateScanField = .rca
-                            activeScanTarget = .expirationDate
-                        } label: {
-                            Image(systemName: "camera.viewfinder")
-                                .font(.subheadline)
-                                .foregroundStyle(.blue)
+                            Button {
+                                activeDateScanField = .rca
+                                activeScanTarget = .expirationDate
+                            } label: {
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.blue)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
+                        priceInputRow(text: $viewModel.rcaPriceText)
                     }
 
-                    HStack {
-                        DatePicker(
-                            "add_vehicle.itp_expiry",
-                            selection: $viewModel.itpDate,
-                            displayedComponents: .date
-                        )
+                    // 2. ITP
+                    VStack(spacing: 8) {
+                        HStack {
+                            DatePicker(
+                                "add_vehicle.itp_expiry",
+                                selection: $viewModel.itpDate,
+                                displayedComponents: .date
+                            )
 
-                        Button {
-                            activeDateScanField = .itp
-                            activeScanTarget = .expirationDate
-                        } label: {
-                            Image(systemName: "camera.viewfinder")
-                                .font(.subheadline)
-                                .foregroundStyle(.blue)
+                            Button {
+                                activeDateScanField = .itp
+                                activeScanTarget = .expirationDate
+                            } label: {
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.blue)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
+                        priceInputRow(text: $viewModel.itpPriceText)
                     }
 
-                    HStack {
-                        DatePicker(
-                            "add_vehicle.rovinieta_expiry",
-                            selection: $viewModel.rovinietaDate,
-                            displayedComponents: .date
-                        )
+                    // 3. Rovinietă România
+                    VStack(spacing: 8) {
+                        HStack {
+                            DatePicker(
+                                "add_vehicle.rovinieta_expiry",
+                                selection: $viewModel.rovinietaDate,
+                                displayedComponents: .date
+                            )
 
-                        Button {
-                            activeDateScanField = .rovinieta
-                            activeScanTarget = .expirationDate
-                        } label: {
-                            Image(systemName: "camera.viewfinder")
-                                .font(.subheadline)
-                                .foregroundStyle(.blue)
+                            Button {
+                                activeDateScanField = .rovinieta
+                                activeScanTarget = .expirationDate
+                            } label: {
+                                Image(systemName: "camera.viewfinder")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.blue)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
+                        priceInputRow(text: $viewModel.rovinietaPriceText)
+                    }
+
+                    // 4. Vinietă / Taxă Drum Străinătate (Opțional)
+                    Toggle(DocumentType.foreignVignette.titleKey, isOn: $viewModel.includeForeignVignette.animation())
+                    if viewModel.includeForeignVignette {
+                        VStack(spacing: 8) {
+                            HStack {
+                                DatePicker(
+                                    DocumentType.foreignVignette.titleKey,
+                                    selection: $viewModel.foreignVignetteDate,
+                                    displayedComponents: .date
+                                )
+
+                                Button {
+                                    activeDateScanField = .foreignVignette
+                                    activeScanTarget = .expirationDate
+                                } label: {
+                                    Image(systemName: "camera.viewfinder")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.blue)
+                                }
+                                .buttonStyle(.plain)
+                            }
+
+                            HStack(spacing: 8) {
+                                Image(systemName: "globe.europe.africa.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                TextField("doc.foreign_vignette.country_placeholder", text: $viewModel.foreignVignetteCountry)
+                                    .font(.subheadline)
+                            }
+
+                            priceInputRow(text: $viewModel.foreignVignettePriceText)
+                        }
+                    }
+
+                    // 5. CASCO (Opțional)
+                    Toggle(DocumentType.casco.titleKey, isOn: $viewModel.includeCasco.animation())
+                    if viewModel.includeCasco {
+                        VStack(spacing: 8) {
+                            HStack {
+                                DatePicker(
+                                    DocumentType.casco.titleKey,
+                                    selection: $viewModel.cascoDate,
+                                    displayedComponents: .date
+                                )
+
+                                Button {
+                                    activeDateScanField = .casco
+                                    activeScanTarget = .expirationDate
+                                } label: {
+                                    Image(systemName: "camera.viewfinder")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.blue)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            priceInputRow(text: $viewModel.cascoPriceText)
+                        }
+                    }
+
+                    // 6. Trusă & Stingător (Opțional)
+                    Toggle(DocumentType.extinguisher.titleKey, isOn: $viewModel.includeExtinguisher.animation())
+                    if viewModel.includeExtinguisher {
+                        VStack(spacing: 8) {
+                            HStack {
+                                DatePicker(
+                                    DocumentType.extinguisher.titleKey,
+                                    selection: $viewModel.extinguisherDate,
+                                    displayedComponents: .date
+                                )
+
+                                Button {
+                                    activeDateScanField = .extinguisher
+                                    activeScanTarget = .expirationDate
+                                } label: {
+                                    Image(systemName: "camera.viewfinder")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.blue)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            priceInputRow(text: $viewModel.extinguisherPriceText)
+                        }
                     }
                 }
             }
@@ -180,11 +290,35 @@ struct AddVehicleView: View {
                             viewModel.itpDate = date
                         case .rovinieta:
                             viewModel.rovinietaDate = date
+                        case .foreignVignette:
+                            viewModel.foreignVignetteDate = date
+                        case .casco:
+                            viewModel.cascoDate = date
+                        case .extinguisher:
+                            viewModel.extinguisherDate = date
                         case .none:
                             break
                         }
                     }
                 )
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func priceInputRow(text: Binding<String>) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "banknote")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextField("doc.price.placeholder", text: text)
+                .keyboardType(.decimalPad)
+                .font(.subheadline)
+            Spacer()
+            if !text.wrappedValue.isEmpty {
+                Text("lei")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
             }
         }
     }

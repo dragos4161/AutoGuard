@@ -168,7 +168,7 @@ final class WidgetDataManager {
         let kmUsed = status?.kmUsed ?? 0
         let remainingKm = status?.remainingKm ?? vehicle.oilChangeIntervalKm
         let remainingDays = status?.remainingDays ?? (vehicle.oilChangeIntervalMonths * 30)
-        let dueDateFormatted = status?.dueDate.formatted(.dateTime.month().year()) ?? "Revizie nouă"
+        let dueDateFormatted = status?.dueDate.formatted(.dateTime.month().year()) ?? AppLanguage.tr("Revizie nouă", "New service")
         let limitingFactor = status?.limitingFactor == .time ? "time" : "mileage"
         let isOverdue = status?.isOverdue ?? false
         let isDueSoon = status?.isDueSoon ?? false
@@ -198,6 +198,7 @@ final class WidgetDataManager {
 
         if let encoded = try? JSONEncoder().encode(data) {
             sharedDefaults.set(encoded, forKey: widgetDataKey)
+            sharedDefaults.set(AppLanguage.current.resolvedLanguageCode, forKey: "appLanguage")
             WidgetCenter.shared.reloadAllTimelines()
         }
     }

@@ -152,7 +152,10 @@ struct WalletInspectionsCard: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(.subheadline.bold())
-                Text("Expiră: \(doc.expirationDate.formatted(date: .abbreviated, time: .omitted)) (\(doc.daysRemaining) zile)")
+                Text(AppLanguage.tr(
+                    "Expiră: \(doc.expirationDate.formatted(date: .abbreviated, time: .omitted)) (\(doc.daysRemaining) zile)",
+                    "Expires: \(doc.expirationDate.formatted(date: .abbreviated, time: .omitted)) (\(doc.daysRemaining) days)"
+                ))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -180,11 +183,17 @@ struct WalletInspectionsCard: View {
 
     private func daysLeftDescription(for doc: VehicleDocument) -> String {
         if doc.daysRemaining < 0 {
-            return "\(abs(doc.daysRemaining)) zile depășite"
+            return AppLanguage.tr(
+                "\(abs(doc.daysRemaining)) zile depășite",
+                "\(abs(doc.daysRemaining)) days overdue"
+            )
         } else if doc.daysRemaining == 0 {
-            return "Expiră astăzi"
+            return AppLanguage.tr("Expiră astăzi", "Expires today")
         } else {
-            return "\(doc.daysRemaining) zile rămase"
+            return AppLanguage.tr(
+                "\(doc.daysRemaining) zile rămase",
+                "\(doc.daysRemaining) days left"
+            )
         }
     }
 }

@@ -36,6 +36,14 @@ public final class AppleAuthService: NSObject {
 
     // MARK: - Autentificare din SwiftUI
 
+    /// Configurează cererea `ASAuthorizationAppleIDRequest` cu `nonce` securizat (pentru Sign in with Apple + Firebase Auth)
+    public func configureRequest(_ request: ASAuthorizationAppleIDRequest) {
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = sha256(nonce)
+    }
+
     /// Procesează rezultatul primit direct de la `SignInWithAppleButton` (previne dubla inițializare)
     public func handleSignInResult(_ result: Result<ASAuthorization, Error>) {
         isAuthenticating = false
@@ -72,13 +80,22 @@ public final class AppleAuthService: NSObject {
 
     /// Deconectează utilizatorul local
     public func signOut() {
+        FirebaseSyncManager.shared.signOutFromFirebase()
         if let user = currentUser {
             deleteFromKeychain(account: user.id)
         }
         UserDefaults.standard.removeObject(forKey: userDefaultsKey)
         currentUser = nil
+        currentNonce = nil
         isAuthenticating = false
         errorMessage = nil
+    }
+
+    /// Șterge complet contul utilizatorului (datele din Cloud + sesiunea Firebase Auth + Keychain local)
+    /// Obligatoriu conform App Store Review Guideline 5.1.1(v)
+    public func deleteAccount() async throws {
+        try await FirebaseSyncManager.shared.deleteCloudAccountData()
+        signOut()
     }
 
     /// Actualizează data ultimului backup în cloud
@@ -93,7 +110,10 @@ public final class AppleAuthService: NSObject {
 
     public func processAuthorization(_ authorization: ASAuthorization) {
         guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-            errorMessage = "Răspuns invalid de la serviciul Apple ID."
+            errorMessage = AppLanguage.tr(
+                "Răspuns invalid de la serviciul Apple ID.",
+                "Invalid response from Apple ID service."
+            )
             return
         }
 
@@ -120,6 +140,20 @@ public final class AppleAuthService: NSObject {
         self.currentUser = profile
         self.saveUser(profile)
         self.errorMessage = nil
+
+        // Dacă avem identityToken și nonce, autentificăm automat sesiunea și în Firebase Auth
+        if let tokenData = appleIDCredential.identityToken,
+           let idTokenString = String(data: tokenData, encoding: .utf8),
+           let rawNonce = currentNonce {
+            let fullName = appleIDCredential.fullName
+            Task {
+                await FirebaseSyncManager.shared.authenticateWithApple(
+                    idToken: idTokenString,
+                    rawNonce: rawNonce,
+                    fullName: fullName
+                )
+            }
+        }
     }
 
     // MARK: - Persistență și Verificare

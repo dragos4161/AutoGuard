@@ -22,12 +22,13 @@ struct GarageView: View {
     @State private var isShowingPaywall: Bool = false
     @State private var walletVehicle: Vehicle? = nil
     @State private var isShowingQuickFuelSheet: Bool = false
+    @State private var navigationPath = NavigationPath()
     
     @AppStorage("appLanguage") private var appLanguage: AppLanguage = .system
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             Group {
                 if vehicles.isEmpty {
                     // Empty State
@@ -90,7 +91,7 @@ struct GarageView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 8) {
-                        if !subscriptionManager.isProUser {
+                        if SubscriptionManager.isMonetizationEnabled && !subscriptionManager.isProUser {
                             Button {
                                 isShowingPaywall = true
                             } label: {
@@ -109,7 +110,7 @@ struct GarageView: View {
                         }
 
                         Button {
-                            if !vehicles.isEmpty && !subscriptionManager.isProUser {
+                            if SubscriptionManager.isMonetizationEnabled && !vehicles.isEmpty && !subscriptionManager.isProUser {
                                 isShowingPaywall = true
                             } else {
                                 viewModel.isShowingAddVehicleSheet = true
@@ -153,11 +154,25 @@ struct GarageView: View {
             .onAppear {
                 if let first = vehicles.first {
                     WidgetDataManager.shared.updateWidgetData(for: first)
+                } else {
+                    WidgetDataManager.shared.clearWidgetData()
                 }
             }
             .onChange(of: vehicles) { _, newVehicles in
                 if let first = newVehicles.first {
                     WidgetDataManager.shared.updateWidgetData(for: first)
+                } else {
+                    WidgetDataManager.shared.clearWidgetData()
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: NSNotification.Name("HandleWidgetDeepLink"))) { notification in
+                guard let url = notification.object as? URL else { return }
+                if url.host == "vehicle" {
+                    let vehicleIdString = url.lastPathComponent
+                    if let targetVehicle = vehicles.first(where: { $0.id.uuidString == vehicleIdString }) {
+                        navigationPath = NavigationPath()
+                        navigationPath.append(targetVehicle)
+                    }
                 }
             }
         }
@@ -196,7 +211,7 @@ struct GarageView: View {
         HStack(spacing: 12) {
             Image(
                 systemName: banner.isWarning
-                    ? "exclamationmark.triangle.fill" : "heckmark.shield.fill"
+                    ? "exclamationmark.triangle.fill" : "checkmark.shield.fill"
             )
             .font(.title2)
             .foregroundStyle(banner.isWarning ? .orange : .green)

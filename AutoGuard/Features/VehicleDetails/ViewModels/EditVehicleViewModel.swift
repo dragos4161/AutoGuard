@@ -20,6 +20,7 @@ final class EditVehicleViewModel {
     var vin: String
     var nickname: String
     var documentDates: [UUID: Date] = [:]
+    var documentPrices: [UUID: String] = [:]
 
     private let repository: VehicleRepositoryProtocol
 
@@ -38,6 +39,11 @@ final class EditVehicleViewModel {
 
         for doc in vehicle.activeDocuments {
             self.documentDates[doc.id] = doc.expirationDate
+            if let price = doc.price, price > 0 {
+                self.documentPrices[doc.id] = String(format: "%.0f", price)
+            } else {
+                self.documentPrices[doc.id] = ""
+            }
         }
     }
 
@@ -52,9 +58,8 @@ final class EditVehicleViewModel {
     var isFormValid: Bool {
         let cleanPlate = plateNumber.trimmingCharacters(in: .whitespacesAndNewlines)
         let cleanMake = make.trimmingCharacters(in: .whitespacesAndNewlines)
-        let cleanModel = model.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        return !cleanPlate.isEmpty && !cleanMake.isEmpty && !cleanModel.isEmpty && isVinValid
+        return !cleanPlate.isEmpty && !cleanMake.isEmpty && isVinValid
     }
 
     // MARK: - Actions
@@ -72,10 +77,22 @@ final class EditVehicleViewModel {
             in: context
         )
 
-        // Corectarea eventualelor date de expirare introduse greșit inițial
+        // Corectarea eventualelor date de expirare și prețuri ale documentelor active
         for doc in vehicle.activeDocuments {
-            if let updatedDate = documentDates[doc.id], updatedDate != doc.expirationDate {
-                repository.correctDocumentDate(doc, correctedDate: updatedDate, in: context)
+            let updatedDate = documentDates[doc.id] ?? doc.expirationDate
+            let priceStr = (documentPrices[doc.id] ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .replacingOccurrences(of: ",", with: ".")
+            let parsedPrice = (Double(priceStr) ?? 0) > 0 ? Double(priceStr) : nil
+
+            if updatedDate != doc.expirationDate || parsedPrice != doc.price {
+                repository.correctDocumentDate(
+                    doc,
+                    correctedDate: updatedDate,
+                    price: parsedPrice,
+                    provider: doc.provider,
+                    in: context
+                )
             }
         }
         return true

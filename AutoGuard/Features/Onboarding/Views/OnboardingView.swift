@@ -145,19 +145,34 @@ struct OnboardingView: View {
             // Ilustrație stivă documente
             ZStack {
                 // Card 3 (spate - Rovinietă)
-                documentMockupRow(title: "Rovinietă 12 Luni", badge: "Activ", icon: "road.lanes", color: .purple)
+                documentMockupRow(
+                    title: AppLanguage.tr("Rovinietă 12 Luni", "12-Month Vignette"),
+                    badge: AppLanguage.tr("Activ", "Active"),
+                    icon: "road.lanes",
+                    color: .purple
+                )
                     .scaleEffect(0.88)
                     .offset(y: -24)
                     .opacity(0.5)
 
                 // Card 2 (mijloc - ITP)
-                documentMockupRow(title: "Inspecție ITP", badge: "180 zile", icon: "checkmark.seal.fill", color: .blue)
+                documentMockupRow(
+                    title: AppLanguage.tr("Inspecție ITP", "ITP Inspection"),
+                    badge: AppLanguage.tr("180 zile", "180 days"),
+                    icon: "checkmark.seal.fill",
+                    color: .blue
+                )
                     .scaleEffect(0.94)
                     .offset(y: -12)
                     .opacity(0.8)
 
                 // Card 1 (față - RCA)
-                documentMockupRow(title: "Poliță RCA", badge: "90 zile", icon: "shield.lefthalf.filled", color: .green)
+                documentMockupRow(
+                    title: AppLanguage.tr("Poliță RCA", "RCA Insurance"),
+                    badge: AppLanguage.tr("90 zile", "90 days"),
+                    icon: "shield.lefthalf.filled",
+                    color: .green
+                )
                     .shadow(color: .black.opacity(0.08), radius: 12, x: 0, y: 6)
             }
             .frame(height: 180)
@@ -206,7 +221,7 @@ struct OnboardingView: View {
                 Text(title)
                     .font(.subheadline.bold())
                     .foregroundStyle(.primary)
-                Text("Copie digitală atașată")
+                Text(AppLanguage.tr("Copie digitală atașată", "Digital copy attached"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -259,20 +274,23 @@ struct OnboardingView: View {
 
                     VStack(alignment: .leading, spacing: 2) {
                         HStack {
-                            Text("Torpedou")
+                            Text(AppLanguage.tr("Torpedou", "Glovebox"))
                                 .font(.caption.bold())
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            Text("acum")
+                            Text(AppLanguage.tr("acum", "now"))
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
 
-                        Text("Poliță RCA expiră în 7 zile!")
+                        Text(AppLanguage.tr("Poliță RCA expiră în 7 zile!", "RCA Insurance expires in 7 days!"))
                             .font(.subheadline.bold())
                             .foregroundStyle(.primary)
 
-                        Text("Reînnoiește din timp pentru a evita amenzile rutiere.")
+                        Text(AppLanguage.tr(
+                            "Reînnoiește din timp pentru a evita amenzile rutiere.",
+                            "Renew early to avoid traffic fines."
+                        ))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
@@ -354,13 +372,13 @@ struct OnboardingView: View {
             // Card Mockup Schimb Ulei & Bare Progres
             VStack(spacing: 12) {
                 HStack {
-                    Label("Schimb Ulei & Filtre", systemImage: "drop.fill")
+                    Label(AppLanguage.tr("Schimb Ulei & Filtre", "Oil & Filters Change"), systemImage: "drop.fill")
                         .font(.subheadline.bold())
                         .foregroundStyle(.orange)
 
                     Spacer()
 
-                    Text("În grafic")
+                    Text(AppLanguage.tr("În grafic", "On track"))
                         .font(.caption.bold())
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
@@ -374,7 +392,7 @@ struct OnboardingView: View {
                 // Bara 1: Kilometri (80%)
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text("Kilometraj")
+                        Text(AppLanguage.tr("Kilometraj", "Mileage"))
                             .font(.caption.bold())
                         Spacer()
                         Text("8.000 / 10.000 km (80%)")
@@ -394,10 +412,10 @@ struct OnboardingView: View {
                 // Bara 2: Timp (50%)
                 VStack(alignment: .leading, spacing: 4) {
                     HStack {
-                        Text("Perioadă")
+                        Text(AppLanguage.tr("Perioadă", "Time Period"))
                             .font(.caption.bold())
                         Spacer()
-                        Text("6 / 12 luni (50%)")
+                        Text(AppLanguage.tr("6 / 12 luni (50%)", "6 / 12 months (50%)"))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -415,7 +433,10 @@ struct OnboardingView: View {
                     Image(systemName: "info.circle.fill")
                         .font(.caption2)
                         .foregroundStyle(.orange)
-                    Text("Limita de kilometri va fi atinsă prima.")
+                    Text(AppLanguage.tr(
+                        "Limita de kilometri va fi atinsă prima.",
+                        "The mileage limit will be reached first."
+                    ))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                     Spacer()

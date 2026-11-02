@@ -9,6 +9,7 @@
 import Foundation
 import SwiftData
 import SwiftUI
+import UIKit
 
 public enum RestoreStrategy {
     case merge      // Îmbină datele (actualizează mașinile existente, adaugă cele noi)
@@ -29,23 +30,29 @@ public final class CloudBackupManager {
 
     // MARK: - Generare Snapshot din SwiftData
 
-    /// Creează un snapshot complet al tuturor vehiculelor și înregistrărilor din baza de date
-    public func createSnapshot(context: ModelContext) throws -> CloudBackupSnapshot {
+    /// Creează un snapshot complet al tuturor vehiculelor și înregistrărilor din baza de date.
+    /// Când `compressImagesForCloud` este `true`, pozele atașate sunt comprimate automat pentru a respecta limita de 1 MB din Cloud Firestore.
+    public func createSnapshot(context: ModelContext, compressImagesForCloud: Bool = false) throws -> CloudBackupSnapshot {
         let descriptor = FetchDescriptor<Vehicle>(sortBy: [SortDescriptor(\.createdAt, order: .forward)])
         let vehicles = try context.fetch(descriptor)
 
         let vehicleDTOs: [VehicleBackupDTO] = vehicles.map { vehicle in
             let documentDTOs: [DocumentBackupDTO] = (vehicle.documents ?? []).map { doc in
-                DocumentBackupDTO(
+                let attachmentBytes = compressImagesForCloud
+                    ? compressDataForCloud(doc.attachmentData, fileName: doc.attachmentFileName)
+                    : doc.attachmentData
+                return DocumentBackupDTO(
                     id: doc.id,
                     typeRawValue: doc.typeRawValue,
                     expirationDate: doc.expirationDate,
+                    createdAt: doc.createdAt,
+                    price: doc.price,
                     provider: doc.provider,
                     policyNumber: doc.policyNumber,
                     isArchived: doc.isArchived,
                     archivedAt: doc.archivedAt,
                     attachmentFileName: doc.attachmentFileName,
-                    attachmentBase64: doc.attachmentData?.base64EncodedString()
+                    attachmentBase64: attachmentBytes?.base64EncodedString()
                 )
             }
 
@@ -59,7 +66,10 @@ public final class CloudBackupManager {
             }
 
             let serviceDTOs: [ServiceBackupDTO] = (vehicle.serviceRecords ?? []).map { record in
-                ServiceBackupDTO(
+                let invoiceBytes = compressImagesForCloud
+                    ? compressDataForCloud(record.invoiceData, fileName: record.invoiceFileName)
+                    : record.invoiceData
+                return ServiceBackupDTO(
                     id: record.id,
                     date: record.date,
                     mileage: record.mileage,
@@ -68,7 +78,7 @@ public final class CloudBackupManager {
                     notes: record.notes,
                     price: record.price,
                     invoiceFileName: record.invoiceFileName,
-                    invoiceBase64: record.invoiceData?.base64EncodedString()
+                    invoiceBase64: invoiceBytes?.base64EncodedString()
                 )
             }
 
@@ -86,6 +96,11 @@ public final class CloudBackupManager {
                 )
             }
 
+            let regFront = compressImagesForCloud ? compressImageData(vehicle.registrationFrontData, maxDimension: 800, quality: 0.4) : vehicle.registrationFrontData
+            let regBack = compressImagesForCloud ? compressImageData(vehicle.registrationBackData, maxDimension: 800, quality: 0.4) : vehicle.registrationBackData
+            let licFront = compressImagesForCloud ? compressImageData(vehicle.driverLicenseFrontData, maxDimension: 800, quality: 0.4) : vehicle.driverLicenseFrontData
+            let licBack = compressImagesForCloud ? compressImageData(vehicle.driverLicenseBackData, maxDimension: 800, quality: 0.4) : vehicle.driverLicenseBackData
+
             return VehicleBackupDTO(
                 id: vehicle.id,
                 plateNumber: vehicle.plateNumber,
@@ -101,10 +116,10 @@ public final class CloudBackupManager {
                 mileageEntries: mileageDTOs,
                 serviceRecords: serviceDTOs,
                 fuelEntries: fuelDTOs,
-                registrationFrontBase64: vehicle.registrationFrontData?.base64EncodedString(),
-                registrationBackBase64: vehicle.registrationBackData?.base64EncodedString(),
-                driverLicenseFrontBase64: vehicle.driverLicenseFrontData?.base64EncodedString(),
-                driverLicenseBackBase64: vehicle.driverLicenseBackData?.base64EncodedString()
+                registrationFrontBase64: regFront?.base64EncodedString(),
+                registrationBackBase64: regBack?.base64EncodedString(),
+                driverLicenseFrontBase64: licFront?.base64EncodedString(),
+                driverLicenseBackBase64: licBack?.base64EncodedString()
             )
         }
 
@@ -113,6 +128,135 @@ public final class CloudBackupManager {
             userIdentifier: userIdentifier,
             vehicles: vehicleDTOs
         )
+    }
+
+    // MARK: - Helperi Compresie & Serializare Cloud Firestore
+
+    /// Comprimă o imagine pentru sincronizarea în Firestore (astfel încât întregul document să rămână sub 1 MB)
+    private func compressImageData(_ data: Data?, maxDimension: CGFloat = 1000, quality: CGFloat = 0.5) -> Data? {
+        guard let data, let image = UIImage(data: data) else { return nil }
+        let size = image.size
+        let maxSide = max(size.width, size.height)
+        let targetImage: UIImage
+        if maxSide > maxDimension && maxSide > 0 {
+            let scale = maxDimension / maxSide
+            let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+            let renderer = UIGraphicsImageRenderer(size: newSize)
+            targetImage = renderer.image { _ in
+                image.draw(in: CGRect(origin: .zero, size: newSize))
+            }
+        } else {
+            targetImage = image
+        }
+        return targetImage.jpegData(compressionQuality: quality)
+    }
+
+    /// Comprimă atașamentele pentru Cloud (imaginile sunt optimizate; PDF-urile până la 15 MB sunt păstrate integral pentru Firebase Storage)
+    private func compressDataForCloud(_ data: Data?, fileName: String?) -> Data? {
+        guard let data else { return nil }
+        let isPDF = fileName?.lowercased().hasSuffix(".pdf") == true
+        if isPDF {
+            return data.count <= 15 * 1024 * 1024 ? data : nil
+        }
+        return compressImageData(data, maxDimension: 1600, quality: 0.7)
+    }
+
+    /// Encodează un `VehicleBackupDTO` într-un dicționar compatibil Cloud Firestore.
+    /// IMPORTANT: Cloud Firestore nu permite string-uri > 1.500 bytes în interiorul elementelor unui Array (`Property array contains an invalid entity`).
+    /// Fișierele (PDF-uri și poze) sunt urcate în Firebase Storage, iar în Firestore salvăm doar căile (`attachmentStoragePath`, `invoiceStoragePath` etc.).
+    public func encodeVehicleDictionary(_ vehicleDTO: VehicleBackupDTO) throws -> [String: Any] {
+        let lightDocuments = vehicleDTO.documents.map { doc in
+            DocumentBackupDTO(
+                id: doc.id,
+                typeRawValue: doc.typeRawValue,
+                expirationDate: doc.expirationDate,
+                createdAt: doc.createdAt,
+                price: doc.price,
+                provider: String(doc.provider.prefix(200)),
+                policyNumber: String(doc.policyNumber.prefix(200)),
+                isArchived: doc.isArchived,
+                archivedAt: doc.archivedAt,
+                attachmentFileName: doc.attachmentFileName,
+                attachmentBase64: nil,
+                attachmentStoragePath: doc.attachmentStoragePath
+            )
+        }
+        let lightServices = vehicleDTO.serviceRecords.map { rec in
+            ServiceBackupDTO(
+                id: rec.id,
+                date: rec.date,
+                mileage: rec.mileage,
+                title: String(rec.title.prefix(200)),
+                categoryRawValue: rec.categoryRawValue,
+                notes: rec.notes.map { String($0.prefix(500)) },
+                price: rec.price,
+                invoiceFileName: rec.invoiceFileName,
+                invoiceBase64: nil,
+                invoiceStoragePath: rec.invoiceStoragePath
+            )
+        }
+        let lightMileages = vehicleDTO.mileageEntries.map { entry in
+            MileageBackupDTO(
+                id: entry.id,
+                date: entry.date,
+                mileage: entry.mileage,
+                note: entry.note.map { String($0.prefix(500)) }
+            )
+        }
+        let lightFuels = vehicleDTO.fuelEntries.map { fuel in
+            FuelBackupDTO(
+                id: fuel.id,
+                date: fuel.date,
+                odometer: fuel.odometer,
+                liters: fuel.liters,
+                totalPrice: fuel.totalPrice,
+                isFullTank: fuel.isFullTank,
+                fuelTypeRaw: fuel.fuelTypeRaw,
+                notes: fuel.notes.map { String($0.prefix(500)) },
+                createdAt: fuel.createdAt
+            )
+        }
+
+        let sanitizedVehicle = VehicleBackupDTO(
+            id: vehicleDTO.id,
+            plateNumber: vehicleDTO.plateNumber,
+            make: vehicleDTO.make,
+            model: vehicleDTO.model,
+            year: vehicleDTO.year,
+            vin: vehicleDTO.vin,
+            nickname: vehicleDTO.nickname,
+            createdAt: vehicleDTO.createdAt,
+            oilChangeIntervalKm: vehicleDTO.oilChangeIntervalKm,
+            oilChangeIntervalMonths: vehicleDTO.oilChangeIntervalMonths,
+            documents: lightDocuments,
+            mileageEntries: lightMileages,
+            serviceRecords: lightServices,
+            fuelEntries: lightFuels,
+            registrationFrontBase64: vehicleDTO.registrationFrontStoragePath == nil ? vehicleDTO.registrationFrontBase64 : nil,
+            registrationBackBase64: vehicleDTO.registrationBackStoragePath == nil ? vehicleDTO.registrationBackBase64 : nil,
+            driverLicenseFrontBase64: vehicleDTO.driverLicenseFrontStoragePath == nil ? vehicleDTO.driverLicenseFrontBase64 : nil,
+            driverLicenseBackBase64: vehicleDTO.driverLicenseBackStoragePath == nil ? vehicleDTO.driverLicenseBackBase64 : nil,
+            registrationFrontStoragePath: vehicleDTO.registrationFrontStoragePath,
+            registrationBackStoragePath: vehicleDTO.registrationBackStoragePath,
+            driverLicenseFrontStoragePath: vehicleDTO.driverLicenseFrontStoragePath,
+            driverLicenseBackStoragePath: vehicleDTO.driverLicenseBackStoragePath
+        )
+
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(sanitizedVehicle)
+        guard let dict = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw NSError(domain: "CloudBackup", code: 500, userInfo: [NSLocalizedDescriptionKey: "Eroare la serializarea vehiculului."])
+        }
+        return dict
+    }
+
+    /// Decodează un dicționar din Cloud Firestore înapoi în `VehicleBackupDTO`
+    public func decodeVehicleDictionary(_ dict: [String: Any]) throws -> VehicleBackupDTO {
+        let data = try JSONSerialization.data(withJSONObject: dict)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(VehicleBackupDTO.self, from: data)
     }
 
     // MARK: - Export Fișier de Backup
@@ -225,8 +369,10 @@ public final class CloudBackupManager {
                     let newDoc = VehicleDocument(
                         type: docType,
                         expirationDate: docDTO.expirationDate,
+                        price: docDTO.price,
                         provider: docDTO.provider,
                         policyNumber: docDTO.policyNumber,
+                        createdAt: docDTO.createdAt ?? Date(),
                         isArchived: docDTO.isArchived,
                         attachmentFileName: docDTO.attachmentFileName
                     )

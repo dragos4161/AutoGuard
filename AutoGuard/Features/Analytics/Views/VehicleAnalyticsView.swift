@@ -8,11 +8,49 @@
 import Charts
 import SwiftUI
 
+enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
+    case last30Days
+    case last6Months
+    case lastYear
+    case allTime
+
+    var id: String { rawValue }
+
+    var titleKey: LocalizedStringKey {
+        switch self {
+        case .last30Days: return "analytics.period.30d"
+        case .last6Months: return "analytics.period.6m"
+        case .lastYear: return "analytics.period.1y"
+        case .allTime: return "analytics.period.all"
+        }
+    }
+
+    var startDate: Date? {
+        let calendar = Calendar.current
+        let now = Date()
+        switch self {
+        case .last30Days:
+            return calendar.date(byAdding: .day, value: -30, to: now)
+        case .last6Months:
+            return calendar.date(byAdding: .month, value: -6, to: now)
+        case .lastYear:
+            return calendar.date(byAdding: .year, value: -1, to: now)
+        case .allTime:
+            return nil
+        }
+    }
+}
+
 struct VehicleAnalyticsView: View {
     let vehicle: Vehicle
 
+    @State private var selectedPeriod: AnalyticsTimePeriod = .allTime
     @State private var selectedPoint: ConsumptionPoint? = nil
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    private var currentStartDate: Date? {
+        selectedPeriod.startDate
+    }
 
     private var hasAnyData: Bool {
         vehicle.totalOverallSpent > 0 || !vehicle.consumptionChartData.isEmpty
@@ -24,7 +62,15 @@ struct VehicleAnalyticsView: View {
                 if !hasAnyData {
                     emptyStateView
                 } else {
-                    // 1. Grid Sumar Financiar (4 carduri pe iPad, 2x2 pe iPhone)
+                    // Selector Perioadă de Timp
+                    Picker("analytics.period.label", selection: $selectedPeriod.animation(.easeInOut)) {
+                        ForEach(AnalyticsTimePeriod.allCases) { period in
+                            Text(period.titleKey).tag(period)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+
+                    // 1. Grid Sumar Financiar (inclusiv Cost Real / km și Acte/Taxe)
                     summaryCardsGrid
 
                     // 2. Grafice (Paralele pe iPad, una sub alta pe iPhone)
@@ -37,9 +83,12 @@ struct VehicleAnalyticsView: View {
                                 .frame(maxWidth: .infinity)
                         }
                     } else {
-                        consumptionChartSection
                         expenseBreakdownSection
+                        consumptionChartSection
                     }
+
+                    // 3. Detaliere Costuri Acte, RCA, ITP & Roviniete (România / Străinătate)
+                    documentsExpensesSection
                 }
             }
             .padding(16)
@@ -49,27 +98,27 @@ struct VehicleAnalyticsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    // MARK: - Sumar Financiar (4 Carduri)
+    // MARK: - Sumar Financiar
     private var summaryCardsGrid: some View {
-        Group {
+        VStack(spacing: 10) {
             if horizontalSizeClass == .regular {
                 HStack(spacing: 12) {
                     costStatTile
                     costPerKmStatTile
                     fuelStatTile
                     serviceStatTile
+                    documentsStatTile
                 }
             } else {
-                VStack(spacing: 10) {
-                    HStack(spacing: 10) {
-                        costStatTile
-                        costPerKmStatTile
-                    }
-                    HStack(spacing: 10) {
-                        fuelStatTile
-                        serviceStatTile
-                    }
+                HStack(spacing: 10) {
+                    costStatTile
+                    costPerKmStatTile
                 }
+                HStack(spacing: 10) {
+                    fuelStatTile
+                    serviceStatTile
+                }
+                documentsStatTile
             }
         }
     }
@@ -77,18 +126,19 @@ struct VehicleAnalyticsView: View {
     private var costStatTile: some View {
         statTile(
             title: "analytics.total_cost",
-            value: String(format: "%.0f lei", vehicle.totalOverallSpent),
-            subtitle: "Carburant + Service",
+            value: String(format: "%.0f lei", vehicle.overallSpent(since: currentStartDate)),
+            subtitle: AppLanguage.tr("Carburant + Service + Acte", "Fuel + Service + Docs"),
             color: .primary,
             icon: "creditcard.fill"
         )
     }
 
     private var costPerKmStatTile: some View {
-        statTile(
+        let costKm = vehicle.costPerKm(since: currentStartDate)
+        return statTile(
             title: "analytics.cost_per_km",
-            value: vehicle.costPerKm != nil ? String(format: "%.2f lei", vehicle.costPerKm!) : "—",
-            subtitle: "Cost per kilometru",
+            value: costKm != nil ? String(format: "%.2f lei/km", costKm!) : "—",
+            subtitle: AppLanguage.tr("Cost real per kilometru", "Real cost per kilometer"),
             color: .blue,
             icon: "gauge.with.needle.fill"
         )
@@ -97,20 +147,32 @@ struct VehicleAnalyticsView: View {
     private var fuelStatTile: some View {
         statTile(
             title: "fuel.title",
-            value: String(format: "%.0f lei", vehicle.totalFuelSpent),
-            subtitle: String(format: "%.1f L alimentați", vehicle.totalFuelLiters),
+            value: String(format: "%.0f lei", vehicle.fuelSpent(since: currentStartDate)),
+            subtitle: String(format: AppLanguage.tr("%.1f L alimentați", "%.1f L refueled"), vehicle.fuelLiters(since: currentStartDate)),
             color: .orange,
             icon: "fuelpump.fill"
         )
     }
 
     private var serviceStatTile: some View {
-        statTile(
+        let count = (vehicle.serviceRecords ?? []).filter { currentStartDate == nil || $0.date >= currentStartDate! }.count
+        return statTile(
             title: "service.title",
-            value: String(format: "%.0f lei", vehicle.totalServiceSpent),
-            subtitle: "\(vehicle.sortedServiceRecords.count) revizii",
+            value: String(format: "%.0f lei", vehicle.serviceSpent(since: currentStartDate)),
+            subtitle: AppLanguage.tr("\(count) intervenții service", "\(count) service records"),
             color: .indigo,
             icon: "wrench.and.screwdriver.fill"
+        )
+    }
+
+    private var documentsStatTile: some View {
+        let pricedDocs = vehicle.pricedDocuments(since: currentStartDate)
+        return statTile(
+            title: "analytics.documents_cost",
+            value: String(format: "%.0f lei", vehicle.documentsSpent(since: currentStartDate)),
+            subtitle: AppLanguage.tr("\(pricedDocs.count) acte & viniete (RO / Străinătate)", "\(pricedDocs.count) docs & vignettes (RO / Abroad)"),
+            color: .teal,
+            icon: "shield.lefthalf.filled"
         )
     }
 
@@ -149,7 +211,7 @@ struct VehicleAnalyticsView: View {
                     .font(.headline)
                 Spacer()
                 if let avg = vehicle.averageConsumption {
-                    Text(String(format: "Medie: %.1f L", avg))
+                    Text(String(format: AppLanguage.tr("Medie: %.1f L", "Avg: %.1f L"), avg))
                         .font(.caption.bold())
                         .foregroundStyle(.green)
                 }
@@ -198,7 +260,7 @@ struct VehicleAnalyticsView: View {
                             .foregroundStyle(Color.secondary.opacity(0.5))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
                             .annotation(position: .top, alignment: .leading) {
-                                Text("Medie: \(String(format: "%.1f", avg)) L")
+                                Text("\(AppLanguage.tr("Medie", "Avg")): \(String(format: "%.1f", avg)) L")
                                     .font(.system(size: 10, weight: .semibold))
                                     .foregroundStyle(.secondary)
                                     .padding(.horizontal, 4)
@@ -229,7 +291,10 @@ struct VehicleAnalyticsView: View {
                     Image(systemName: "fuelpump.badge.plus")
                         .font(.title2)
                         .foregroundStyle(.secondary)
-                    Text("Necesită cel puțin 2 plinuri complete pentru a trasa graficul de consum.")
+                    Text(AppLanguage.tr(
+                        "Necesită cel puțin 2 plinuri complete pentru a trasa graficul de consum.",
+                        "Requires at least 2 full tank fill-ups to plot the consumption chart."
+                    ))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -246,8 +311,8 @@ struct VehicleAnalyticsView: View {
     // MARK: - Grafic Distribuție Cheltuieli pe Categorii
     @ViewBuilder
     private var expenseBreakdownSection: some View {
-        let slices = vehicle.expenseBreakdownData
-        let total = vehicle.totalOverallSpent
+        let slices = vehicle.expenseBreakdownData(since: currentStartDate)
+        let total = vehicle.overallSpent(since: currentStartDate)
 
         VStack(alignment: .leading, spacing: 14) {
             Label("analytics.expenses_by_category", systemImage: "chart.pie.fill")
@@ -270,7 +335,7 @@ struct VehicleAnalyticsView: View {
                         Text(String(format: "%.0f", total))
                             .font(.title3.bold())
                             .foregroundStyle(.primary)
-                        Text("lei total")
+                        Text(AppLanguage.tr("lei total", "RON total"))
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
@@ -312,7 +377,10 @@ struct VehicleAnalyticsView: View {
                 }
                 .padding(.top, 4)
             } else {
-                Text("Adaugă intrări de carburant sau revizii pentru a vedea distribuția costurilor.")
+                Text(AppLanguage.tr(
+                    "Nu există cheltuieli înregistrate în perioada selectată.",
+                    "No expenses recorded in the selected time period."
+                ))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.vertical, 12)
@@ -321,6 +389,73 @@ struct VehicleAnalyticsView: View {
         .padding(16)
         .background(Color(uiColor: .secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+
+    // MARK: - Detaliere Cheltuieli Acte, RCA, ITP & Roviniete
+    @ViewBuilder
+    private var documentsExpensesSection: some View {
+        let docs = vehicle.pricedDocuments(since: currentStartDate)
+        if !docs.isEmpty {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    Label("analytics.documents_breakdown_title", systemImage: "shield.lefthalf.filled")
+                        .font(.headline)
+                    Spacer()
+                    Text(String(format: "%.0f lei", vehicle.documentsSpent(since: currentStartDate)))
+                        .font(.subheadline.bold())
+                        .foregroundStyle(.teal)
+                }
+
+                Divider()
+
+                VStack(spacing: 10) {
+                    ForEach(docs) { doc in
+                        HStack(spacing: 12) {
+                            Image(systemName: doc.type.iconName)
+                                .font(.subheadline)
+                                .foregroundStyle(.teal)
+                                .frame(width: 24)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 6) {
+                                    Text(doc.type.titleKey)
+                                        .font(.subheadline.weight(.semibold))
+                                    if !doc.provider.isEmpty {
+                                        Text("• \(doc.provider)")
+                                            .font(.caption.weight(.medium))
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    if doc.isArchived {
+                                        Text("doc.status.archived")
+                                            .font(.system(size: 9, weight: .bold))
+                                            .padding(.horizontal, 5)
+                                            .padding(.vertical, 2)
+                                            .background(Color.secondary.opacity(0.15))
+                                            .foregroundStyle(.secondary)
+                                            .clipShape(Capsule())
+                                    }
+                                }
+
+                                Text("\(AppLanguage.tr("Expiră", "Expires")): \(doc.expirationDate.formatted(date: .abbreviated, time: .omitted))")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Spacer()
+
+                            if let formattedPrice = doc.formattedPrice {
+                                Text(formattedPrice)
+                                    .font(.subheadline.bold())
+                                    .foregroundStyle(.primary)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(16)
+            .background(Color(uiColor: .secondarySystemGroupedBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
     }
 
     // MARK: - Stare goală

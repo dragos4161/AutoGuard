@@ -40,7 +40,9 @@ struct FuelHistoryView: View {
                                 statCard(
                                     title: "fuel.stats.avg_consumption",
                                     value: vehicle.formattedAverageConsumption ?? "—",
-                                    subtitle: vehicle.averageConsumption != nil ? "calculat pe plinuri" : "necesită 2 plinuri",
+                                    subtitle: vehicle.averageConsumption != nil
+                                        ? AppLanguage.tr("calculat pe plinuri", "based on full tanks")
+                                        : AppLanguage.tr("necesită 2 plinuri", "needs 2 full tanks"),
                                     color: .green
                                 )
 
@@ -48,21 +50,21 @@ struct FuelHistoryView: View {
                                 statCard(
                                     title: "fuel.stats.total_spent",
                                     value: String(format: "%.0f lei", vehicle.totalFuelSpent),
-                                    subtitle: String(format: "%.1f L carburant", vehicle.totalFuelLiters),
+                                    subtitle: String(format: AppLanguage.tr("%.1f L carburant", "%.1f L fuel"), vehicle.totalFuelLiters),
                                     color: .blue
                                 )
                             }
 
                             if let avgPrice = vehicle.averagePricePerLiter {
                                 HStack {
-                                    Text("Preț mediu:")
+                                    Text(AppLanguage.tr("Preț mediu:", "Avg. price:"))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                     Text(String(format: "%.2f lei / L", avgPrice))
                                         .font(.caption.bold())
                                         .foregroundStyle(.primary)
                                     Spacer()
-                                    Text("\(vehicle.sortedFuelEntries.count) alimentări")
+                                    Text(AppLanguage.tr("\(vehicle.sortedFuelEntries.count) alimentări", "\(vehicle.sortedFuelEntries.count) fill-ups"))
                                         .font(.caption)
                                         .foregroundStyle(.secondary)
                                 }

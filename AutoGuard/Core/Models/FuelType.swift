@@ -32,13 +32,13 @@ enum FuelType: String, Codable, CaseIterable, Identifiable {
 
     var defaultDisplayName: String {
         switch self {
-        case .petrol95: return "Benzină 95"
-        case .petrol98: return "Benzină Premium (98/100)"
-        case .diesel: return "Motorină Standard"
-        case .premiumDiesel: return "Motorină Premium"
-        case .lpg: return "GPL"
-        case .cng: return "GNC"
-        case .electric: return "Electric (kWh)"
+        case .petrol95: return AppLanguage.tr("Benzină 95", "Petrol 95")
+        case .petrol98: return AppLanguage.tr("Benzină Premium (98/100)", "Premium Petrol (98/100)")
+        case .diesel: return AppLanguage.tr("Motorină Standard", "Standard Diesel")
+        case .premiumDiesel: return AppLanguage.tr("Motorină Premium", "Premium Diesel")
+        case .lpg: return AppLanguage.tr("GPL", "LPG")
+        case .cng: return AppLanguage.tr("GNC", "CNG")
+        case .electric: return AppLanguage.tr("Electric (kWh)", "Electric (kWh)")
         }
     }
 

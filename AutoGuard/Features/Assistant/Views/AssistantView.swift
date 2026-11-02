@@ -225,7 +225,7 @@ struct AssistantView: View {
             }
             let daysUnit = appLanguage.string("assistant.answer.days_left")
             let list = urgent.map { doc in
-                "\(doc.vehicle?.displayName ?? "") • \(doc.type.rawValue): \(doc.daysRemaining) \(daysUnit)"
+                "\(doc.vehicle?.displayName ?? "") • \(doc.type.title): \(doc.daysRemaining) \(daysUnit)"
             }.joined(separator: "\n")
             return "\(appLanguage.string("assistant.answer.expiring_header"))\n\(list)"
         }

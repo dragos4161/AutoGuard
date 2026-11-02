@@ -20,9 +20,6 @@ struct VehicleDetailsView: View {
     @State private var isShowingMileageSheet = false
     @State private var isShowingAddServiceSheet = false
     @State private var isShowingMaintenanceIntervalSheet = false
-    @State private var isShowingAddFuelSheet = false
-    @State private var isShowingFuelHistory = false
-    @State private var isShowingAnalytics = false
     @State private var isShowingReportPreview = false
     @State private var isShowingPaywall = false
     @State private var isShowingWallet = false
@@ -47,29 +44,25 @@ struct VehicleDetailsView: View {
                             infoSection
                             walletBannerCard
                             documentsSection
+                        }
+                        .frame(maxWidth: .infinity)
+
+                        // Coloana 2: Mentenanță & Istoric Documente
+                        VStack(alignment: .leading, spacing: 20) {
+                            maintenanceSection
                             if !vehicle.archivedDocuments.isEmpty {
                                 historySection
                             }
                         }
                         .frame(maxWidth: .infinity)
-
-                        // Coloana 2: Mentenanță, Carburant & Analitice
-                        VStack(alignment: .leading, spacing: 20) {
-                            maintenanceSection
-                            fuelSection
-                            analyticsSection
-                        }
-                        .frame(maxWidth: .infinity)
                     }
                 } else {
-                    // Layout iPhone: Coloană unică verticală
+                    // Layout iPhone: Coloană unică verticală (aerisită: Identificare, Portofel, Acte & Mentenanță)
                     VStack(alignment: .leading, spacing: 20) {
                         infoSection
                         walletBannerCard
                         documentsSection
                         maintenanceSection
-                        fuelSection
-                        analyticsSection
                         if !vehicle.archivedDocuments.isEmpty {
                             historySection
                         }
@@ -131,18 +124,6 @@ struct VehicleDetailsView: View {
         // Modal Configurare Intervale Mentenanță
         .sheet(isPresented: $isShowingMaintenanceIntervalSheet) {
             MaintenanceIntervalSheet(vehicle: vehicle)
-        }
-        // Modal Înregistrare Alimentare Carburant
-        .sheet(isPresented: $isShowingAddFuelSheet) {
-            AddFuelEntrySheet(vehicle: vehicle)
-        }
-        // Navigare Ecran Istoric Alimentări
-        .navigationDestination(isPresented: $isShowingFuelHistory) {
-            FuelHistoryView(vehicle: vehicle)
-        }
-        // Navigare Ecran Statistici & Grafice
-        .navigationDestination(isPresented: $isShowingAnalytics) {
-            VehicleAnalyticsView(vehicle: vehicle)
         }
         // Modal 1: Corectarea datei curente (fără istoric)
         .sheet(isPresented: $viewModel.isShowingCorrectionSheet) {
@@ -290,10 +271,38 @@ struct VehicleDetailsView: View {
     @ViewBuilder
     private var documentsSection: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("vehicle_details.section.documents")
-                .font(.caption.bold())
-                .foregroundStyle(.secondary)
-                .padding(.leading, 4)
+            HStack {
+                Text("vehicle_details.section.documents")
+                    .font(.caption.bold())
+                    .foregroundStyle(.secondary)
+                    .padding(.leading, 4)
+
+                Spacer()
+
+                let missingTypes = viewModel.missingDocumentTypes(for: vehicle)
+                if !missingTypes.isEmpty {
+                    Menu {
+                        ForEach(missingTypes) { docType in
+                            Button {
+                                viewModel.addMissingDocument(
+                                    type: docType,
+                                    for: vehicle,
+                                    in: modelContext
+                                )
+                            } label: {
+                                Label(docType.titleKey, systemImage: docType.iconName)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "plus.circle.fill")
+                            Text("common.add")
+                        }
+                        .font(.caption.bold())
+                        .foregroundStyle(.blue)
+                    }
+                }
+            }
 
             LazyVStack(spacing: 12) {
                 ForEach(viewModel.sortDocuments(for: vehicle)) { doc in
@@ -390,40 +399,6 @@ struct VehicleDetailsView: View {
     }
 
     @ViewBuilder
-    private var fuelSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("fuel.section.title")
-                .font(.caption.bold())
-                .foregroundStyle(.secondary)
-                .padding(.leading, 4)
-
-            FuelSummaryCardView(
-                vehicle: vehicle,
-                onAddFuelTap: {
-                    isShowingAddFuelSheet = true
-                },
-                onViewHistoryTap: {
-                    isShowingFuelHistory = true
-                }
-            )
-        }
-    }
-
-    @ViewBuilder
-    private var analyticsSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("analytics.title")
-                .font(.caption.bold())
-                .foregroundStyle(.secondary)
-                .padding(.leading, 4)
-
-            AnalyticsCardView(vehicle: vehicle) {
-                isShowingAnalytics = true
-            }
-        }
-    }
-
-    @ViewBuilder
     private var historySection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("vehicle_details.section.history")
@@ -449,9 +424,17 @@ struct VehicleDetailsView: View {
                 .frame(width: 28)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(doc.type.titleKey)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.primary)
+                HStack(spacing: 6) {
+                    Text(doc.type.titleKey)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.primary)
+
+                    if !doc.provider.isEmpty {
+                        Text("• \(doc.provider)")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
 
                 HStack(spacing: 4) {
                     Text("doc.history.expired_on")
@@ -462,6 +445,16 @@ struct VehicleDetailsView: View {
             }
 
             Spacer()
+
+            if let formattedPrice = doc.formattedPrice {
+                Text(formattedPrice)
+                    .font(.caption2.bold())
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(Color.teal.opacity(0.14))
+                    .foregroundStyle(.teal)
+                    .clipShape(Capsule())
+            }
 
             if doc.hasAttachment {
                 Button {
@@ -512,6 +505,12 @@ struct VehicleDetailsView: View {
                 }
             }
 
+            Button {
+                viewModel.prepareDateCorrection(for: doc)
+            } label: {
+                Label("common.edit", systemImage: "pencil")
+            }
+
             Button(role: .destructive) {
                 viewModel.deleteArchivedDocument(doc, in: modelContext)
             } label: {
@@ -520,7 +519,7 @@ struct VehicleDetailsView: View {
         }
     }
 
-    // MARK: - Sheet pentru Corectarea unei Date Greșite
+    // MARK: - Sheet pentru Corectarea unei Date / Preț / Țară
     @ViewBuilder
     private var dateCorrectionSheet: some View {
         NavigationStack {
@@ -540,6 +539,23 @@ struct VehicleDetailsView: View {
                         selection: $viewModel.correctionDate,
                         displayedComponents: .date
                     )
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "banknote")
+                            .foregroundStyle(.teal)
+                        TextField("doc.price.placeholder", text: $viewModel.correctionPriceText)
+                            .keyboardType(.decimalPad)
+                        Spacer()
+                        Text("lei")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "building.2.crop.circle")
+                            .foregroundStyle(.secondary)
+                        TextField("doc.provider.placeholder", text: $viewModel.correctionProvider)
+                    }
 
                     Button {
                         dateScanDestination = .correction
@@ -571,7 +587,7 @@ struct VehicleDetailsView: View {
         }
     }
 
-    // MARK: - Sheet pentru Reînnoire (Păstrează vechiul în Istoric)
+    // MARK: - Sheet pentru Reînnoire (Păstrează vechiul în Istoric + Salvează Noul Cost)
     @ViewBuilder
     private var renewalSheet: some View {
         NavigationStack {
@@ -591,6 +607,23 @@ struct VehicleDetailsView: View {
                         selection: $viewModel.renewalDate,
                         displayedComponents: .date
                     )
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "banknote")
+                            .foregroundStyle(.teal)
+                        TextField("doc.price.placeholder", text: $viewModel.renewalPriceText)
+                            .keyboardType(.decimalPad)
+                        Spacer()
+                        Text("lei")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "building.2.crop.circle")
+                            .foregroundStyle(.secondary)
+                        TextField("doc.provider.placeholder", text: $viewModel.renewalProvider)
+                    }
 
                     Button {
                         dateScanDestination = .renewal

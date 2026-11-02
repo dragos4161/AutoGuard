@@ -16,6 +16,11 @@ import SwiftUI
 public final class SubscriptionManager {
     public static let shared = SubscriptionManager()
 
+    /// Comutator global pentru monetizare:
+    /// Setat pe `false` pentru lansarea inițială (toate funcțiile sunt 100% gratuite).
+    /// Când vei dori să activezi abonamentele Pro într-un update viitor, schimbă în `true`.
+    public static let isMonetizationEnabled: Bool = false
+
     public private(set) var products: [Product] = []
     public private(set) var tier: SubscriptionTier = .free
     public private(set) var isLoading: Bool = false
@@ -27,6 +32,11 @@ public final class SubscriptionManager {
     private var updateListenerTask: Task<Void, Never>?
 
     private init() {
+        guard Self.isMonetizationEnabled else {
+            self.tier = .pro(expirationDate: nil, isLifetime: true)
+            return
+        }
+
         // Citire stare cached la pornire
         let cachedPro = UserDefaults.standard.bool(forKey: proCacheKey)
         if cachedPro {
@@ -43,7 +53,10 @@ public final class SubscriptionManager {
     }
 
     public var isProUser: Bool {
-        tier.isPro
+        if !Self.isMonetizationEnabled {
+            return true
+        }
+        return tier.isPro
     }
 
     // MARK: - Încărcare Catalog Produse
@@ -93,7 +106,10 @@ public final class SubscriptionManager {
             case .pending:
                 // Tranzacție în așteptare (ex: Ask to Buy pentru minori)
                 isPurchasing = false
-                errorMessage = "Tranzacția este în așteptarea aprobării familiei."
+                errorMessage = AppLanguage.tr(
+                    "Tranzacția este în așteptarea aprobării familiei.",
+                    "Transaction is pending family approval."
+                )
                 return false
 
             @unknown default:

@@ -163,7 +163,7 @@ struct AddFuelEntrySheet: View {
                             Spacer()
                             if let current = vehicle.currentMileage {
                                 VStack(alignment: .trailing, spacing: 2) {
-                                    Text("Ultimul km înregistrat")
+                                    Text(AppLanguage.tr("Ultimul km înregistrat", "Last recorded mileage"))
                                         .font(.caption2)
                                         .foregroundStyle(.secondary)
                                     Text("\(current) km")
@@ -355,7 +355,8 @@ struct AddFuelEntrySheet: View {
         // Actualizăm automat kilometrajul general al mașinii dacă această alimentare are un km mai mare
         let previousMax = vehicle.currentMileage ?? 0
         if odo > previousMax {
-            let mileageNote = notes.isEmpty ? "Alimentare (\(selectedFuelType.defaultDisplayName))" : "Alimentare \(notes)"
+            let fuelLabel = AppLanguage.tr("Alimentare", "Fuel")
+            let mileageNote = notes.isEmpty ? "\(fuelLabel) (\(selectedFuelType.defaultDisplayName))" : "\(fuelLabel) \(notes)"
             let mileageEntry = MileageEntry(mileage: odo, date: date, note: mileageNote)
             mileageEntry.vehicle = vehicle
             modelContext.insert(mileageEntry)

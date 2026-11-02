@@ -18,6 +18,7 @@ struct PaywallView: View {
     @State private var showingAlert: Bool = false
     @State private var alertMessage: String = ""
     @State private var isSuccessPurchased: Bool = false
+    @State private var showingPrivacyPolicy: Bool = false
 
     private let features = ProFeatureItem.allFeatures
 
@@ -363,7 +364,9 @@ struct PaywallView: View {
                     .font(.caption2)
                     .foregroundStyle(.secondary)
 
-                Link(destination: URL(string: "https://torpedou.app/privacy")!) {
+                Button {
+                    showingPrivacyPolicy = true
+                } label: {
                     Text("paywall.privacy_policy")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -371,6 +374,9 @@ struct PaywallView: View {
                 }
             }
             .padding(.top, 2)
+            .sheet(isPresented: $showingPrivacyPolicy) {
+                PrivacyPolicySheetView()
+            }
 
             Text("paywall.legal_disclaimer")
                 .font(.system(size: 10))
@@ -401,7 +407,10 @@ struct PaywallView: View {
                 subscriptionManager.toggleProForTesting()
                 dismiss()
                 #else
-                alertMessage = "Nu s-au putut contacta serverele App Store. Verifică conexiunea la internet."
+                alertMessage = AppLanguage.tr(
+                    "Nu s-au putut contacta serverele App Store. Verifică conexiunea la internet.",
+                    "Could not reach App Store servers. Please check your internet connection."
+                )
                 showingAlert = true
                 #endif
             }
@@ -412,10 +421,16 @@ struct PaywallView: View {
         Task {
             let restored = await subscriptionManager.restorePurchases()
             if restored {
-                alertMessage = "Abonamentul tău Torpedou Pro a fost restaurat cu succes!"
+                alertMessage = AppLanguage.tr(
+                    "Abonamentul tău Torpedou Pro a fost restaurat cu succes!",
+                    "Your Torpedou Pro subscription has been successfully restored!"
+                )
                 showingAlert = true
             } else {
-                alertMessage = "Nu au fost găsite achiziții active asociate acestui cont Apple ID."
+                alertMessage = AppLanguage.tr(
+                    "Nu au fost găsite achiziții active asociate acestui cont Apple ID.",
+                    "No active purchases were found for this Apple ID."
+                )
                 showingAlert = true
             }
         }

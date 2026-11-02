@@ -25,7 +25,7 @@ struct VehicleReportPdfTemplate: View {
                             .foregroundStyle(Color.blue)
                     }
 
-                    Text("RAPORT DE SERVICE & STARE TEHNICĂ")
+                    Text(AppLanguage.tr("RAPORT DE SERVICE & STARE TEHNICĂ", "SERVICE & TECHNICAL CONDITION REPORT"))
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color(white: 0.3))
                 }
@@ -33,7 +33,7 @@ struct VehicleReportPdfTemplate: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text("DATA EMITERII")
+                    Text(AppLanguage.tr("DATA EMITERII", "ISSUE DATE"))
                         .font(.system(size: 9, weight: .bold))
                         .foregroundStyle(Color.secondary)
 
@@ -48,7 +48,7 @@ struct VehicleReportPdfTemplate: View {
 
             // MARK: - Date Identificare Vehicul
             VStack(alignment: .leading, spacing: 10) {
-                Text("DATE IDENTIFICARE VEHICUL")
+                Text(AppLanguage.tr("DATE IDENTIFICARE VEHICUL", "VEHICLE IDENTIFICATION"))
                     .font(.system(size: 11, weight: .bold))
                     .foregroundStyle(Color.blue)
 
@@ -76,13 +76,13 @@ struct VehicleReportPdfTemplate: View {
                             .foregroundStyle(.primary)
 
                         HStack(spacing: 12) {
-                            Text("An: \(String(vehicle.year))")
+                            Text("\(AppLanguage.tr("An", "Year")): \(String(vehicle.year))")
                                 .font(.system(size: 11))
                                 .foregroundStyle(Color(white: 0.3))
 
                             if let km = vehicle.formattedMileage {
                                 Text("•")
-                                Text("Kilometraj: \(km)")
+                                Text("\(AppLanguage.tr("Kilometraj", "Mileage")): \(km)")
                                     .font(.system(size: 11, weight: .semibold))
                                     .foregroundStyle(Color.primary)
                             }
@@ -104,7 +104,7 @@ struct VehicleReportPdfTemplate: View {
 
             // MARK: - Situația Documentelor Obligatorii
             VStack(alignment: .leading, spacing: 8) {
-                Text("SITUAȚIA ACTELOR & ASIGURĂRILOR")
+                Text(AppLanguage.tr("SITUAȚIA ACTELOR & ASIGURĂRILOR", "DOCUMENTS & INSURANCE STATUS"))
                     .font(.system(size: 11, weight: .bold))
                     .foregroundStyle(Color.blue)
 
@@ -124,13 +124,23 @@ struct VehicleReportPdfTemplate: View {
                                 Spacer()
                             }
 
-                            Text("Expirare: \(doc.expirationDate.formatted(date: .numeric, time: .omitted))")
+                            Text("\(AppLanguage.tr("Expirare", "Expires")): \(doc.expirationDate.formatted(date: .numeric, time: .omitted))")
                                 .font(.system(size: 10))
                                 .foregroundStyle(Color(white: 0.3))
 
+                            if let formattedPrice = doc.formattedPrice {
+                                Text("• \(formattedPrice)")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundStyle(Color.primary)
+                            }
+
                             Spacer()
 
-                            Text(doc.isExpired ? "Expirat" : (doc.isExpiringSoon ? "\(doc.daysRemaining) zile" : "Valabil"))
+                            let statusBadgeText = doc.isExpired
+                                ? AppLanguage.tr("Expirat", "Expired")
+                                : (doc.isExpiringSoon ? "\(doc.daysRemaining) \(AppLanguage.tr("zile", "days"))" : AppLanguage.tr("Valabil", "Valid"))
+
+                            Text(statusBadgeText)
                                 .font(.system(size: 9, weight: .bold))
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
@@ -150,19 +160,19 @@ struct VehicleReportPdfTemplate: View {
             // MARK: - Istoric Mentenanță & Service
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("ISTORIC INTERVENȚII SERVICE")
+                    Text(AppLanguage.tr("ISTORIC INTERVENȚII SERVICE", "SERVICE & MAINTENANCE HISTORY"))
                         .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color.blue)
 
                     Spacer()
 
-                    Text("Total service: \(String(format: "%.0f lei", vehicle.totalServiceSpent))")
+                    Text("\(AppLanguage.tr("Total service", "Service total")): \(String(format: "%.0f lei", vehicle.totalServiceSpent))")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(.primary)
                 }
 
                 if vehicle.sortedServiceRecords.isEmpty {
-                    Text("Nicio intervenție de service înregistrată.")
+                    Text(AppLanguage.tr("Nicio intervenție de service înregistrată.", "No service records logged yet."))
                         .font(.system(size: 11))
                         .foregroundStyle(Color.secondary)
                         .padding(.vertical, 8)
@@ -214,14 +224,15 @@ struct VehicleReportPdfTemplate: View {
 
             // MARK: - Sumar Carburant & Consum
             VStack(alignment: .leading, spacing: 8) {
-                Text("SUMAR CONSUM & CHELTUIELI TOTALE")
+                Text(AppLanguage.tr("SUMAR CONSUM & CHELTUIELI TOTALE", "CONSUMPTION & TOTAL EXPENSES SUMMARY"))
                     .font(.system(size: 11, weight: .bold))
                     .foregroundStyle(Color.blue)
 
                 HStack(spacing: 12) {
-                    summaryItem(title: "Consum Mediu", value: vehicle.formattedAverageConsumption ?? "—")
-                    summaryItem(title: "Total Carburant", value: String(format: "%.0f lei", vehicle.totalFuelSpent))
-                    summaryItem(title: "Investiție Totală", value: String(format: "%.0f lei", vehicle.totalOverallSpent))
+                    summaryItem(title: AppLanguage.tr("Consum Mediu", "Avg. Consumption"), value: vehicle.formattedAverageConsumption ?? "—")
+                    summaryItem(title: AppLanguage.tr("Total Carburant", "Total Fuel"), value: String(format: "%.0f lei", vehicle.totalFuelSpent))
+                    summaryItem(title: AppLanguage.tr("Acte & Taxe", "Docs & Tolls"), value: String(format: "%.0f lei", vehicle.totalDocumentsSpent))
+                    summaryItem(title: AppLanguage.tr("Investiție Totală", "Total Investment"), value: String(format: "%.0f lei", vehicle.totalOverallSpent))
                 }
             }
 
@@ -229,13 +240,16 @@ struct VehicleReportPdfTemplate: View {
 
             // MARK: - Footer de Certificare
             HStack {
-                Text("Generat cu aplicația Torpedou • Document de evidență digitală a vehiculului")
+                Text(AppLanguage.tr(
+                    "Generat cu aplicația Torpedou • Document de evidență digitală a vehiculului",
+                    "Generated with Glovebox (Torpedou) • Digital Vehicle Record"
+                ))
                     .font(.system(size: 8))
                     .foregroundStyle(Color(white: 0.5))
 
                 Spacer()
 
-                Text("Pagină 1 / 1")
+                Text(AppLanguage.tr("Pagină 1 / 1", "Page 1 / 1"))
                     .font(.system(size: 8))
                     .foregroundStyle(Color(white: 0.5))
             }

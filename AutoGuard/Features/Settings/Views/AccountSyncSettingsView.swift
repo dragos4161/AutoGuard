@@ -24,9 +24,9 @@ struct AccountSyncSettingsView: View {
     @State private var showingFileImporter: Bool = false
     @State private var showingRestoreConfirmation: Bool = false
     @State private var showingSignOutAlert: Bool = false
+    @State private var showingDeleteAccountAlert: Bool = false
     @State private var alertMessage: String?
     @State private var showingAlertMessage: Bool = false
-    @State private var showingFirebaseInfoSheet: Bool = false
 
     var body: some View {
         Form {
@@ -109,45 +109,26 @@ struct AccountSyncSettingsView: View {
                 Text("settings.account.offline_backup_footer")
             }
 
-            // MARK: - Secțiunea 4: Configurare Firebase
-            Section("settings.account.firebase_title") {
-                HStack {
-                    Label("Google Firebase Cloud", systemImage: "flame.fill")
-                        .foregroundStyle(syncManager.isFirebaseConfigured ? .orange : .secondary)
-
-                    Spacer()
-
-                    Text(syncManager.isFirebaseConfigured ? "settings.account.active" : "settings.account.ready_for_setup")
-                        .font(.caption.bold())
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
-                        .background(syncManager.isFirebaseConfigured ? Color.green.opacity(0.15) : Color.orange.opacity(0.15))
-                        .foregroundStyle(syncManager.isFirebaseConfigured ? .green : .orange)
-                        .clipShape(Capsule())
-                }
-
-                Button {
-                    showingFirebaseInfoSheet = true
-                } label: {
-                    HStack {
-                        Text("settings.account.how_firebase_works")
-                            .font(.subheadline)
-                        Spacer()
-                        Image(systemName: "info.circle")
-                            .foregroundStyle(.blue)
-                    }
-                }
-            }
-
-            // MARK: - Secțiunea 5: Deconectare
+            // MARK: - Secțiunea 4: Deconectare & Ștergere Cont
             if authService.currentUser != nil {
                 Section {
-                    Button(role: .destructive) {
+                    Button {
                         showingSignOutAlert = true
                     } label: {
                         HStack {
                             Spacer()
                             Text("settings.account.sign_out")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                        }
+                    }
+
+                    Button(role: .destructive) {
+                        showingDeleteAccountAlert = true
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("settings.account.delete_account")
                             Spacer()
                         }
                     }
@@ -188,15 +169,20 @@ struct AccountSyncSettingsView: View {
         } message: {
             Text("settings.account.sign_out_confirm_message")
         }
+        // Confirmare ștergere cont (Obligatoriu conform App Store Review Guideline 5.1.1(v))
+        .alert("settings.account.delete_confirm_title", isPresented: $showingDeleteAccountAlert) {
+            Button("settings.account.delete_account", role: .destructive) {
+                triggerDeleteAccount()
+            }
+            Button("common.cancel", role: .cancel) {}
+        } message: {
+            Text("settings.account.delete_confirm_message")
+        }
         // Alertă generică feedback
         .alert("Torpedou", isPresented: $showingAlertMessage) {
             Button("common.ok", role: .cancel) {}
         } message: {
             Text(alertMessage ?? "")
-        }
-        // Modal informativ Firebase
-        .sheet(isPresented: $showingFirebaseInfoSheet) {
-            firebaseInfoSheetView
         }
     }
 
@@ -262,7 +248,7 @@ struct AccountSyncSettingsView: View {
             SignInWithAppleButton(
                 .signIn,
                 onRequest: { request in
-                    request.requestedScopes = [.fullName, .email]
+                    authService.configureRequest(request)
                 },
                 onCompletion: { result in
                     authService.handleSignInResult(result)
@@ -275,93 +261,6 @@ struct AccountSyncSettingsView: View {
         .padding(.vertical, 6)
     }
 
-    @ViewBuilder
-    private var firebaseInfoSheetView: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    VStack(alignment: .center, spacing: 12) {
-                        Image(systemName: "flame.circle.fill")
-                            .font(.system(size: 64))
-                            .foregroundStyle(.orange.gradient)
-
-                        Text("Google Firebase Sync")
-                            .font(.title2.bold())
-
-                        Text("settings.account.firebase_desc")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, 20)
-
-                    Divider()
-
-                    VStack(alignment: .leading, spacing: 14) {
-                        Text("settings.account.firebase_steps_title")
-                            .font(.headline)
-
-                        stepRow(
-                            number: "1",
-                            title: "settings.account.firebase_step1_title",
-                            desc: "settings.account.firebase_step1_desc"
-                        )
-
-                        stepRow(
-                            number: "2",
-                            title: "settings.account.firebase_step2_title",
-                            desc: "settings.account.firebase_step2_desc"
-                        )
-
-                        stepRow(
-                            number: "3",
-                            title: "settings.account.firebase_step3_title",
-                            desc: "settings.account.firebase_step3_desc"
-                        )
-                    }
-                    .padding()
-                    .background(Color(uiColor: .secondarySystemGroupedBackground))
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
-
-                    Spacer()
-                }
-                .padding()
-            }
-            .navigationTitle("Firebase Setup")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("common.done") {
-                        showingFirebaseInfoSheet = false
-                    }
-                }
-            }
-        }
-    }
-
-    @ViewBuilder
-    private func stepRow(number: String, title: LocalizedStringKey, desc: LocalizedStringKey) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            ZStack {
-                Circle()
-                    .fill(Color.orange.opacity(0.15))
-                    .frame(width: 28, height: 28)
-                Text(number)
-                    .font(.caption.bold())
-                    .foregroundStyle(.orange)
-            }
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline.bold())
-                Text(desc)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
     // MARK: - Acțiuni
 
     private func triggerCloudBackup() {
@@ -369,16 +268,22 @@ struct AccountSyncSettingsView: View {
             do {
                 if syncManager.isFirebaseConfigured {
                     try await syncManager.syncToCloud(context: modelContext)
-                    alertMessage = "Copia de siguranță a fost sincronizată cu succes în Cloud!"
+                    alertMessage = AppLanguage.tr(
+                        "Copia de siguranță a fost sincronizată cu succes în Cloud!",
+                        "Your backup was successfully synced to the Cloud!"
+                    )
                 } else {
                     _ = try backupManager.createSnapshot(context: modelContext)
                     let now = Date()
                     authService.recordBackupCompleted(at: now)
-                    alertMessage = "Copia de siguranță a fost creată pe dispozitiv. Folosește 'Exportă fișier de siguranță' pentru a o salva în iCloud Drive."
+                    alertMessage = AppLanguage.tr(
+                        "Copia de siguranță a fost creată pe dispozitiv. Folosește 'Exportă fișier de siguranță' pentru a o salva în iCloud Drive.",
+                        "Backup snapshot created on device. Use 'Export Backup File' below to save it to iCloud Drive."
+                    )
                 }
                 showingAlertMessage = true
             } catch {
-                alertMessage = "Eroare la backup: \(error.localizedDescription)"
+                alertMessage = "\(AppLanguage.tr("Eroare la backup", "Backup error")): \(error.localizedDescription)"
                 showingAlertMessage = true
             }
         }
@@ -389,13 +294,19 @@ struct AccountSyncSettingsView: View {
             do {
                 if syncManager.isFirebaseConfigured {
                     try await syncManager.restoreFromCloud(context: modelContext)
-                    alertMessage = "Datele au fost restaurate cu succes din Cloud!"
+                    alertMessage = AppLanguage.tr(
+                        "Datele au fost restaurate cu succes din Cloud!",
+                        "Your data was successfully restored from the Cloud!"
+                    )
                 } else {
-                    alertMessage = "Pentru a restaura dintr-un fișier de siguranță, folosește opțiunea 'Importă fișier de siguranță' de mai jos."
+                    alertMessage = AppLanguage.tr(
+                        "Pentru a restaura dintr-un fișier de siguranță, folosește opțiunea 'Importă fișier de siguranță' de mai jos.",
+                        "To restore from a backup file, use the 'Import Backup File' option below."
+                    )
                 }
                 showingAlertMessage = true
             } catch {
-                alertMessage = "Eroare la restaurare: \(error.localizedDescription)"
+                alertMessage = "\(AppLanguage.tr("Eroare la restaurare", "Restore error")): \(error.localizedDescription)"
                 showingAlertMessage = true
             }
         }
@@ -407,7 +318,7 @@ struct AccountSyncSettingsView: View {
             self.exportedFileURL = fileURL
             self.showingExportShareSheet = true
         } catch {
-            alertMessage = "Eroare la export: \(error.localizedDescription)"
+            alertMessage = "\(AppLanguage.tr("Eroare la export", "Export error")): \(error.localizedDescription)"
             showingAlertMessage = true
         }
     }
@@ -422,15 +333,34 @@ struct AccountSyncSettingsView: View {
                     context: modelContext,
                     strategy: .merge
                 )
-                alertMessage = "Au fost importate cu succes datele pentru \(snapshot.vehicles.count) vehicule."
+                alertMessage = AppLanguage.tr(
+                    "Au fost importate cu succes datele pentru \(snapshot.vehicles.count) vehicule.",
+                    "Successfully imported data for \(snapshot.vehicles.count) vehicles."
+                )
                 showingAlertMessage = true
             } catch {
-                alertMessage = "Eroare la citirea fișierului de backup: \(error.localizedDescription)"
+                alertMessage = "\(AppLanguage.tr("Eroare la citirea fișierului de backup", "Error reading backup file")): \(error.localizedDescription)"
                 showingAlertMessage = true
             }
         case .failure(let error):
-            alertMessage = "Selectare anulată: \(error.localizedDescription)"
+            alertMessage = "\(AppLanguage.tr("Selectare anulată", "Selection cancelled")): \(error.localizedDescription)"
             showingAlertMessage = true
+        }
+    }
+
+    private func triggerDeleteAccount() {
+        Task {
+            do {
+                try await authService.deleteAccount()
+                alertMessage = AppLanguage.tr(
+                    "Contul și datele tale din Cloud au fost șterse definitiv. Vehiculele tale locale au rămas pe dispozitiv.",
+                    "Your account and Cloud data have been permanently deleted. Your local vehicles remain on this device."
+                )
+                showingAlertMessage = true
+            } catch {
+                alertMessage = "\(AppLanguage.tr("Eroare la ștergerea contului", "Error deleting account")): \(error.localizedDescription)"
+                showingAlertMessage = true
+            }
         }
     }
 }

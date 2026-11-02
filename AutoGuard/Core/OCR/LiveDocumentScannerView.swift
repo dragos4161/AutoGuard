@@ -216,7 +216,10 @@ struct LiveDocumentScannerView: View {
                 Text(target.titleKey)
                     .font(.title3.bold())
 
-                Text("Scannerul live cu camera este disponibil pe iPhone-uri fizice. Poți alege o imagine sau fotografie cu documentul pentru a extrage automat datele.")
+                Text(AppLanguage.tr(
+                    "Scannerul live cu camera este disponibil pe iPhone-uri fizice. Poți alege o imagine sau fotografie cu documentul pentru a extrage automat datele.",
+                    "Live camera scanning is available on physical iPhones. You can pick an image or photo of the document to automatically extract its details."
+                ))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

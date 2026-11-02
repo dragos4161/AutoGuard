@@ -18,7 +18,11 @@ final class VehicleDetailsViewModel {
     var selectedDocument: VehicleDocument? = nil
     var isShowingAlert: Bool = false
     var renewalDate: Date = Date()
+    var renewalPriceText: String = ""
+    var renewalProvider: String = ""
     var correctionDate: Date = Date()
+    var correctionPriceText: String = ""
+    var correctionProvider: String = ""
 
     // MARK: - Attachment & QuickLook State
     var targetDocumentForAttachment: VehicleDocument? = nil
@@ -38,10 +42,55 @@ final class VehicleDetailsViewModel {
         vehicle.activeDocuments.sorted { $0.daysRemaining < $1.daysRemaining }
     }
 
-    // MARK: - Business Logic - Corectare Dată Greșită (Edit In-Place)
+    func missingDocumentTypes(for vehicle: Vehicle) -> [DocumentType] {
+        let existingTypes = Set(vehicle.activeDocuments.map(\.type))
+        return DocumentType.allCases.filter { docType in
+            // Vinieta de străinătate poate fi adăugată oricând (ex. țări diferite: Bulgaria, Ungaria, Austria)
+            if docType == .foreignVignette { return true }
+            return !existingTypes.contains(docType)
+        }
+    }
+
+    func addMissingDocument(
+        type: DocumentType,
+        for vehicle: Vehicle,
+        in context: ModelContext
+    ) {
+        let defaultExpiry: Date
+        if type == .foreignVignette {
+            defaultExpiry = Calendar.current.date(byAdding: .day, value: 10, to: Date()) ?? Date()
+        } else {
+            defaultExpiry = Calendar.current.date(byAdding: .year, value: 1, to: Date()) ?? Date()
+        }
+        let newDoc = repository.addDocument(
+            type: type,
+            expirationDate: defaultExpiry,
+            price: nil,
+            provider: "",
+            for: vehicle,
+            in: context
+        )
+        prepareDateCorrection(for: newDoc)
+    }
+
+    private func parsePrice(_ text: String) -> Double? {
+        let normalized = text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: ",", with: ".")
+        guard let value = Double(normalized), value > 0 else { return nil }
+        return value
+    }
+
+    // MARK: - Business Logic - Corectare Dată / Preț / Furnizor (Edit In-Place)
     func prepareDateCorrection(for document: VehicleDocument) {
         selectedDocument = document
         correctionDate = document.expirationDate
+        if let price = document.price, price > 0 {
+            correctionPriceText = String(format: "%.0f", price)
+        } else {
+            correctionPriceText = ""
+        }
+        correctionProvider = document.provider
         isShowingCorrectionSheet = true
     }
 
@@ -50,6 +99,8 @@ final class VehicleDetailsViewModel {
         repository.correctDocumentDate(
             selectedDocument,
             correctedDate: correctionDate,
+            price: parsePrice(correctionPriceText),
+            provider: correctionProvider,
             in: context
         )
         isShowingCorrectionSheet = false
@@ -58,9 +109,17 @@ final class VehicleDetailsViewModel {
     // MARK: - Business Logic - Reînnoire (Arhivează vechiul în istoric + Creează unul nou)
     func prepareRenewal(for document: VehicleDocument) {
         let baseDate = document.isExpired ? Date() : document.expirationDate
-        renewalDate =
-            Calendar.current.date(byAdding: .year, value: 1, to: baseDate)
-            ?? Date()
+        if document.type == .foreignVignette {
+            renewalDate = Calendar.current.date(byAdding: .day, value: 10, to: Date()) ?? Date()
+        } else {
+            renewalDate = Calendar.current.date(byAdding: .year, value: 1, to: baseDate) ?? Date()
+        }
+        if let price = document.price, price > 0 {
+            renewalPriceText = String(format: "%.0f", price)
+        } else {
+            renewalPriceText = ""
+        }
+        renewalProvider = document.provider
         selectedDocument = document
         isShowingRenewalSheet = true
     }
@@ -73,6 +132,8 @@ final class VehicleDetailsViewModel {
         repository.renewVehicleDocument(
             selectedDocument,
             newExpiryDate: renewalDate,
+            price: parsePrice(renewalPriceText),
+            provider: renewalProvider,
             in: context
         )
         isShowingRenewalSheet = false

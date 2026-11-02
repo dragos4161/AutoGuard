@@ -70,7 +70,7 @@ struct FuelSummaryCardView: View {
                         .font(.subheadline.bold())
                         .foregroundStyle(.primary)
 
-                    Text(String(format: "%.1f L volum", vehicle.totalFuelLiters))
+                    Text(String(format: AppLanguage.tr("%.1f L volum", "%.1f L volume"), vehicle.totalFuelLiters))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                 }

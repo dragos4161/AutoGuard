@@ -20,14 +20,19 @@ final class VehicleExportService {
         let sanitizedPlate = vehicle.plateNumber
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
             .joined()
-        let fileName = "Cheltuieli_\(sanitizedPlate.isEmpty ? "Vehicul" : sanitizedPlate).csv"
+        let prefix = AppLanguage.tr("Cheltuieli", "Expenses")
+        let fallbackPlate = AppLanguage.tr("Vehicul", "Vehicle")
+        let fileName = "\(prefix)_\(sanitizedPlate.isEmpty ? fallbackPlate : sanitizedPlate).csv"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
 
         // Adăugăm BOM (Byte Order Mark) UTF-8 pentru ca Microsoft Excel să deschidă corect diacriticele românești
         var csvContent = "\u{FEFF}"
 
         // Antetul tabelului
-        csvContent += "Tip Înregistrare;Data;Kilometraj (km);Categorie;Denumire / Titlu;Detalii / Cantitate;Cost (RON);Notițe\n"
+        csvContent += AppLanguage.tr(
+            "Tip Înregistrare;Data;Kilometraj (km);Categorie;Denumire / Titlu;Detalii / Cantitate;Cost (RON);Notițe\n",
+            "Entry Type;Date;Odometer (km);Category;Title;Details / Quantity;Cost (RON);Notes\n"
+        )
 
         // Colectăm toate intrările într-o listă unificată pentru sortare cronologică
         var entries: [ExportEntry] = []
@@ -41,7 +46,7 @@ final class VehicleExportService {
             entries.append(
                 ExportEntry(
                     date: record.date,
-                    type: "Service / Revizie",
+                    type: AppLanguage.tr("Service / Revizie", "Service / Maintenance"),
                     dateString: dateFormatter.string(from: record.date),
                     odometer: "\(record.mileage)",
                     category: catName,
@@ -59,14 +64,33 @@ final class VehicleExportService {
             entries.append(
                 ExportEntry(
                     date: fuel.date,
-                    type: "Carburant",
+                    type: AppLanguage.tr("Carburant", "Fuel"),
                     dateString: dateFormatter.string(from: fuel.date),
                     odometer: "\(fuel.odometer)",
                     category: fuel.fuelType.defaultDisplayName,
-                    title: "Alimentare \(fuel.fuelType.defaultDisplayName)",
+                    title: "\(AppLanguage.tr("Alimentare", "Fuel")) \(fuel.fuelType.defaultDisplayName)",
                     details: details,
                     amount: fuel.totalPrice,
                     notes: fuel.notes ?? ""
+                )
+            )
+        }
+
+        // 3. Intrări de Acte, Asigurări și Taxe de Drum (RCA, ITP, Rovinietă RO / Străinătate, CASCO)
+        for doc in (vehicle.documents ?? []) {
+            guard let price = doc.price, price > 0 else { continue }
+            let expString = "\(AppLanguage.tr("Expiră", "Expires")): \(dateFormatter.string(from: doc.expirationDate))"
+            entries.append(
+                ExportEntry(
+                    date: doc.createdAt,
+                    type: AppLanguage.tr("Acte & Taxe", "Documents & Tolls"),
+                    dateString: dateFormatter.string(from: doc.createdAt),
+                    odometer: "",
+                    category: doc.type.title,
+                    title: doc.provider.isEmpty ? doc.type.title : "\(doc.type.title) (\(doc.provider))",
+                    details: expString,
+                    amount: price,
+                    notes: doc.isArchived ? AppLanguage.tr("Arhivat (Istoric)", "Archived (History)") : AppLanguage.tr("Activ", "Active")
                 )
             )
         }
@@ -90,10 +114,11 @@ final class VehicleExportService {
 
         // Rânduri finale de sumar
         csvContent += "\n"
-        csvContent += "SUMAR CHELTUIELI;;;;;;;\n"
-        csvContent += "Total Service (RON);;;;;;\(String(format: "%.2f", vehicle.totalServiceSpent));\n"
-        csvContent += "Total Carburant (RON);;;;;;\(String(format: "%.2f", vehicle.totalFuelSpent));\n"
-        csvContent += "TOTAL GENERAL INVESTIȚIE (RON);;;;;;\(String(format: "%.2f", vehicle.totalOverallSpent));\n"
+        csvContent += AppLanguage.tr("SUMAR CHELTUIELI;;;;;;;\n", "EXPENSE SUMMARY;;;;;;;\n")
+        csvContent += "\(AppLanguage.tr("Total Service (RON)", "Total Service (RON)"));;;;;;\(String(format: "%.2f", vehicle.totalServiceSpent));\n"
+        csvContent += "\(AppLanguage.tr("Total Carburant (RON)", "Total Fuel (RON)"));;;;;;\(String(format: "%.2f", vehicle.totalFuelSpent));\n"
+        csvContent += "\(AppLanguage.tr("Total Acte, RCA, ITP & Taxe Drum (RON)", "Total Documents, RCA, ITP & Tolls (RON)"));;;;;;\(String(format: "%.2f", vehicle.totalDocumentsSpent));\n"
+        csvContent += "\(AppLanguage.tr("TOTAL GENERAL INVESTIȚIE (RON)", "GRAND TOTAL INVESTMENT (RON)"));;;;;;\(String(format: "%.2f", vehicle.totalOverallSpent));\n"
 
         do {
             try csvContent.write(to: tempURL, atomically: true, encoding: .utf8)

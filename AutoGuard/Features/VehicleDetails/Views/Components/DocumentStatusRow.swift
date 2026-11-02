@@ -26,20 +26,49 @@ struct DocumentStatusRow: View {
                     .frame(width: 32)
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(doc.type.titleKey)
-                        .font(.headline)
+                    HStack(spacing: 6) {
+                        Text(doc.type.titleKey)
+                            .font(.headline)
 
-                    // Data expirării + buton rapid de corectare a datei
+                        if !doc.provider.isEmpty {
+                            Text("• \(doc.provider)")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                    }
+
+                    // Data expirării + preț + buton rapid de editare
                     Button {
                         onEditDateTap?()
                     } label: {
-                        HStack(spacing: 4) {
-                            Text(doc.expirationDate, format: .dateTime.day().month().year())
-                            Image(systemName: "pencil")
-                                .font(.caption2)
+                        HStack(spacing: 6) {
+                            HStack(spacing: 4) {
+                                Text(doc.expirationDate, format: .dateTime.day().month().year())
+                                Image(systemName: "pencil")
+                                    .font(.caption2)
+                            }
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+
+                            if let formattedPrice = doc.formattedPrice {
+                                Text(formattedPrice)
+                                    .font(.caption2.bold())
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.teal.opacity(0.14))
+                                    .foregroundStyle(.teal)
+                                    .clipShape(Capsule())
+                            } else {
+                                Text("doc.price.add_badge")
+                                    .font(.caption2.weight(.medium))
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.secondary.opacity(0.12))
+                                    .foregroundStyle(.secondary)
+                                    .clipShape(Capsule())
+                            }
                         }
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                     }
                     .buttonStyle(.plain)
 

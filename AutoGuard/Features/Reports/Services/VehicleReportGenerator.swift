@@ -18,6 +18,7 @@ final class VehicleReportGenerator {
     /// Generează fișierul PDF A4 pentru vehiculul specificat și returnează URL-ul local temporar
     func generatePdf(for vehicle: Vehicle) -> URL? {
         let template = VehicleReportPdfTemplate(vehicle: vehicle)
+            .environment(\.locale, AppLanguage.current.locale)
             .frame(width: 595.2, height: 841.8)
 
         let renderer = ImageRenderer(content: template)
@@ -26,7 +27,9 @@ final class VehicleReportGenerator {
         let sanitizedPlate = vehicle.plateNumber
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
             .joined()
-        let fileName = "Carte_Service_\(sanitizedPlate.isEmpty ? "Vehicul" : sanitizedPlate).pdf"
+        let prefix = AppLanguage.tr("Carte_Service", "Service_Report")
+        let fallbackPlate = AppLanguage.tr("Vehicul", "Vehicle")
+        let fileName = "\(prefix)_\(sanitizedPlate.isEmpty ? fallbackPlate : sanitizedPlate).pdf"
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
 
         let pageBounds = CGRect(x: 0, y: 0, width: 595.2, height: 841.8)
@@ -35,8 +38,14 @@ final class VehicleReportGenerator {
         do {
             try pdfRenderer.writePDF(to: tempURL) { context in
                 context.beginPage()
-                renderer.render { size, renderContext in
-                    renderContext(context.cgContext)
+                let cgContext = context.cgContext
+                // UIGraphicsPDFRenderer inversează axa Y pentru UIKit (origine sus-stânga),
+                // în timp ce ImageRenderer.render se așteaptă la coordonate CoreGraphics standard (origine jos-stânga).
+                // Inversăm înapoi axa Y pentru ca PDF-ul să fie randat drept, nu cu susul în jos.
+                cgContext.translateBy(x: 0, y: pageBounds.height)
+                cgContext.scaleBy(x: 1.0, y: -1.0)
+                renderer.render { _, renderContext in
+                    renderContext(cgContext)
                 }
             }
             return tempURL

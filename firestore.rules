@@ -1,0 +1,268 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// This security rules file assumes the following data structures
+// for the Torpedou (AutoGuard) iOS & Android cross-platform sync:
+//
+// Collection: users
+// Document ID: {userId} (must match Firebase Auth UID: request.auth.uid)
+// Fields:
+//   - userIdentifier: string (optional, immutable, 1..128 chars) - Apple / federated user identifier
+//   - email: string or null (optional, <= 254 chars) - User email or Apple Private Relay address (PII)
+//   - displayName: string or null (optional, <= 150 chars) - Formatted user display name (PII)
+//   - lastSyncedAt: timestamp, string, or number (optional) - Timestamp of last cloud backup sync
+//   - schemaVersion: int (optional, 1..100) - Backup schema version
+//   - vehicleCount: int (optional, 0..1000) - Number of synced vehicles in snapshot
+//
+// Subcollection: users/{userId}/vehicles
+// Document ID: {vehicleId} (UUID string of the vehicle)
+// Fields (serialized VehicleBackupDTO):
+//   - id: string (optional/present, immutable, 1..64 chars) - Vehicle UUID string
+//   - plateNumber: string (required, 1..30 chars) - Vehicle license plate number
+//   - year: int (required, 1886..2100) - Manufacturing year
+//   - make: string (optional, <= 100 chars) - Vehicle manufacturer/brand
+//   - model: string (optional, <= 100 chars) - Vehicle model name
+//   - vin: string (optional, <= 50 chars) - Vehicle Identification Number (VIN)
+//   - nickname: string (optional, <= 100 chars) - Custom vehicle nickname
+//   - createdAt: timestamp, string, or number (optional, immutable) - Creation timestamp
+//   - oilChangeIntervalKm: int (optional, 0..500000) - Oil change mileage interval
+//   - oilChangeIntervalMonths: int (optional, 0..240) - Oil change time interval in months
+//   - documents: list (optional, <= 200 items) - Serialized DocumentBackupDTO entries
+//   - mileageEntries: list (optional, <= 5000 items) - Serialized MileageBackupDTO entries
+//   - serviceRecords: list (optional, <= 1000 items) - Serialized ServiceBackupDTO entries
+//   - fuelEntries: list (optional, <= 5000 items) - Serialized FuelBackupDTO entries
+//   - registrationFrontBase64: string or null (optional, <= 900000 chars) - Base64 registration front image
+//   - registrationBackBase64: string or null (optional, <= 900000 chars) - Base64 registration back image
+//   - driverLicenseFrontBase64: string or null (optional, <= 900000 chars) - Base64 license front image
+//   - driverLicenseBackBase64: string or null (optional, <= 900000 chars) - Base64 license back image
+//   - registrationFrontStoragePath: string or null (optional, <= 500 chars) - Cloud Storage path for registration front image
+//   - registrationBackStoragePath: string or null (optional, <= 500 chars) - Cloud Storage path for registration back image
+//   - driverLicenseFrontStoragePath: string or null (optional, <= 500 chars) - Cloud Storage path for license front image
+//   - driverLicenseBackStoragePath: string or null (optional, <= 500 chars) - Cloud Storage path for license back image
+//
+// Subcollection: users/{userId}/vehicles/{vehicleId}/attachments
+// Document ID: {attachmentId} (UUID string of the document or service record)
+// Fields:
+//   - id: string (required, immutable, 1..64 chars) - Parent document or service record UUID string
+//   - kind: string (required, enum ['document', 'service'], 1..32 chars) - Attachment category
+//   - fileName: string or null (optional, <= 255 chars) - Original attachment filename
+//   - dataBase64: string (required, 1..950000 chars) - Base64-encoded binary attachment payload
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the authenticated user owns the resource path
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Validate required fields exist on the incoming document
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Validate that the document contains only the explicitly allowed fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate that immutable fields have not been modified on update
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // Validate required string length bounds
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+             request.resource.data[field].size() >= minLen &&
+             request.resource.data[field].size() <= maxLen;
+    }
+
+    // Validate optional string (if present and non-null, must be string within length bounds)
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !(field in request.resource.data) ||
+             request.resource.data[field] == null ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= minLen &&
+              request.resource.data[field].size() <= maxLen);
+    }
+
+    // Validate optional integer within numeric range
+    function isValidOptionalInt(field, minVal, maxVal) {
+      return !(field in request.resource.data) ||
+             request.resource.data[field] == null ||
+             (request.resource.data[field] is int &&
+              request.resource.data[field] >= minVal &&
+              request.resource.data[field] <= maxVal);
+    }
+
+    // Validate optional date/timestamp representation (Firestore Timestamp, ISO-8601 string, or epoch number)
+    function isValidOptionalDate(field) {
+      return !(field in request.resource.data) ||
+             request.resource.data[field] == null ||
+             request.resource.data[field] is timestamp ||
+             request.resource.data[field] is number ||
+             (request.resource.data[field] is string &&
+              request.resource.data[field].size() >= 1 &&
+              request.resource.data[field].size() <= 64);
+    }
+
+    // Validate optional list with an upper size limit to prevent resource exhaustion
+    function isValidOptionalList(field, maxSize) {
+      return !(field in request.resource.data) ||
+             (request.resource.data[field] is list &&
+              request.resource.data[field].size() <= maxSize);
+    }
+
+    // ===============================================================
+    // Domain Validators (Used in BOTH create and update)
+    // ===============================================================
+
+    // Validate user profile & sync metadata document
+    function isValidUser(data) {
+      let allowedFields = [
+        'userIdentifier',
+        'email',
+        'displayName',
+        'lastSyncedAt',
+        'schemaVersion',
+        'vehicleCount'
+      ];
+      return hasOnlyAllowedFields(allowedFields) &&
+             data.keys().size() >= 1 &&
+             isValidOptionalString('userIdentifier', 1, 128) &&
+             isValidOptionalString('email', 0, 254) &&
+             isValidOptionalString('displayName', 0, 150) &&
+             isValidOptionalDate('lastSyncedAt') &&
+             isValidOptionalInt('schemaVersion', 1, 100) &&
+             isValidOptionalInt('vehicleCount', 0, 1000);
+    }
+
+    // Validate VehicleBackupDTO document
+    function isValidVehicle(data) {
+      let allowedFields = [
+        'id',
+        'plateNumber',
+        'make',
+        'model',
+        'year',
+        'vin',
+        'nickname',
+        'createdAt',
+        'oilChangeIntervalKm',
+        'oilChangeIntervalMonths',
+        'documents',
+        'mileageEntries',
+        'serviceRecords',
+        'fuelEntries',
+        'registrationFrontBase64',
+        'registrationBackBase64',
+        'driverLicenseFrontBase64',
+        'driverLicenseBackBase64',
+        'registrationFrontStoragePath',
+        'registrationBackStoragePath',
+        'driverLicenseFrontStoragePath',
+        'driverLicenseBackStoragePath'
+      ];
+      return hasOnlyAllowedFields(allowedFields) &&
+             hasRequiredFields(['plateNumber', 'year']) &&
+             validStringLength('plateNumber', 1, 30) &&
+             data.year is int &&
+             data.year >= 1886 &&
+             data.year <= 2100 &&
+             isValidOptionalString('id', 1, 64) &&
+             isValidOptionalString('make', 0, 100) &&
+             isValidOptionalString('model', 0, 100) &&
+             isValidOptionalString('vin', 0, 50) &&
+             isValidOptionalString('nickname', 0, 100) &&
+             isValidOptionalDate('createdAt') &&
+             isValidOptionalInt('oilChangeIntervalKm', 0, 500000) &&
+             isValidOptionalInt('oilChangeIntervalMonths', 0, 240) &&
+             isValidOptionalList('documents', 200) &&
+             isValidOptionalList('mileageEntries', 5000) &&
+             isValidOptionalList('serviceRecords', 1000) &&
+             isValidOptionalList('fuelEntries', 5000) &&
+             isValidOptionalString('registrationFrontBase64', 0, 900000) &&
+             isValidOptionalString('registrationBackBase64', 0, 900000) &&
+             isValidOptionalString('driverLicenseFrontBase64', 0, 900000) &&
+             isValidOptionalString('driverLicenseBackBase64', 0, 900000) &&
+             isValidOptionalString('registrationFrontStoragePath', 0, 500) &&
+             isValidOptionalString('registrationBackStoragePath', 0, 500) &&
+             isValidOptionalString('driverLicenseFrontStoragePath', 0, 500) &&
+             isValidOptionalString('driverLicenseBackStoragePath', 0, 500);
+    }
+
+    // Validate binary attachment document (document or service invoice)
+    function isValidAttachment(data) {
+      let allowedFields = [
+        'id',
+        'kind',
+        'fileName',
+        'dataBase64'
+      ];
+      return hasOnlyAllowedFields(allowedFields) &&
+             hasRequiredFields(['id', 'kind', 'dataBase64']) &&
+             validStringLength('id', 1, 64) &&
+             validStringLength('kind', 1, 32) &&
+             data.kind in ['document', 'service'] &&
+             isValidOptionalString('fileName', 0, 255) &&
+             validStringLength('dataBase64', 1, 950000);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // User profile & cloud sync metadata
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) &&
+                       isValidUser(request.resource.data);
+      allow update: if isOwner(userId) &&
+                       isValidUser(request.resource.data) &&
+                       areImmutableFieldsUnchanged(['userIdentifier']);
+      allow delete: if isOwner(userId);
+
+      // User's synced vehicles subcollection
+      match /vehicles/{vehicleId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) &&
+                         isValidVehicle(request.resource.data);
+        allow update: if isOwner(userId) &&
+                         isValidVehicle(request.resource.data) &&
+                         areImmutableFieldsUnchanged(['id', 'createdAt']);
+        allow delete: if isOwner(userId);
+
+        // Vehicle's binary document and service invoice attachments subcollection
+        match /attachments/{attachmentId} {
+          allow read: if isOwner(userId);
+          allow create: if isOwner(userId) &&
+                           isValidAttachment(request.resource.data);
+          allow update: if isOwner(userId) &&
+                           isValidAttachment(request.resource.data) &&
+                           areImmutableFieldsUnchanged(['id']);
+          allow delete: if isOwner(userId);
+        }
+      }
+    }
+
+    // Default deny for all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

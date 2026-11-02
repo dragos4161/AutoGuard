@@ -71,6 +71,10 @@ public struct VehicleBackupDTO: Codable, Identifiable {
     public let registrationBackBase64: String?
     public let driverLicenseFrontBase64: String?
     public let driverLicenseBackBase64: String?
+    public let registrationFrontStoragePath: String?
+    public let registrationBackStoragePath: String?
+    public let driverLicenseFrontStoragePath: String?
+    public let driverLicenseBackStoragePath: String?
 
     public init(
         id: UUID,
@@ -90,7 +94,11 @@ public struct VehicleBackupDTO: Codable, Identifiable {
         registrationFrontBase64: String? = nil,
         registrationBackBase64: String? = nil,
         driverLicenseFrontBase64: String? = nil,
-        driverLicenseBackBase64: String? = nil
+        driverLicenseBackBase64: String? = nil,
+        registrationFrontStoragePath: String? = nil,
+        registrationBackStoragePath: String? = nil,
+        driverLicenseFrontStoragePath: String? = nil,
+        driverLicenseBackStoragePath: String? = nil
     ) {
         self.id = id
         self.plateNumber = plateNumber
@@ -110,6 +118,10 @@ public struct VehicleBackupDTO: Codable, Identifiable {
         self.registrationBackBase64 = registrationBackBase64
         self.driverLicenseFrontBase64 = driverLicenseFrontBase64
         self.driverLicenseBackBase64 = driverLicenseBackBase64
+        self.registrationFrontStoragePath = registrationFrontStoragePath
+        self.registrationBackStoragePath = registrationBackStoragePath
+        self.driverLicenseFrontStoragePath = driverLicenseFrontStoragePath
+        self.driverLicenseBackStoragePath = driverLicenseBackStoragePath
     }
 }
 
@@ -119,33 +131,42 @@ public struct DocumentBackupDTO: Codable, Identifiable {
     public let id: UUID
     public let typeRawValue: String
     public let expirationDate: Date
+    public let createdAt: Date?
+    public let price: Double?
     public let provider: String
     public let policyNumber: String
     public let isArchived: Bool
     public let archivedAt: Date?
     public let attachmentFileName: String?
     public let attachmentBase64: String?
+    public let attachmentStoragePath: String?
 
     public init(
         id: UUID,
         typeRawValue: String,
         expirationDate: Date,
+        createdAt: Date? = nil,
+        price: Double? = nil,
         provider: String,
         policyNumber: String,
         isArchived: Bool,
         archivedAt: Date?,
         attachmentFileName: String?,
-        attachmentBase64: String? = nil
+        attachmentBase64: String? = nil,
+        attachmentStoragePath: String? = nil
     ) {
         self.id = id
         self.typeRawValue = typeRawValue
         self.expirationDate = expirationDate
+        self.createdAt = createdAt
+        self.price = price
         self.provider = provider
         self.policyNumber = policyNumber
         self.isArchived = isArchived
         self.archivedAt = archivedAt
         self.attachmentFileName = attachmentFileName
         self.attachmentBase64 = attachmentBase64
+        self.attachmentStoragePath = attachmentStoragePath
     }
 }
 
@@ -182,6 +203,7 @@ public struct ServiceBackupDTO: Codable, Identifiable {
     public let price: Double?
     public let invoiceFileName: String?
     public let invoiceBase64: String?
+    public let invoiceStoragePath: String?
 
     public init(
         id: UUID,
@@ -192,7 +214,8 @@ public struct ServiceBackupDTO: Codable, Identifiable {
         notes: String?,
         price: Double?,
         invoiceFileName: String?,
-        invoiceBase64: String? = nil
+        invoiceBase64: String? = nil,
+        invoiceStoragePath: String? = nil
     ) {
         self.id = id
         self.date = date
@@ -203,6 +226,7 @@ public struct ServiceBackupDTO: Codable, Identifiable {
         self.price = price
         self.invoiceFileName = invoiceFileName
         self.invoiceBase64 = invoiceBase64
+        self.invoiceStoragePath = invoiceStoragePath
     }
 }
 

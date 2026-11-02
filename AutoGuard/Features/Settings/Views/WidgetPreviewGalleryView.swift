@@ -82,7 +82,7 @@ struct WidgetPreviewGalleryView: View {
 
                 // MARK: - 1. Home Screen: Medium (Formatul principal)
                 VStack(alignment: .leading, spacing: 10) {
-                    Label("Home Screen: Dimensiune Medie", systemImage: "rectangle.split.2x1.fill")
+                    Label(AppLanguage.tr("Home Screen: Dimensiune Medie", "Home Screen: Medium Size"), systemImage: "rectangle.split.2x1.fill")
                         .font(.headline)
                         .padding(.horizontal)
 
@@ -95,7 +95,7 @@ struct WidgetPreviewGalleryView: View {
 
                 // MARK: - 2. Home Screen: Small & Large
                 VStack(alignment: .leading, spacing: 10) {
-                    Label("Home Screen: Mică & Mare", systemImage: "square.fill")
+                    Label(AppLanguage.tr("Home Screen: Mică & Mare", "Home Screen: Small & Large"), systemImage: "square.fill")
                         .font(.headline)
                         .padding(.horizontal)
 
@@ -106,9 +106,12 @@ struct WidgetPreviewGalleryView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Dimensiune Compactă")
+                            Text(AppLanguage.tr("Dimensiune Compactă", "Compact Size"))
                                 .font(.subheadline.bold())
-                            Text("Afișează factorul limită (kilometri sau timp), procentul de uzură și alerta urgentă de expirare.")
+                            Text(AppLanguage.tr(
+                                "Afișează factorul limită (kilometri sau timp), procentul de uzură și alerta urgentă de expirare.",
+                                "Displays the limiting factor (mileage or time), wear percentage, and urgent expiration alerts."
+                            ))
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -118,7 +121,7 @@ struct WidgetPreviewGalleryView: View {
 
                 // MARK: - 3. Lock Screen Accessories (Ecran Blocat)
                 VStack(alignment: .leading, spacing: 12) {
-                    Label("Lock Screen (Ecran Blocat)", systemImage: "lock.iphone")
+                    Label(AppLanguage.tr("Lock Screen (Ecran Blocat)", "Lock Screen Widgets"), systemImage: "lock.iphone")
                         .font(.headline)
                         .padding(.horizontal)
 
@@ -126,7 +129,7 @@ struct WidgetPreviewGalleryView: View {
                         // Rectangular
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text("Format Dreptunghiular")
+                                Text(AppLanguage.tr("Format Dreptunghiular", "Rectangular Format"))
                                     .font(.caption.bold())
                                     .foregroundStyle(.secondary)
                                 ZStack {
@@ -163,7 +166,7 @@ struct WidgetPreviewGalleryView: View {
 
                         // Inline text
                         VStack(alignment: .leading, spacing: 6) {
-                            Text("Format Orizontal (deasupra orei)")
+                            Text(AppLanguage.tr("Format Orizontal (deasupra orei)", "Inline Format (above clock)"))
                                 .font(.caption.bold())
                                 .foregroundStyle(.secondary)
 
@@ -184,13 +187,31 @@ struct WidgetPreviewGalleryView: View {
 
                 // MARK: - Ghid instalare widget pe telefon
                 VStack(alignment: .leading, spacing: 12) {
-                    Label("Cum adaugi widget-ul pe ecran", systemImage: "hand.tap.fill")
+                    Label(AppLanguage.tr("Cum adaugi widget-ul pe ecran", "How to add widgets to your screen"), systemImage: "hand.tap.fill")
                         .font(.headline)
 
                     VStack(alignment: .leading, spacing: 10) {
-                        guideRow(step: "1", text: "Apasă lung pe un spațiu liber de pe ecranul principal sau ecranul blocat.")
-                        guideRow(step: "2", text: "Apasă pe butonul '+' din colțul de sus.")
-                        guideRow(step: "3", text: "Caută 'Torpedou' și alege formatul preferat (Mic, Mediu, Mare sau Lock Screen).")
+                        guideRow(
+                            step: "1",
+                            text: AppLanguage.tr(
+                                "Apasă lung pe un spațiu liber de pe ecranul principal sau ecranul blocat.",
+                                "Long-press an empty area on your Home Screen or Lock Screen."
+                            )
+                        )
+                        guideRow(
+                            step: "2",
+                            text: AppLanguage.tr(
+                                "Apasă pe butonul '+' din colțul de sus.",
+                                "Tap the '+' button in the top corner."
+                            )
+                        )
+                        guideRow(
+                            step: "3",
+                            text: AppLanguage.tr(
+                                "Caută 'Torpedou' și alege formatul preferat (Mic, Mediu, Mare sau Lock Screen).",
+                                "Search for 'Glovebox' or 'Torpedou' and choose your preferred size (Small, Medium, Large, or Lock Screen)."
+                            )
+                        )
                     }
                     .padding()
                     .background(Color(uiColor: .secondarySystemGroupedBackground))
@@ -221,7 +242,7 @@ struct WidgetPreviewGalleryView: View {
     }
 
     @ViewBuilder
-    private func guideRow(step: String, text: LocalizedStringKey) -> some View {
+    private func guideRow(step: String, text: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
             ZStack {
                 Circle()

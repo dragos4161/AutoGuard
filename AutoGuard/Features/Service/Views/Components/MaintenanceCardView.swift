@@ -92,8 +92,8 @@ struct MaintenanceCardView: View {
                         progress: status.timeProgress,
                         valueText: status.dueDate.formatted(.dateTime.month().year()),
                         remainingText: status.isOverdue && status.remainingDays <= 0
-                            ? "-\(abs(status.remainingDays)) zile"
-                            : "\(status.monthsRemaining) luni",
+                            ? "-\(abs(status.remainingDays)) \(AppLanguage.tr("zile", "days"))"
+                            : "\(status.monthsRemaining) \(AppLanguage.tr("luni", "months"))",
                         isLeadingFactor: status.limitingFactor == .time,
                         accentColor: status.limitingFactor == .time ? status.statusColor : .purple
                     )
@@ -420,25 +420,43 @@ struct MaintenanceCardView: View {
 
     private func summarySubtitle(for status: MaintenanceStatus) -> String {
         if status.isOverdue {
-            return "Fă o programare în service"
+            return AppLanguage.tr("Fă o programare în service", "Schedule a service appointment")
         } else if status.limitingFactor == .mileage {
-            return "Limita: în \(status.remainingKm.formatted()) km"
+            return AppLanguage.tr(
+                "Limita: în \(status.remainingKm.formatted()) km",
+                "Limit: in \(status.remainingKm.formatted()) km"
+            )
         } else {
-            return "Limita: în \(status.monthsRemaining) luni"
+            return AppLanguage.tr(
+                "Limita: în \(status.monthsRemaining) luni",
+                "Limit: in \(status.monthsRemaining) months"
+            )
         }
     }
 
     private func overdueTitle(for status: MaintenanceStatus) -> String {
         if status.remainingKm <= 0 && status.remainingDays <= 0 {
-            return "Termen depășit la kilometri și la timp!"
+            return AppLanguage.tr(
+                "Termen depășit la kilometri și la timp!",
+                "Overdue by both mileage and time!"
+            )
         } else if status.remainingKm <= 0 {
-            return "Kilometraj depășit cu \(abs(status.remainingKm).formatted()) km!"
+            return AppLanguage.tr(
+                "Kilometraj depășit cu \(abs(status.remainingKm).formatted()) km!",
+                "Mileage exceeded by \(abs(status.remainingKm).formatted()) km!"
+            )
         } else {
-            return "Termen calendaristic depășit!"
+            return AppLanguage.tr(
+                "Termen calendaristic depășit!",
+                "Calendar interval overdue!"
+            )
         }
     }
 
     private func overdueSubtitle(for status: MaintenanceStatus) -> String {
-        "Fă o programare în service pentru a proteja motorul mașinii."
+        AppLanguage.tr(
+            "Fă o programare în service pentru a proteja motorul mașinii.",
+            "Schedule a service appointment to protect your car's engine."
+        )
     }
 }
