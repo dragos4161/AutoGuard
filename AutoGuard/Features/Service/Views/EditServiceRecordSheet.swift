@@ -241,7 +241,8 @@ struct EditServiceRecordSheet: View {
         record.invoiceFileName = invoiceFileName
 
         if let vehicle = record.vehicle {
-            if mileage > (vehicle.currentMileage ?? 0) {
+            let alreadyRecorded = (vehicle.mileageEntries ?? []).contains(where: { $0.mileage == mileage })
+            if mileage > 0 && !alreadyRecorded {
                 let repo = SwiftDataVehicleRepository()
                 _ = repo.addMileageEntry(
                     mileage,

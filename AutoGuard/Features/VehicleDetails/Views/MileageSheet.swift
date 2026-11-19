@@ -189,10 +189,51 @@ struct MileageSheet: View {
                 }
             }
             .onAppear {
+                syncMissingFuelAndServiceMileages()
                 if let current = currentRecordedMileage {
                     inputMileageText = "\(current)"
                 }
             }
+        }
+    }
+
+    /// Sincronizează retroactiv în istoricul de kilometri citirile de odometru din alimentări și service care nu fuseseră copiate
+    private func syncMissingFuelAndServiceMileages() {
+        var existingMileages = Set((vehicle.mileageEntries ?? []).map(\.mileage))
+        var didInsert = false
+
+        for fuel in (vehicle.fuelEntries ?? []) where fuel.odometer > 0 {
+            if !existingMileages.contains(fuel.odometer) {
+                let fuelLabel = AppLanguage.tr("Alimentare", "Fuel")
+                let noteText = (fuel.notes?.isEmpty == false) ? "\(fuelLabel) \(fuel.notes!)" : fuelLabel
+                _ = repository.addMileageEntry(
+                    fuel.odometer,
+                    date: fuel.date,
+                    note: noteText,
+                    for: vehicle,
+                    in: modelContext
+                )
+                existingMileages.insert(fuel.odometer)
+                didInsert = true
+            }
+        }
+
+        for service in (vehicle.serviceRecords ?? []) where service.mileage > 0 {
+            if !existingMileages.contains(service.mileage) {
+                _ = repository.addMileageEntry(
+                    service.mileage,
+                    date: service.date,
+                    note: "Service: \(service.title)",
+                    for: vehicle,
+                    in: modelContext
+                )
+                existingMileages.insert(service.mileage)
+                didInsert = true
+            }
+        }
+
+        if didInsert {
+            WidgetDataManager.shared.updateWidgetData(for: vehicle)
         }
     }
 
@@ -204,9 +245,16 @@ struct MileageSheet: View {
                     .font(.system(.body, design: .rounded, weight: .bold))
                     .foregroundStyle(.primary)
 
-                Text(entry.date, format: .dateTime.day().month().year())
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    Text(entry.date, format: .dateTime.day().month().year())
+                    if let note = entry.note, !note.isEmpty {
+                        Text("•")
+                        Text(note)
+                            .lineLimit(1)
+                    }
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
             }
 
             Spacer()

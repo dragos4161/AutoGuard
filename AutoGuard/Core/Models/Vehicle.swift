@@ -101,9 +101,14 @@ final class Vehicle {
     }
 
     // MARK: - Kilometraj
-    /// Toate intrările de kilometraj sortate de la cea mai recentă la cea mai veche
+    /// Toate intrările de kilometraj sortate de la cea mai recentă la cea mai veche (iar în aceeași zi, descrescător după km)
     var sortedMileageEntries: [MileageEntry] {
-        (mileageEntries ?? []).sorted { $0.date > $1.date }
+        (mileageEntries ?? []).sorted {
+            if Calendar.current.isDate($0.date, inSameDayAs: $1.date) {
+                return $0.mileage > $1.mileage
+            }
+            return $0.date > $1.date
+        }
     }
 
     /// Kilometrajul curent (cea mai recentă înregistrare)

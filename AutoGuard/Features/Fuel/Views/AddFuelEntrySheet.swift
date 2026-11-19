@@ -354,9 +354,9 @@ struct AddFuelEntrySheet: View {
         newEntry.vehicle = vehicle
         modelContext.insert(newEntry)
 
-        // Actualizăm automat kilometrajul general al mașinii dacă această alimentare are un km mai mare
-        let previousMax = vehicle.currentMileage ?? 0
-        if odo > previousMax {
+        // Înregistrăm automat citirea și în istoricul de kilometraj (indiferent dacă data e azi sau din trecut), dacă nu există deja
+        let alreadyRecorded = (vehicle.mileageEntries ?? []).contains(where: { $0.mileage == odo })
+        if odo > 0 && !alreadyRecorded {
             let fuelLabel = AppLanguage.tr("Alimentare", "Fuel")
             let mileageNote = notes.isEmpty ? "\(fuelLabel) (\(selectedFuelType.defaultDisplayName))" : "\(fuelLabel) \(notes)"
             let mileageEntry = MileageEntry(mileage: odo, date: date, note: mileageNote)

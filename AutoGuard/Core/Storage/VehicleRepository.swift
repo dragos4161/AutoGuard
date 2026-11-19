@@ -298,8 +298,9 @@ final class SwiftDataVehicleRepository: VehicleRepositoryProtocol {
         vehicle.serviceRecords?.append(record)
         context.insert(record)
 
-        // Dacă km introduși la service sunt mai mari decât kilometrajul curent, actualizăm și odometrul
-        if mileage > (vehicle.currentMileage ?? 0) {
+        // Înregistrăm automat citirea și în istoricul de kilometraj (dacă nu există deja)
+        let alreadyRecorded = (vehicle.mileageEntries ?? []).contains(where: { $0.mileage == mileage })
+        if mileage > 0 && !alreadyRecorded {
             _ = addMileageEntry(
                 mileage,
                 date: date,
