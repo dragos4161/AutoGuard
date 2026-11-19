@@ -332,14 +332,11 @@ final class Vehicle {
         fuelSpent(since: startDate) + serviceSpent(since: startDate) + documentsSpent(since: startDate)
     }
 
-    /// Distanța parcursă în perioada selectată (sau distanța totală dacă în perioada scurtă există < 2 citiri)
+    /// Distanța parcursă în perioada selectată (cu interpolare la începutul perioadei când există citiri anterioare)
     func trackedDistanceKm(since startDate: Date?) -> Int? {
         guard let startDate else { return trackedDistanceKm }
-        var odometers: [Int] = []
-        odometers.append(contentsOf: (mileageEntries ?? []).filter { $0.date >= startDate }.map(\.mileage))
-        odometers.append(contentsOf: (fuelEntries ?? []).filter { $0.date >= startDate }.map(\.odometer))
-        odometers.append(contentsOf: (serviceRecords ?? []).filter { $0.date >= startDate }.map(\.mileage))
-        let valid = odometers.filter { $0 > 0 }
+        let points = odometerChartData(since: startDate)
+        let valid = points.map(\.mileage).filter { $0 > 0 }
         if let minKm = valid.min(), let maxKm = valid.max(), maxKm > minKm {
             return maxKm - minKm
         }
@@ -379,28 +376,48 @@ final class Vehicle {
             ))
         }
 
-        let filtered: [OdometerPoint]
-        if let startDate {
-            let inPeriod = rawPoints.filter { $0.date >= startDate }
-            filtered = inPeriod.count >= 2 ? inPeriod : rawPoints
-        } else {
-            filtered = rawPoints
-        }
-
-        // Deduplicăm pe zi calendaristică (păstrând kilometrajul maxim din acea zi)
-        var byDay: [Date: OdometerPoint] = [:]
-        for pt in filtered {
+        // Deduplicăm mai întâi tot istoricul pe zi calendaristică (păstrând kilometrajul maxim din acea zi)
+        var allByDay: [Date: OdometerPoint] = [:]
+        for pt in rawPoints {
             let day = calendar.startOfDay(for: pt.date)
-            if let existing = byDay[day] {
+            if let existing = allByDay[day] {
                 if pt.mileage >= existing.mileage {
-                    byDay[day] = pt
+                    allByDay[day] = pt
                 }
             } else {
-                byDay[day] = pt
+                allByDay[day] = pt
+            }
+        }
+        let allSorted = allByDay.values.sorted { $0.date < $1.date }
+
+        guard let startDate else {
+            return allSorted
+        }
+
+        let startDay = calendar.startOfDay(for: startDate)
+        var inPeriod = allSorted.filter { calendar.startOfDay(for: $0.date) >= startDay }
+
+        // Dacă prima citire din perioadă este la > 14 zile după startDate și avem o citire anterioară,
+        // interpolăm liniar kilometrajul la momentul startDate pentru a nu pierde rulajul dintre citiri
+        if let firstInPeriod = inPeriod.first,
+           firstInPeriod.date.timeIntervalSince(startDay) > 14 * 86_400,
+           let lastBefore = allSorted.last(where: { calendar.startOfDay(for: $0.date) < startDay }),
+           firstInPeriod.mileage > lastBefore.mileage {
+            let totalSpan = firstInPeriod.date.timeIntervalSince(lastBefore.date)
+            if totalSpan > 0 {
+                let elapsed = startDay.timeIntervalSince(lastBefore.date)
+                let fraction = min(1.0, max(0.0, elapsed / totalSpan))
+                let interpolatedKm = lastBefore.mileage + Int((Double(firstInPeriod.mileage - lastBefore.mileage) * fraction).rounded())
+                let anchorPoint = OdometerPoint(
+                    date: startDay,
+                    mileage: interpolatedKm,
+                    sourceLabel: AppLanguage.tr("Estimare", "Estimate")
+                )
+                inPeriod.insert(anchorPoint, at: 0)
             }
         }
 
-        return byDay.values.sorted { $0.date < $1.date }
+        return inPeriod.count >= 2 ? inPeriod : allSorted
     }
 
     /// Statistici complete de rulaj (km / săptămână, km / lună, ultimul an, proiecție anuală)

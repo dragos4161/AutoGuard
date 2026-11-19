@@ -11,7 +11,7 @@ import SwiftUI
 enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
     case last30Days
     case sinceRCA
-    case last6Months
+    case thisYear
     case lastYear
     case allTime
 
@@ -21,8 +21,8 @@ enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
         switch self {
         case .last30Days: return AppLanguage.tr("30 Zile", "30 Days")
         case .sinceRCA: return AppLanguage.tr("De la RCA", "Since RCA")
-        case .last6Months: return AppLanguage.tr("6 Luni", "6 Months")
-        case .lastYear: return AppLanguage.tr("1 An", "1 Year")
+        case .thisYear: return AppLanguage.tr("1 Ian", "Jan 1")
+        case .lastYear: return AppLanguage.tr("12 Luni", "1 Year")
         case .allTime: return AppLanguage.tr("Tot", "All Time")
         }
     }
@@ -31,7 +31,7 @@ enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
         switch self {
         case .last30Days: return "analytics.period.30d"
         case .sinceRCA: return LocalizedStringKey(AppLanguage.tr("De la RCA", "Since RCA"))
-        case .last6Months: return "analytics.period.6m"
+        case .thisYear: return LocalizedStringKey(AppLanguage.tr("1 Ian", "Jan 1"))
         case .lastYear: return "analytics.period.1y"
         case .allTime: return "analytics.period.all"
         }
@@ -45,8 +45,9 @@ enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
             return calendar.date(byAdding: .day, value: -30, to: now)
         case .sinceRCA:
             return calendar.date(byAdding: .year, value: -1, to: now)
-        case .last6Months:
-            return calendar.date(byAdding: .month, value: -6, to: now)
+        case .thisYear:
+            let year = calendar.component(.year, from: now)
+            return calendar.date(from: DateComponents(year: year, month: 1, day: 1))
         case .lastYear:
             return calendar.date(byAdding: .year, value: -1, to: now)
         case .allTime:
@@ -581,9 +582,46 @@ struct VehicleMileageEvolutionCardView: View {
     let vehicle: Vehicle
     let startDate: Date?
 
+    enum MileageScope: String, CaseIterable, Identifiable {
+        case sinceRCA
+        case thisYear
+        case lastYear
+        case allTime
+
+        var id: String { rawValue }
+
+        var label: String {
+            switch self {
+            case .sinceRCA: return AppLanguage.tr("De la RCA", "Since RCA")
+            case .thisYear: return AppLanguage.tr("1 Ian", "Jan 1")
+            case .lastYear: return AppLanguage.tr("12 Luni", "1 Year")
+            case .allTime: return AppLanguage.tr("Tot", "All Time")
+            }
+        }
+    }
+
+    @State private var selectedScope: MileageScope = .sinceRCA
+    @State private var hasInitializedScope: Bool = false
+
+    private var effectiveStartDate: Date? {
+        let calendar = Calendar.current
+        let now = Date()
+        switch selectedScope {
+        case .sinceRCA:
+            return vehicle.rcaCycleStartDate ?? calendar.date(byAdding: .year, value: -1, to: now)
+        case .thisYear:
+            let year = calendar.component(.year, from: now)
+            return calendar.date(from: DateComponents(year: year, month: 1, day: 1))
+        case .lastYear:
+            return calendar.date(byAdding: .year, value: -1, to: now)
+        case .allTime:
+            return nil
+        }
+    }
+
     var body: some View {
-        let points = vehicle.odometerChartData(since: startDate)
-        let stats = vehicle.mileageStats(since: startDate)
+        let points = vehicle.odometerChartData(since: effectiveStartDate)
+        let stats = vehicle.mileageStats(since: effectiveStartDate)
 
         VStack(alignment: .leading, spacing: 14) {
             HStack {
@@ -605,6 +643,14 @@ struct VehicleMileageEvolutionCardView: View {
                         .clipShape(Capsule())
                 }
             }
+
+            // Selector dedicat pentru perioada kilometrilor (De la RCA / 1 Ian / 12 Luni / Tot)
+            Picker(AppLanguage.tr("Perioadă km", "Mileage period"), selection: $selectedScope.animation(.easeInOut)) {
+                ForEach(MileageScope.allCases) { scope in
+                    Text(scope.label).tag(scope)
+                }
+            }
+            .pickerStyle(.segmented)
 
             if let stats, points.count >= 2 {
                 // 3 Statistici cheie: Km / Săpt., Km / Lună, Ultimul An
@@ -717,6 +763,34 @@ struct VehicleMileageEvolutionCardView: View {
         .padding(16)
         .background(Color(uiColor: .secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .onAppear {
+            guard !hasInitializedScope else { return }
+            hasInitializedScope = true
+            syncScope(with: startDate)
+        }
+        .onChange(of: startDate) { _, newStart in
+            syncScope(with: newStart)
+        }
+    }
+
+    private func syncScope(with date: Date?) {
+        guard let date else {
+            selectedScope = .allTime
+            return
+        }
+        let calendar = Calendar.current
+        if let rcaStart = vehicle.rcaCycleStartDate,
+           calendar.isDate(date, inSameDayAs: rcaStart) {
+            selectedScope = .sinceRCA
+        } else {
+            let year = calendar.component(.year, from: Date())
+            if let jan1 = calendar.date(from: DateComponents(year: year, month: 1, day: 1)),
+               calendar.isDate(date, inSameDayAs: jan1) {
+                selectedScope = .thisYear
+            } else {
+                selectedScope = .lastYear
+            }
+        }
     }
 
     private func mileageMetricPill(title: String, value: String, subtitle: String, color: Color) -> some View {
