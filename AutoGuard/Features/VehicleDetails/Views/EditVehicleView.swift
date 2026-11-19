@@ -12,11 +12,13 @@ struct EditVehicleView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
+    let vehicle: Vehicle
     @State private var viewModel: EditVehicleViewModel
     @FocusState private var isVinFocused: Bool
     @State private var activeScanTarget: ScanTarget? = nil
 
     init(vehicle: Vehicle) {
+        self.vehicle = vehicle
         _viewModel = State(initialValue: EditVehicleViewModel(vehicle: vehicle))
     }
 
@@ -143,6 +145,14 @@ struct EditVehicleView: View {
                     .disabled(!viewModel.isFormValid)
                     .fontWeight(.bold)
                 }
+            }
+            .onAppear {
+                if viewModel.vehicle.id != vehicle.id {
+                    viewModel = EditVehicleViewModel(vehicle: vehicle)
+                }
+            }
+            .onChange(of: vehicle.id) { _, _ in
+                viewModel = EditVehicleViewModel(vehicle: vehicle)
             }
             .sheet(item: $activeScanTarget) { target in
                 LiveDocumentScannerView(

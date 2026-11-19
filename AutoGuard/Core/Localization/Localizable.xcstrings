@@ -13,6 +13,9 @@
     "*" : {
 
     },
+    "%@" : {
+
+    },
     "%@ (%@)" : {
       "localizations" : {
         "en" : {
@@ -25,6 +28,16 @@
     },
     "%@ km" : {
 
+    },
+    "%@ km → %@ km (+%@ km)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ km → %2$@ km (+%3$@ km)"
+          }
+        }
+      }
     },
     "%@ km bord" : {
       "extractionState" : "stale",
@@ -49,16 +62,6 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "%1$@: %2$@"
-          }
-        }
-      }
-    },
-    "%@: %@ L" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@: %2$@ L"
           }
         }
       }
@@ -168,6 +171,9 @@
 
     },
     "• %@" : {
+
+    },
+    "+%@ km" : {
 
     },
     "+%lld km" : {
@@ -331,6 +337,18 @@
       }
     },
     "8.000 / 10.000 km (80%)" : {
+
+    },
+    "10.11" : {
+
+    },
+    "11.44" : {
+
+    },
+    "500" : {
+
+    },
+    "208000" : {
 
     },
     "acum" : {
@@ -3540,6 +3558,12 @@
     "km" : {
 
     },
+    "Km" : {
+
+    },
+    "L/100km" : {
+
+    },
     "lei" : {
 
     },
@@ -3559,6 +3583,9 @@
           }
         }
       }
+    },
+    "lei/L" : {
+
     },
     "Limita de kilometri va fi atinsă prima." : {
       "extractionState" : "manual",
@@ -3899,6 +3926,9 @@
           }
         }
       }
+    },
+    "Min" : {
+
     },
     "Necesită cel puțin 2 plinuri complete pentru a trasa graficul de consum." : {
       "extractionState" : "manual",

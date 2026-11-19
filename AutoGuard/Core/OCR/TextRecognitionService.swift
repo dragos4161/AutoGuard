@@ -127,53 +127,72 @@ final class TextRecognitionService {
 
         var result = FuelReceiptScanResult(rawText: text)
 
-        // 1. Extragere Litri (cantitate)
-        let litersPatterns = [
-            #"(?:CANTITATE|CANT\.?|VOLUM)?[\s:]*(\d{1,3}[.,]\d{2,3})\s*(?:L\b|LTR|LITRI|LITRE)"#,
-            #"(\d{1,3}[.,]\d{2,3})\s*(?:X|\*)\s*(\d{1,2}[.,]\d{2,3})"#
+        func parseDouble(_ raw: String) -> Double? {
+            let normalized = raw
+                .replacingOccurrences(of: " ", with: "")
+                .replacingOccurrences(of: ",", with: ".")
+            return Double(normalized)
+        }
+
+        // 1. Extragere Litri (cantitate) și Preț Unitar (lei/L)
+        // Suportă 1–4 zecimale (ex. OMV/Petrom: "48,6002 L X 9,93", Rompetrol/MOL: "48.60 L * 9.93", sau "9,93 X 48,6002 L")
+        let litersAndUnitPatterns: [(pattern: String, litersGroup: Int, unitGroup: Int?)] = [
+            (#"(\d{1,3}[.,]\s?\d{1,4})\s*(?:L\b|LTR|LITRI|LITRE)?\s*(?:X|\*)\s*(\d{1,2}[.,]\s?\d{2,4})"#, 1, 2),
+            (#"(\d{1,2}[.,]\s?\d{2,4})\s*(?:LEI|RON)?\s*(?:X|\*)\s*(\d{1,3}[.,]\s?\d{1,4})\s*(?:L\b|LTR|LITRI|LITRE)"#, 2, 1),
+            (#"(?:CANTITATE|CANT\.?|VOLUM)?[\s:]*(\d{1,3}[.,]\s?\d{1,4})\s*(?:L\b|LTR|LITRI|LITRE)"#, 1, nil)
         ]
 
-        for pattern in litersPatterns {
-            if let regex = try? NSRegularExpression(pattern: pattern) {
+        for item in litersAndUnitPatterns {
+            if let regex = try? NSRegularExpression(pattern: item.pattern) {
                 let range = NSRange(location: 0, length: clean.utf16.count)
                 if let match = regex.firstMatch(in: clean, range: range),
-                   let matchRange = Range(match.range(at: 1), in: clean) {
-                    let str = String(clean[matchRange]).replacingOccurrences(of: ",", with: ".")
-                    if let val = Double(str), val > 0 && val < 300 {
-                        result.liters = val
-                        if match.numberOfRanges > 2, let unitRange = Range(match.range(at: 2), in: clean) {
-                            let unitStr = String(clean[unitRange]).replacingOccurrences(of: ",", with: ".")
-                            if let unitVal = Double(unitStr), unitVal > 2 && unitVal < 20 {
-                                result.unitPrice = unitVal
-                            }
+                   let litersRange = Range(match.range(at: item.litersGroup), in: clean),
+                   let val = parseDouble(String(clean[litersRange])),
+                   val > 1 && val < 300 {
+                    result.liters = (val * 100).rounded() / 100
+                    if let unitGroup = item.unitGroup,
+                       match.numberOfRanges > unitGroup,
+                       let unitRange = Range(match.range(at: unitGroup), in: clean),
+                       let unitVal = parseDouble(String(clean[unitRange])),
+                       unitVal > 2 && unitVal < 25 {
+                        result.unitPrice = unitVal
+                        // Calculăm și prețul total exact din cantitate * preț unitar (ex: 48.6002 * 9.93 = 482.60)
+                        let computedTotal = (val * unitVal * 100).rounded() / 100
+                        if computedTotal > 5 && computedTotal < 5000 {
+                            result.totalPrice = computedTotal
                         }
+                    }
+                    break
+                }
+            }
+        }
+
+        // 2. Extragere Total (Preț Total în Lei) din liniile fiscale dacă nu a fost deja calculat sau pentru validare
+        let totalPatterns: [(pattern: String, group: Int)] = [
+            (#"(?:TOTAL\s*LEI|TOTAL\s*RON|VALOARE\s*TOTALA|TOTAL\s*DE\s*PLATA|DE\s*PLATA)[\s:.\-]*(\d{1,5}[.,]\s?\d{2})(?!\d)"#, 1),
+            (#"(?:CARTE\s*CREDIT|CARD\s*BANCAR|PLATA\s*CARD|CONTACTLESS|CARD|NUMERAR)[\s:.\-]*(\d{1,5}[.,]\s?\d{2})(?!\d)"#, 1),
+            (#"TOTAL\s*:(?!\s*TAXE)[\s\n\r]*(\d{1,5}[.,]\s?\d{2})(?!\d)"#, 1),
+            (#"(?<!TAXE:\s)(?<!TVA\s)(\d{2,5}[.,]\s?\d{2})\s*[A-BА]\b"#, 1)
+        ]
+
+        if result.totalPrice == nil {
+            for item in totalPatterns {
+                if let regex = try? NSRegularExpression(pattern: item.pattern) {
+                    let range = NSRange(location: 0, length: clean.utf16.count)
+                    if let match = regex.firstMatch(in: clean, range: range),
+                       let matchRange = Range(match.range(at: item.group), in: clean),
+                       let val = parseDouble(String(clean[matchRange])),
+                       val > 5 && val < 5000 {
+                        result.totalPrice = val
                         break
                     }
                 }
             }
         }
 
-        // 2. Extragere Total (Preț Total în Lei)
-        let totalPatterns = [
-            #"(?:TOTAL\s*LEI|TOTAL\s*RON|VALOARE\s*TOTALA|DE\s*PLATA)[\s:]*(\d{1,5}[.,]\d{2})\b"#,
-            #"(?:TOTAL)[\s:]*([A-Z]{0,3})[\s:]*(\d{1,5}[.,]\d{2})\b"#,
-            #"(?:CARD|NUMERAR)[\s:]*(\d{1,5}[.,]\d{2})\s*(?:LEI|RON)?"#
-        ]
-
-        for pattern in totalPatterns {
-            if let regex = try? NSRegularExpression(pattern: pattern) {
-                let range = NSRange(location: 0, length: clean.utf16.count)
-                if let match = regex.firstMatch(in: clean, range: range) {
-                    let groupIndex = match.numberOfRanges > 2 ? 2 : 1
-                    if let matchRange = Range(match.range(at: groupIndex), in: clean) {
-                        let str = String(clean[matchRange]).replacingOccurrences(of: ",", with: ".")
-                        if let val = Double(str), val > 5 && val < 5000 {
-                            result.totalPrice = val
-                            break
-                        }
-                    }
-                }
-            }
+        // Dacă avem totalul și prețul unitar, dar nu am putut citi litrii, îi deducem matematic
+        if result.liters == nil, let total = result.totalPrice, let unit = result.unitPrice, unit > 0 {
+            result.liters = ((total / unit) * 100).rounded() / 100
         }
 
         // 3. Extragere Dată Bon
@@ -200,14 +219,22 @@ final class TextRecognitionService {
             }
         }
 
-        // 5. Detecție Tip Carburant
-        if clean.contains("100") || clean.contains("98") || clean.contains("MAXXMOTION 100") || clean.contains("EVO PLUS") {
+        // 5. Detecție Tip Carburant (ordonat după denumiri specifice de produs pentru a evita potriviri false pe cifre din coduri fiscale)
+        if clean.contains("OMVMAXX95") || clean.contains("MAXXMOTION 95") || clean.contains("MAXX 95")
+            || clean.contains("EFECTA 95") || clean.contains("ECTO 95") || clean.contains("EVO 95")
+            || clean.contains("BENZINA 95") || clean.contains("EUROSUPER 95") || clean.contains("FARA PLUMB 95") {
+            result.fuelType = .petrol95
+        } else if clean.contains("OMVMAXX100") || clean.contains("MAXXMOTION 100") || clean.contains("MAXX 100")
+            || clean.contains("ECTO 100") || clean.contains("ECTO SPORT 98") || clean.contains("EVO 100")
+            || clean.contains("EVO PLUS") || clean.contains("BENZINA 98") || clean.contains("BENZINA 100")
+            || clean.contains("SUPER 100") || clean.contains("COR 98") || clean.contains("COR 100") {
             result.fuelType = .petrol98
-        } else if clean.contains("EXTRA DIESEL") || clean.contains("MAXXMOTION DIESEL") || clean.contains("EVO DIESEL") || clean.contains("MOTORINA EXTRA") {
+        } else if clean.contains("EXTRA DIESEL") || clean.contains("MAXXMOTION DIESEL") || clean.contains("OMVMAXXDIESEL")
+            || clean.contains("EVO DIESEL") || clean.contains("MOTORINA EXTRA") || clean.contains("ECTO DIESEL") {
             result.fuelType = .premiumDiesel
         } else if clean.contains("DIESEL") || clean.contains("MOTORINA") {
             result.fuelType = .diesel
-        } else if clean.contains("BENZIN") || clean.contains("95") {
+        } else if clean.contains("BENZIN") {
             result.fuelType = .petrol95
         } else if clean.contains("GPL") || clean.contains("LPG") || clean.contains("AUTOGAS") {
             result.fuelType = .lpg
@@ -218,30 +245,47 @@ final class TextRecognitionService {
         return result
     }
 
-    /// Extrage toate datele dintr-un text în formatele dd.MM.yyyy, dd/MM/yyyy sau dd-MM-yyyy
+    /// Extrage toate datele dintr-un text în formatele dd.MM.yyyy, dd/MM/yyyy, dd-MM-yyyy sau yyyy.MM.dd / yyyy-MM-dd
     func extractAllDates(from text: String) -> [Date] {
-        let datePattern = #"\b(\d{1,2})[./\-](\d{1,2})[./\-](\d{4})\b"#
-        guard let regex = try? NSRegularExpression(pattern: datePattern) else { return [] }
-
         var results: [Date] = []
         let range = NSRange(location: 0, length: text.utf16.count)
-        let matches = regex.matches(in: text, range: range)
 
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "ro_RO")
 
-        for match in matches {
-            guard let fullRange = Range(match.range, in: text) else { continue }
-            let dateStr = String(text[fullRange])
+        // 1. Format dd.MM.yyyy / dd/MM/yyyy / dd-MM-yyyy (tolerant la caractere parazite lipite după an)
+        let dmyPattern = #"(?<!\d)(\d{1,2})[./\-](\d{1,2})[./\-](20\d{2})(?!\d)"#
+        if let regex = try? NSRegularExpression(pattern: dmyPattern) {
+            for match in regex.matches(in: text, range: range) {
+                guard let fullRange = Range(match.range, in: text) else { continue }
+                let dateStr = String(text[fullRange])
+                for sep in [".", "/", "-"] {
+                    formatter.dateFormat = "dd\(sep)MM\(sep)yyyy"
+                    if let date = formatter.date(from: dateStr) {
+                        let year = Calendar.current.component(.year, from: date)
+                        if year >= 2020 && year <= 2040 {
+                            results.append(date)
+                            break
+                        }
+                    }
+                }
+            }
+        }
 
-            for sep in [".", "/", "-"] {
-                formatter.dateFormat = "dd\(sep)MM\(sep)yyyy"
-                if let date = formatter.date(from: dateStr) {
-                    // Validăm un an rezonabil pentru documente auto (2020 - 2040)
-                    let year = Calendar.current.component(.year, from: date)
-                    if year >= 2020 && year <= 2040 {
-                        results.append(date)
-                        break
+        // 2. Format yyyy.MM.dd / yyyy/MM/dd / yyyy-MM-dd (utilizat frecvent pe bonurile OMV/Petrom POS: ex. "2026.11.06 13:47")
+        let ymdPattern = #"(?<!\d)(20\d{2})[./\-](\d{1,2})[./\-](\d{1,2})(?!\d)"#
+        if let regex = try? NSRegularExpression(pattern: ymdPattern) {
+            for match in regex.matches(in: text, range: range) {
+                guard let fullRange = Range(match.range, in: text) else { continue }
+                let dateStr = String(text[fullRange])
+                for sep in [".", "/", "-"] {
+                    formatter.dateFormat = "yyyy\(sep)MM\(sep)dd"
+                    if let date = formatter.date(from: dateStr) {
+                        let year = Calendar.current.component(.year, from: date)
+                        if year >= 2020 && year <= 2040 {
+                            results.append(date)
+                            break
+                        }
                     }
                 }
             }
@@ -250,9 +294,53 @@ final class TextRecognitionService {
         return results
     }
 
+    // MARK: - Scanare Bon Fiscal Multi-Orientare (Rezistent la Fotografii Rotite 90°/180°)
+    /// Scanează o imagine a unui bon fiscal încercând orientarea nativă și, dacă datele sunt incomplete,
+    /// testează și orientările rotite (util când bonul este fotografiat pe orizontală / oblic).
+    func scanFuelReceipt(from image: UIImage) async -> FuelReceiptScanResult {
+        let primaryOrientation = CGImagePropertyOrientation(image.imageOrientation)
+        let primaryText = await recognizeText(from: image, orientationOverride: primaryOrientation)
+        var bestResult = extractFuelReceiptData(from: primaryText)
+        var bestScore = score(for: bestResult)
+
+        if bestScore >= 4 {
+            return bestResult
+        }
+
+        let fallbackOrientations: [CGImagePropertyOrientation] = [.up, .right, .left, .down]
+            .filter { $0 != primaryOrientation }
+
+        for orientation in fallbackOrientations {
+            let text = await recognizeText(from: image, orientationOverride: orientation)
+            guard !text.isEmpty else { continue }
+            let candidate = extractFuelReceiptData(from: text)
+            let candidateScore = score(for: candidate)
+            if candidateScore > bestScore {
+                bestResult = candidate
+                bestScore = candidateScore
+                if bestScore >= 4 {
+                    break
+                }
+            }
+        }
+
+        return bestResult
+    }
+
+    private func score(for result: FuelReceiptScanResult) -> Int {
+        var points = 0
+        if result.liters != nil { points += 2 }
+        if result.totalPrice != nil { points += 2 }
+        if result.unitPrice != nil { points += 1 }
+        if result.date != nil { points += 1 }
+        if result.stationName != nil { points += 1 }
+        if result.fuelType != nil { points += 1 }
+        return points
+    }
+
     // MARK: - Recunoaștere Text dintr-o Imagine (Offline Apple Vision)
     /// Rulează VNRecognizeTextRequest pe o imagine locală și returnează tot textul extras
-    func recognizeText(from image: UIImage) async -> String {
+    func recognizeText(from image: UIImage, orientationOverride: CGImagePropertyOrientation? = nil) async -> String {
         // Obținem un CGImage valid chiar dacă imaginea provine din CIImage sau alt format
         let cgImage: CGImage?
         if let directCg = image.cgImage {
@@ -294,7 +382,7 @@ final class TextRecognitionService {
             request.usesLanguageCorrection = false
             request.recognitionLanguages = ["ro", "en"]
 
-            let orientation = CGImagePropertyOrientation(image.imageOrientation)
+            let orientation = orientationOverride ?? CGImagePropertyOrientation(image.imageOrientation)
             let handler = VNImageRequestHandler(cgImage: validCgImage, orientation: orientation, options: [:])
             do {
                 try handler.perform([request])

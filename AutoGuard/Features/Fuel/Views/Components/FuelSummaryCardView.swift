@@ -11,6 +11,7 @@ struct FuelSummaryCardView: View {
     let vehicle: Vehicle
     var onAddFuelTap: () -> Void
     var onViewHistoryTap: () -> Void
+    var onEstimateFuelTap: (() -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -110,6 +111,31 @@ struct FuelSummaryCardView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .padding(.top, 2)
+            }
+
+            if let onEstimateFuelTap {
+                Divider()
+                Button {
+                    onEstimateFuelTap()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "wand.and.stars")
+                            .font(.caption.bold())
+                            .foregroundStyle(.orange)
+                        Text(AppLanguage.tr(
+                            "Estimează carburant fără bon (de la RCA)",
+                            "Estimate fuel without receipt (since RCA)"
+                        ))
+                        .font(.caption.bold())
+                        .foregroundStyle(.primary)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption2.bold())
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 2)
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(16)

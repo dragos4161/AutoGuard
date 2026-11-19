@@ -10,15 +10,27 @@ import SwiftUI
 
 enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
     case last30Days
+    case sinceRCA
     case last6Months
     case lastYear
     case allTime
 
     var id: String { rawValue }
 
+    var displayLabel: String {
+        switch self {
+        case .last30Days: return AppLanguage.tr("30 Zile", "30 Days")
+        case .sinceRCA: return AppLanguage.tr("De la RCA", "Since RCA")
+        case .last6Months: return AppLanguage.tr("6 Luni", "6 Months")
+        case .lastYear: return AppLanguage.tr("1 An", "1 Year")
+        case .allTime: return AppLanguage.tr("Tot", "All Time")
+        }
+    }
+
     var titleKey: LocalizedStringKey {
         switch self {
         case .last30Days: return "analytics.period.30d"
+        case .sinceRCA: return LocalizedStringKey(AppLanguage.tr("De la RCA", "Since RCA"))
         case .last6Months: return "analytics.period.6m"
         case .lastYear: return "analytics.period.1y"
         case .allTime: return "analytics.period.all"
@@ -31,6 +43,8 @@ enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
         switch self {
         case .last30Days:
             return calendar.date(byAdding: .day, value: -30, to: now)
+        case .sinceRCA:
+            return calendar.date(byAdding: .year, value: -1, to: now)
         case .last6Months:
             return calendar.date(byAdding: .month, value: -6, to: now)
         case .lastYear:
@@ -38,6 +52,13 @@ enum AnalyticsTimePeriod: String, CaseIterable, Identifiable {
         case .allTime:
             return nil
         }
+    }
+
+    func startDate(for vehicle: Vehicle) -> Date? {
+        if self == .sinceRCA {
+            return vehicle.rcaCycleStartDate ?? startDate
+        }
+        return startDate
     }
 }
 
@@ -49,11 +70,11 @@ struct VehicleAnalyticsView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var currentStartDate: Date? {
-        selectedPeriod.startDate
+        selectedPeriod.startDate(for: vehicle)
     }
 
     private var hasAnyData: Bool {
-        vehicle.totalOverallSpent > 0 || !vehicle.consumptionChartData.isEmpty
+        vehicle.totalOverallSpent > 0 || !vehicle.consumptionChartData.isEmpty || vehicle.odometerChartData().count >= 2
     }
 
     var body: some View {
@@ -65,10 +86,14 @@ struct VehicleAnalyticsView: View {
                     // Selector Perioadă de Timp
                     Picker("analytics.period.label", selection: $selectedPeriod.animation(.easeInOut)) {
                         ForEach(AnalyticsTimePeriod.allCases) { period in
-                            Text(period.titleKey).tag(period)
+                            Text(period.displayLabel).tag(period)
                         }
                     }
                     .pickerStyle(.segmented)
+
+                    if selectedPeriod == .sinceRCA {
+                        RCACycleSummaryBannerView(vehicle: vehicle)
+                    }
 
                     // 1. Grid Sumar Financiar (inclusiv Cost Real / km și Acte/Taxe)
                     summaryCardsGrid
@@ -87,7 +112,10 @@ struct VehicleAnalyticsView: View {
                         consumptionChartSection
                     }
 
-                    // 3. Detaliere Costuri Acte, RCA, ITP & Roviniete (România / Străinătate)
+                    // 3. Evoluție Kilometraj & Statistici Rulaj (km/săpt, km/lună, ultimul an)
+                    VehicleMileageEvolutionCardView(vehicle: vehicle, startDate: currentStartDate)
+
+                    // 4. Detaliere Costuri Acte, RCA, ITP & Roviniete (România / Străinătate)
                     documentsExpensesSection
                 }
             }
@@ -211,17 +239,39 @@ struct VehicleAnalyticsView: View {
                     .font(.headline)
                 Spacer()
                 if let avg = vehicle.averageConsumption {
-                    Text(String(format: AppLanguage.tr("Medie: %.1f L", "Avg: %.1f L"), avg))
+                    Text(String(format: AppLanguage.tr("Medie: %.1f L/100km", "Avg: %.1f L/100km"), avg))
                         .font(.caption.bold())
                         .foregroundStyle(.green)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.green.opacity(0.12))
+                        .clipShape(Capsule())
                 }
             }
 
             let chartData = vehicle.consumptionChartData
-            if chartData.count >= 2 {
+            if !chartData.isEmpty {
+                let displayPoints: [ConsumptionPoint] = {
+                    if chartData.count == 1,
+                       let firstPoint = chartData.first,
+                       let firstFullEntry = vehicle.chronologicalFuelEntries.first(where: { $0.isFullTank }),
+                       firstFullEntry.date < firstPoint.date {
+                        return [
+                            ConsumptionPoint(
+                                date: firstFullEntry.date,
+                                consumption: firstPoint.consumption,
+                                odometer: firstFullEntry.odometer
+                            ),
+                            firstPoint
+                        ]
+                    }
+                    return chartData
+                }()
+                let maxConsumption = max(displayPoints.map(\.consumption).max() ?? 10.0, vehicle.averageConsumption ?? 10.0)
+
                 Chart {
                     // Suprafață cu gradient
-                    ForEach(chartData) { point in
+                    ForEach(displayPoints) { point in
                         AreaMark(
                             x: .value("Data", point.date),
                             y: .value("Consum", point.consumption)
@@ -237,7 +287,7 @@ struct VehicleAnalyticsView: View {
                     }
 
                     // Linie grafic
-                    ForEach(chartData) { point in
+                    ForEach(displayPoints) { point in
                         LineMark(
                             x: .value("Data", point.date),
                             y: .value("Consum", point.consumption)
@@ -251,25 +301,17 @@ struct VehicleAnalyticsView: View {
                             y: .value("Consum", point.consumption)
                         )
                         .foregroundStyle(Color.green)
-                        .symbolSize(36)
+                        .symbolSize(42)
                     }
 
                     // Linie de referință medie
-                    if let avg = vehicle.averageConsumption {
+                    if chartData.count >= 2, let avg = vehicle.averageConsumption {
                         RuleMark(y: .value("Medie", avg))
-                            .foregroundStyle(Color.secondary.opacity(0.5))
+                            .foregroundStyle(Color.secondary.opacity(0.45))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
-                            .annotation(position: .top, alignment: .leading) {
-                                Text("\(AppLanguage.tr("Medie", "Avg")): \(String(format: "%.1f", avg)) L")
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundStyle(.secondary)
-                                    .padding(.horizontal, 4)
-                                    .padding(.vertical, 2)
-                                    .background(.ultraThinMaterial)
-                                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                            }
                     }
                 }
+                .chartYScale(domain: 0...(maxConsumption * 1.25))
                 .chartYAxis {
                     AxisMarks(position: .leading)
                 }
@@ -466,5 +508,239 @@ struct VehicleAnalyticsView: View {
             Text("analytics.no_data_subtitle")
         }
         .padding(.top, 40)
+    }
+}
+
+// MARK: - Banner Rezumat Cost Anual în Ciclul RCA
+struct RCACycleSummaryBannerView: View {
+    let vehicle: Vehicle
+
+    var body: some View {
+        let rcaStart = vehicle.rcaCycleStartDate
+        let rcaDoc = vehicle.activeRCADocument
+        let totalInCycle = vehicle.overallSpent(since: rcaStart)
+        let daysElapsed = max(1.0, Date().timeIntervalSince(rcaStart ?? Date()) / 86_400.0)
+        let monthsElapsed = max(1.0, daysElapsed / 30.4375)
+        let monthlyAvg = totalInCycle / monthsElapsed
+
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(Color.teal.opacity(0.15))
+                    .frame(width: 42, height: 42)
+                Image(systemName: "shield.checkered")
+                    .font(.headline)
+                    .foregroundStyle(.teal)
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(AppLanguage.tr("Ciclu Anual RCA + ITP + Rovinietă", "Annual RCA + ITP + Vignette Cycle"))
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.primary)
+
+                if let rcaStart, let rcaDoc {
+                    Text(AppLanguage.tr(
+                        "De la \(rcaStart.formatted(date: .abbreviated, time: .omitted)) • Expiră \(rcaDoc.expirationDate.formatted(date: .abbreviated, time: .omitted))",
+                        "From \(rcaStart.formatted(date: .abbreviated, time: .omitted)) • Expires \(rcaDoc.expirationDate.formatted(date: .abbreviated, time: .omitted))"
+                    ))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                } else {
+                    Text(AppLanguage.tr(
+                        "Adaugă polița RCA pentru a ancora automat începutul anului auto.",
+                        "Add your RCA policy to automatically anchor the start of your car year."
+                    ))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(String(format: "%.0f lei", totalInCycle))
+                    .font(.subheadline.bold())
+                    .foregroundStyle(.teal)
+                Text(String(format: AppLanguage.tr("~%.0f lei/lună", "~%.0f lei/mo"), monthlyAvg))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(14)
+        .background(Color(uiColor: .secondarySystemGroupedBackground))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(Color.teal.opacity(0.28), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
+// MARK: - Card Evoluție Kilometraj & Statistici Rulaj (km/săpt, km/lună, ultimul an)
+struct VehicleMileageEvolutionCardView: View {
+    let vehicle: Vehicle
+    let startDate: Date?
+
+    var body: some View {
+        let points = vehicle.odometerChartData(since: startDate)
+        let stats = vehicle.mileageStats(since: startDate)
+
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Label(
+                    AppLanguage.tr("Evoluție Kilometraj", "Mileage Evolution"),
+                    systemImage: "gauge.with.dots.needle.67percent"
+                )
+                .font(.headline)
+
+                Spacer()
+
+                if let stats {
+                    Text("+\(stats.totalTrackedKm.formatted()) km")
+                        .font(.caption.bold())
+                        .foregroundStyle(.blue)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.blue.opacity(0.12))
+                        .clipShape(Capsule())
+                }
+            }
+
+            if let stats, points.count >= 2 {
+                // 3 Statistici cheie: Km / Săpt., Km / Lună, Ultimul An
+                HStack(spacing: 10) {
+                    mileageMetricPill(
+                        title: AppLanguage.tr("Medie / Săpt.", "Weekly Avg"),
+                        value: "\(stats.weeklyAverageKm.formatted()) km",
+                        subtitle: AppLanguage.tr("pe săptămână", "per week"),
+                        color: .blue
+                    )
+
+                    mileageMetricPill(
+                        title: AppLanguage.tr("Medie / Lună", "Monthly Avg"),
+                        value: "\(stats.monthlyAverageKm.formatted()) km",
+                        subtitle: AppLanguage.tr("pe lună", "per month"),
+                        color: .indigo
+                    )
+
+                    mileageMetricPill(
+                        title: AppLanguage.tr("Ultimul An", "Last Year"),
+                        value: "\(stats.lastYearKm.formatted()) km",
+                        subtitle: AppLanguage.tr("~\(stats.projectedYearlyKm.formatted()) km/an", "~\(stats.projectedYearlyKm.formatted()) km/yr"),
+                        color: .teal
+                    )
+                }
+
+                let minKm = points.map(\.mileage).min() ?? 0
+                let maxKm = points.map(\.mileage).max() ?? 1000
+                let span = max(100, maxKm - minKm)
+                let lowerY = max(0, minKm - Int(Double(span) * 0.25))
+                let upperY = maxKm + Int(Double(span) * 0.22)
+
+                Chart {
+                    ForEach(points) { point in
+                        AreaMark(
+                            x: .value("Data", point.date),
+                            yStart: .value("Min", lowerY),
+                            yEnd: .value("Km", point.mileage)
+                        )
+                        .interpolationMethod(.monotone)
+                        .foregroundStyle(
+                            LinearGradient(
+                                colors: [Color.blue.opacity(0.32), Color.blue.opacity(0.02)],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+
+                        LineMark(
+                            x: .value("Data", point.date),
+                            y: .value("Km", point.mileage)
+                        )
+                        .interpolationMethod(.monotone)
+                        .foregroundStyle(Color.blue)
+                        .lineStyle(StrokeStyle(lineWidth: 2.5))
+
+                        PointMark(
+                            x: .value("Data", point.date),
+                            y: .value("Km", point.mileage)
+                        )
+                        .foregroundStyle(Color.blue)
+                        .symbolSize(42)
+                    }
+                }
+                .chartYScale(domain: lowerY...upperY)
+                .chartYAxis {
+                    AxisMarks(position: .leading) { value in
+                        AxisGridLine()
+                        if let km = value.as(Int.self) {
+                            AxisValueLabel {
+                                Text("\(km.formatted())")
+                                    .font(.system(size: 10))
+                            }
+                        }
+                    }
+                }
+                .chartXAxis {
+                    AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                        AxisGridLine()
+                        AxisTick()
+                        AxisValueLabel(format: .dateTime.day().month(.abbreviated))
+                    }
+                }
+                .frame(height: 185)
+                .padding(.vertical, 4)
+
+                Text(AppLanguage.tr(
+                    "Include automat citirile din Istoric Kilometraj, Alimentări și Intrări de Service (\(stats.daysTracked) zile monitorizate).",
+                    "Automatically combines readings from Mileage History, Fuel Fill-ups, and Service Records (\(stats.daysTracked) days tracked)."
+                ))
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            } else {
+                VStack(spacing: 8) {
+                    Image(systemName: "road.lanes")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                    Text(AppLanguage.tr(
+                        "Adaugă cel puțin 2 înregistrări de kilometraj (sau alimentări pe zile diferite) pentru a vedea graficul de evoluție și mediile pe săptămână/lună.",
+                        "Add at least 2 mileage readings (or fuel entries on different days) to see the evolution chart and weekly/monthly averages."
+                    ))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+            }
+        }
+        .padding(16)
+        .background(Color(uiColor: .secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+    }
+
+    private func mileageMetricPill(title: String, value: String, subtitle: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title)
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+
+            Text(value)
+                .font(.subheadline.bold())
+                .foregroundStyle(color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+
+            Text(subtitle)
+                .font(.system(size: 9))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(Color(uiColor: .tertiarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

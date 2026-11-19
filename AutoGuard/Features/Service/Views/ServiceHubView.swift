@@ -56,6 +56,12 @@ struct ServiceHubView: View {
                 }
             }
             .navigationTitle("service.title")
+            .navigationDestination(for: UUID.self) { selectedVehicleId in
+                if let selectedVehicle = vehicles.first(where: { $0.id == selectedVehicleId }) {
+                    VehicleDetailsView(vehicle: selectedVehicle)
+                        .id(selectedVehicle.id)
+                }
+            }
             .toolbar {
                 if !vehicles.isEmpty {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -65,9 +71,11 @@ struct ServiceHubView: View {
             }
             .sheet(item: $selectedVehicleForAdd) { vehicle in
                 AddServiceRecordSheet(vehicle: vehicle)
+                    .id(vehicle.id)
             }
             .sheet(item: $selectedVehicleForIntervals) { vehicle in
                 MaintenanceIntervalSheet(vehicle: vehicle)
+                    .id(vehicle.id)
             }
             .quickLookPreview($invoicePreviewURL)
         }
@@ -122,7 +130,7 @@ struct ServiceHubView: View {
 
                 Spacer()
 
-                NavigationLink(destination: VehicleDetailsView(vehicle: vehicle)) {
+                NavigationLink(value: vehicle.id) {
                     HStack(spacing: 4) {
                         Text("service.hub.view_car_details")
                         Image(systemName: "chevron.right")
@@ -180,7 +188,7 @@ struct ServiceHubView: View {
                     }
 
                     if vehicle.sortedServiceRecords.count > 3 {
-                        NavigationLink(destination: VehicleDetailsView(vehicle: vehicle)) {
+                        NavigationLink(value: vehicle.id) {
                             HStack(spacing: 4) {
                                 Text("service.hub.view_all_history")
                                 Image(systemName: "arrow.right")

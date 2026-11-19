@@ -40,10 +40,12 @@ struct MileageSheet: View {
     }
 
     private var isLowerThanPrevious: Bool {
-        guard let entered = parsedInputMileage, let current = currentRecordedMileage else {
-            return false
+        guard let entered = parsedInputMileage else { return false }
+        let olderEntries = vehicle.sortedMileageEntries.filter { $0.date <= selectedDate }
+        if let maxOlder = olderEntries.map(\.mileage).max() {
+            return entered < maxOlder
         }
-        return entered < current
+        return false
     }
 
     var body: some View {
@@ -138,7 +140,16 @@ struct MileageSheet: View {
                     Text("mileage.section.add")
                 }
 
-                // Secțiunea 2: Istoricul înregistrărilor
+                // Secțiunea 2: Evoluție & Statistici Rulaj
+                if vehicle.odometerChartData().count >= 2 {
+                    Section {
+                        VehicleMileageEvolutionCardView(vehicle: vehicle, startDate: nil)
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                    }
+                }
+
+                // Secțiunea 3: Istoricul înregistrărilor
                 Section {
                     let entries = vehicle.sortedMileageEntries
                     if entries.isEmpty {

@@ -112,18 +112,22 @@ struct VehicleDetailsView: View {
         }
         .sheet(isPresented: $isShowingEditSheet) {
             EditVehicleView(vehicle: vehicle)
+                .id(vehicle.id)
         }
         // Modal Kilometraj / Istoric Odometru
         .sheet(isPresented: $isShowingMileageSheet) {
             MileageSheet(vehicle: vehicle)
+                .id(vehicle.id)
         }
         // Modal Înregistrare Service / Revizie
         .sheet(isPresented: $isShowingAddServiceSheet) {
             AddServiceRecordSheet(vehicle: vehicle)
+                .id(vehicle.id)
         }
         // Modal Configurare Intervale Mentenanță
         .sheet(isPresented: $isShowingMaintenanceIntervalSheet) {
             MaintenanceIntervalSheet(vehicle: vehicle)
+                .id(vehicle.id)
         }
         // Modal 1: Corectarea datei curente (fără istoric)
         .sheet(isPresented: $viewModel.isShowingCorrectionSheet) {
@@ -149,12 +153,14 @@ struct VehicleDetailsView: View {
         // Modal Export Dosar Vehicul & Cheltuieli (PDF / CSV)
         .sheet(isPresented: $isShowingReportPreview) {
             VehicleExportSheet(vehicle: vehicle)
+                .id(vehicle.id)
         }
         .sheet(isPresented: $isShowingPaywall) {
             PaywallView()
         }
         .fullScreenCover(isPresented: $isShowingWallet) {
             DigitalWalletView(vehicle: vehicle)
+                .id(vehicle.id)
         }
         // Selector nativ de fișiere (PDF / Imagini din Files / iCloud Drive)
         .fileImporter(

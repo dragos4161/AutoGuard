@@ -220,8 +220,7 @@ struct FuelReceiptScannerSheet: View {
         Task {
             if let data = try? await item.loadTransferable(type: Data.self),
                let uiImage = UIImage(data: data) {
-                let recognizedText = await TextRecognitionService.shared.recognizeText(from: uiImage)
-                let scanResult = TextRecognitionService.shared.extractFuelReceiptData(from: recognizedText)
+                let scanResult = await TextRecognitionService.shared.scanFuelReceipt(from: uiImage)
 
                 await MainActor.run {
                     isProcessing = false

@@ -84,9 +84,11 @@ struct GarageView: View {
                 quickFuelFAB
             }
             .navigationTitle("garage.title")
-            .navigationDestination(for: Vehicle.self) { selectedVehicle in
-                // 2. Router-ul central: "Când cineva navighează cu un obiect Vehicle, deschide acest ecran:"
-                VehicleDetailsView(vehicle: selectedVehicle)
+            .navigationDestination(for: UUID.self) { selectedVehicleId in
+                if let selectedVehicle = vehicles.first(where: { $0.id == selectedVehicleId }) {
+                    VehicleDetailsView(vehicle: selectedVehicle)
+                        .id(selectedVehicle.id)
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -147,6 +149,7 @@ struct GarageView: View {
             }
             .fullScreenCover(item: $walletVehicle) { selectedVehicle in
                 DigitalWalletView(vehicle: selectedVehicle)
+                    .id(selectedVehicle.id)
             }
             .sheet(isPresented: $isShowingQuickFuelSheet) {
                 AddFuelEntrySheet()
@@ -171,7 +174,7 @@ struct GarageView: View {
                     let vehicleIdString = url.lastPathComponent
                     if let targetVehicle = vehicles.first(where: { $0.id.uuidString == vehicleIdString }) {
                         navigationPath = NavigationPath()
-                        navigationPath.append(targetVehicle)
+                        navigationPath.append(targetVehicle.id)
                     }
                 }
             }
@@ -236,7 +239,7 @@ struct GarageView: View {
 
     @ViewBuilder
     private func vehicleCardItem(_ vehicle: Vehicle) -> some View {
-        NavigationLink(value: vehicle) {
+        NavigationLink(value: vehicle.id) {
             VehicleCardView(
                 vehicle: vehicle,
                 onOpenWallet: {

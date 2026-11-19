@@ -13,8 +13,9 @@ struct CostsAndFuelHubView: View {
     @Query(sort: \Vehicle.createdAt, order: .reverse) private var vehicles: [Vehicle]
 
     @State private var selectedVehicleId: UUID? = nil
-    @State private var selectedPeriod: AnalyticsTimePeriod = .allTime
+    @State private var selectedPeriod: AnalyticsTimePeriod = .sinceRCA
     @State private var isShowingAddFuelSheet: Bool = false
+    @State private var isShowingFuelEstimator: Bool = false
     @State private var isShowingFuelHistory: Bool = false
     @State private var isShowingExportSheet: Bool = false
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -28,7 +29,8 @@ struct CostsAndFuelHubView: View {
     }
 
     private var currentStartDate: Date? {
-        selectedPeriod.startDate
+        guard let vehicle = activeVehicle else { return selectedPeriod.startDate }
+        return selectedPeriod.startDate(for: vehicle)
     }
 
     var body: some View {
@@ -40,7 +42,7 @@ struct CostsAndFuelHubView: View {
                             // 1. Selector Vehicul (sau Header Vehicul Unic)
                             vehicleHeaderSection(for: vehicle)
 
-                            // 2. Jurnal Alimentare & Consum (acces rapid la plinuri și istoric)
+                            // 2. Jurnal Alimentare & Consum (acces rapid la plinuri, estimator și istoric)
                             VStack(alignment: .leading, spacing: 8) {
                                 Text("fuel.section.title")
                                     .font(.caption.bold())
@@ -54,6 +56,9 @@ struct CostsAndFuelHubView: View {
                                     },
                                     onViewHistoryTap: {
                                         isShowingFuelHistory = true
+                                    },
+                                    onEstimateFuelTap: {
+                                        isShowingFuelEstimator = true
                                     }
                                 )
                             }
@@ -69,13 +74,17 @@ struct CostsAndFuelHubView: View {
                                     Spacer()
                                 }
 
-                                // Selector Perioadă (30 zile / 6 luni / 1 an / Tot)
+                                // Selector Perioadă (30 zile / De la RCA / 6 luni / 1 an / Tot)
                                 Picker("analytics.period.label", selection: $selectedPeriod.animation(.easeInOut)) {
                                     ForEach(AnalyticsTimePeriod.allCases) { period in
-                                        Text(period.titleKey).tag(period)
+                                        Text(period.displayLabel).tag(period)
                                     }
                                 }
                                 .pickerStyle(.segmented)
+
+                                if selectedPeriod == .sinceRCA {
+                                    RCACycleSummaryBannerView(vehicle: vehicle)
+                                }
 
                                 // Grid Sumar Financiar (Cost Total, Cost Real / km, Carburant, Service, Acte & Viniete)
                                 summaryCardsGrid(for: vehicle)
@@ -94,6 +103,9 @@ struct CostsAndFuelHubView: View {
                                     consumptionChartSection(for: vehicle)
                                 }
 
+                                // Evoluție Kilometraj & Statistici Rulaj (km/săpt, km/lună, ultimul an)
+                                VehicleMileageEvolutionCardView(vehicle: vehicle, startDate: currentStartDate)
+
                                 // Detaliere Cheltuieli Acte, RCA, ITP & Roviniete (RO / Străinătate)
                                 documentsExpensesSection(for: vehicle)
                             }
@@ -106,9 +118,15 @@ struct CostsAndFuelHubView: View {
                     }
                     .sheet(isPresented: $isShowingAddFuelSheet) {
                         AddFuelEntrySheet(vehicle: vehicle)
+                            .id(vehicle.id)
+                    }
+                    .sheet(isPresented: $isShowingFuelEstimator) {
+                        FuelBackfillEstimatorSheet(vehicle: vehicle)
+                            .id(vehicle.id)
                     }
                     .sheet(isPresented: $isShowingExportSheet) {
                         VehicleExportSheet(vehicle: vehicle)
+                            .id(vehicle.id)
                     }
                 } else {
                     ContentUnavailableView {
@@ -413,16 +431,38 @@ struct CostsAndFuelHubView: View {
                     .font(.headline)
                 Spacer()
                 if let avg = vehicle.averageConsumption {
-                    Text(String(format: AppLanguage.tr("Medie: %.1f L", "Avg: %.1f L"), avg))
+                    Text(String(format: AppLanguage.tr("Medie: %.1f L/100km", "Avg: %.1f L/100km"), avg))
                         .font(.caption.bold())
                         .foregroundStyle(.green)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.green.opacity(0.12))
+                        .clipShape(Capsule())
                 }
             }
 
             let chartData = vehicle.consumptionChartData
-            if chartData.count >= 2 {
+            if !chartData.isEmpty {
+                let displayPoints: [ConsumptionPoint] = {
+                    if chartData.count == 1,
+                       let firstPoint = chartData.first,
+                       let firstFullEntry = vehicle.chronologicalFuelEntries.first(where: { $0.isFullTank }),
+                       firstFullEntry.date < firstPoint.date {
+                        return [
+                            ConsumptionPoint(
+                                date: firstFullEntry.date,
+                                consumption: firstPoint.consumption,
+                                odometer: firstFullEntry.odometer
+                            ),
+                            firstPoint
+                        ]
+                    }
+                    return chartData
+                }()
+                let maxConsumption = max(displayPoints.map(\.consumption).max() ?? 10.0, vehicle.averageConsumption ?? 10.0)
+
                 Chart {
-                    ForEach(chartData) { point in
+                    ForEach(displayPoints) { point in
                         AreaMark(
                             x: .value("Data", point.date),
                             y: .value("Consum", point.consumption)
@@ -437,7 +477,7 @@ struct CostsAndFuelHubView: View {
                         )
                     }
 
-                    ForEach(chartData) { point in
+                    ForEach(displayPoints) { point in
                         LineMark(
                             x: .value("Data", point.date),
                             y: .value("Consum", point.consumption)
@@ -451,24 +491,16 @@ struct CostsAndFuelHubView: View {
                             y: .value("Consum", point.consumption)
                         )
                         .foregroundStyle(Color.green)
-                        .symbolSize(36)
+                        .symbolSize(42)
                     }
 
-                    if let avg = vehicle.averageConsumption {
+                    if chartData.count >= 2, let avg = vehicle.averageConsumption {
                         RuleMark(y: .value("Medie", avg))
-                            .foregroundStyle(Color.secondary.opacity(0.5))
+                            .foregroundStyle(Color.secondary.opacity(0.45))
                             .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
-                            .annotation(position: .top, alignment: .leading) {
-                                Text("\(AppLanguage.tr("Medie", "Avg")): \(String(format: "%.1f", avg)) L")
-                                    .font(.system(size: 10, weight: .semibold))
-                                    .foregroundStyle(.secondary)
-                                    .padding(.horizontal, 4)
-                                    .padding(.vertical, 2)
-                                    .background(.ultraThinMaterial)
-                                    .clipShape(RoundedRectangle(cornerRadius: 4))
-                            }
                     }
                 }
+                .chartYScale(domain: 0...(maxConsumption * 1.25))
                 .chartYAxis {
                     AxisMarks(position: .leading)
                 }

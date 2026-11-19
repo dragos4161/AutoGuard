@@ -264,6 +264,25 @@ final class Vehicle {
 
     // MARK: - Filtrare Costuri pe Perioade de Timp
 
+    /// Documentul RCA activ (sau cel mai recent) al mașinii
+    var activeRCADocument: VehicleDocument? {
+        let rcaDocs = (documents ?? []).filter { $0.type == .rca }
+        if let active = rcaDocs.filter({ !$0.isArchived }).max(by: { $0.expirationDate < $1.expirationDate }) {
+            return active
+        }
+        return rcaDocs.max(by: { $0.expirationDate < $1.expirationDate })
+    }
+
+    /// Data de început a ciclului anual RCA curent (calculată ca 1 an înainte de expirarea poliței RCA active)
+    var rcaCycleStartDate: Date? {
+        guard let rca = activeRCADocument else { return nil }
+        let calendar = Calendar.current
+        if let oneYearBefore = calendar.date(byAdding: .year, value: -1, to: rca.expirationDate) {
+            return calendar.startOfDay(for: oneYearBefore)
+        }
+        return calendar.startOfDay(for: rca.createdAt)
+    }
+
     /// Calculează cheltuielile pe carburant începând de la o anumită dată (sau toate dacă `startDate == nil`)
     func fuelSpent(since startDate: Date?) -> Double {
         let list = (fuelEntries ?? []).filter { startDate == nil || $0.date >= startDate! }
@@ -284,8 +303,22 @@ final class Vehicle {
 
     /// Returnează documentele cu preț înregistrate în perioada selectată
     func pricedDocuments(since startDate: Date?) -> [VehicleDocument] {
-        (documents ?? [])
-            .filter { ($0.price ?? 0) > 0 && (startDate == nil || $0.createdAt >= startDate!) }
+        let calendar = Calendar.current
+        return (documents ?? [])
+            .filter { doc in
+                guard (doc.price ?? 0) > 0 else { return false }
+                guard let startDate else { return true }
+                if doc.createdAt >= startDate {
+                    return true
+                }
+                // Includem și actele a căror dată de început (expirare - 1 an) cade în această fereastră (cu o marjă de 14 zile pt. ITP/Rovinietă făcute lângă RCA)
+                if let docStart = calendar.date(byAdding: .year, value: -1, to: doc.expirationDate),
+                   let bufferedStart = calendar.date(byAdding: .day, value: -14, to: startDate),
+                   docStart >= bufferedStart {
+                    return true
+                }
+                return false
+            }
             .sorted { $0.createdAt > $1.createdAt }
     }
 
@@ -317,6 +350,93 @@ final class Vehicle {
     func costPerKm(since startDate: Date?) -> Double? {
         guard let km = trackedDistanceKm(since: startDate), km > 0 else { return nil }
         return overallSpent(since: startDate) / Double(km)
+    }
+
+    /// Punctele de evoluție a kilometrajului (combinând intrările de odometru, alimentările și service-ul)
+    func odometerChartData(since startDate: Date? = nil) -> [OdometerPoint] {
+        let calendar = Calendar.current
+        var rawPoints: [OdometerPoint] = []
+
+        for entry in (mileageEntries ?? []) where entry.mileage > 0 {
+            rawPoints.append(OdometerPoint(
+                date: entry.date,
+                mileage: entry.mileage,
+                sourceLabel: AppLanguage.tr("Odometru", "Odometer")
+            ))
+        }
+        for fuel in (fuelEntries ?? []) where fuel.odometer > 0 {
+            rawPoints.append(OdometerPoint(
+                date: fuel.date,
+                mileage: fuel.odometer,
+                sourceLabel: AppLanguage.tr("Alimentare", "Fuel")
+            ))
+        }
+        for service in (serviceRecords ?? []) where service.mileage > 0 {
+            rawPoints.append(OdometerPoint(
+                date: service.date,
+                mileage: service.mileage,
+                sourceLabel: AppLanguage.tr("Service", "Service")
+            ))
+        }
+
+        let filtered: [OdometerPoint]
+        if let startDate {
+            let inPeriod = rawPoints.filter { $0.date >= startDate }
+            filtered = inPeriod.count >= 2 ? inPeriod : rawPoints
+        } else {
+            filtered = rawPoints
+        }
+
+        // Deduplicăm pe zi calendaristică (păstrând kilometrajul maxim din acea zi)
+        var byDay: [Date: OdometerPoint] = [:]
+        for pt in filtered {
+            let day = calendar.startOfDay(for: pt.date)
+            if let existing = byDay[day] {
+                if pt.mileage >= existing.mileage {
+                    byDay[day] = pt
+                }
+            } else {
+                byDay[day] = pt
+            }
+        }
+
+        return byDay.values.sorted { $0.date < $1.date }
+    }
+
+    /// Statistici complete de rulaj (km / săptămână, km / lună, ultimul an, proiecție anuală)
+    func mileageStats(since startDate: Date? = nil) -> VehicleMileageStats? {
+        let points = odometerChartData(since: startDate)
+        guard points.count >= 2,
+              let first = points.first,
+              let last = points.last else {
+            return nil
+        }
+
+        let minKm = points.map(\.mileage).min() ?? first.mileage
+        let maxKm = points.map(\.mileage).max() ?? last.mileage
+        let distance = maxKm - minKm
+        guard distance > 0 else { return nil }
+
+        let rawDays = max(1.0, last.date.timeIntervalSince(first.date) / 86_400.0)
+        let daysTracked = max(1, Int(ceil(rawDays)))
+        let dailyKm = Double(distance) / rawDays
+        let weeklyKm = Int((dailyKm * 7.0).rounded())
+        let monthlyKm = Int((dailyKm * 30.4375).rounded())
+        let projectedYearlyKm = Int((dailyKm * 365.0).rounded())
+
+        let oneYearAgo = Calendar.current.date(byAdding: .year, value: -1, to: Date())
+        let lastYearKm = trackedDistanceKm(since: oneYearAgo) ?? distance
+
+        return VehicleMileageStats(
+            totalTrackedKm: distance,
+            lastYearKm: lastYearKm,
+            weeklyAverageKm: weeklyKm,
+            monthlyAverageKm: monthlyKm,
+            projectedYearlyKm: projectedYearlyKm,
+            daysTracked: daysTracked,
+            firstDate: first.date,
+            lastDate: last.date
+        )
     }
 
     /// Istoricul valorilor de consum înregistrate la fiecare plin (pentru grafic)
@@ -487,6 +607,26 @@ struct ConsumptionPoint: Identifiable {
     let date: Date
     let consumption: Double
     let odometer: Int
+}
+
+/// Punct de date pentru graficul de evoluție a kilometrajului (odometru)
+struct OdometerPoint: Identifiable {
+    var id: UUID = UUID()
+    let date: Date
+    let mileage: Int
+    let sourceLabel: String
+}
+
+/// Statistici de rulaj (km / săptămână, km / lună, ultimul an, proiecție anuală)
+struct VehicleMileageStats {
+    let totalTrackedKm: Int
+    let lastYearKm: Int
+    let weeklyAverageKm: Int
+    let monthlyAverageKm: Int
+    let projectedYearlyKm: Int
+    let daysTracked: Int
+    let firstDate: Date
+    let lastDate: Date
 }
 
 /// Felie de date pentru distribuția cheltuielilor pe categorii

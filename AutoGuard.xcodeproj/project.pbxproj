@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 110;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -45,7 +45,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolder = PlugIns;
+			dstSubfolderSpec = 13;
 			files = (
 				E6A80F5D3097D31A007D7322 /* TorpedouWidgetExtension.appex in Embed Foundation Extensions */,
 			);
@@ -65,14 +65,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		E62EF60C308D0A5600C26EE6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		E62EF60C308D0A5600C26EE6 /* Exceptions for "AutoGuard" folder in "AutoGuard" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = E62EF5EA308D0A5500C26EE6 /* AutoGuard */;
 		};
-		E6A80F613097D31A007D7322 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		E6A80F613097D31A007D7322 /* Exceptions for "TorpedouWidget" folder in "TorpedouWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -85,7 +85,7 @@
 		E62EF5ED308D0A5500C26EE6 /* AutoGuard */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E62EF60C308D0A5600C26EE6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				E62EF60C308D0A5600C26EE6 /* Exceptions for "AutoGuard" folder in "AutoGuard" target */,
 			);
 			path = AutoGuard;
 			sourceTree = "<group>";
@@ -103,7 +103,7 @@
 		E6A80F4D3097D318007D7322 /* TorpedouWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				E6A80F613097D31A007D7322 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				E6A80F613097D31A007D7322 /* Exceptions for "TorpedouWidget" folder in "TorpedouWidgetExtension" target */,
 			);
 			path = TorpedouWidget;
 			sourceTree = "<group>";
@@ -229,6 +229,8 @@
 				E62EF5FF308D0A5600C26EE6 /* AutoGuardTests */,
 			);
 			name = AutoGuardTests;
+			packageProductDependencies = (
+			);
 			productName = AutoGuardTests;
 			productReference = E62EF5FC308D0A5600C26EE6 /* AutoGuardTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -250,6 +252,8 @@
 				E62EF609308D0A5600C26EE6 /* AutoGuardUITests */,
 			);
 			name = AutoGuardUITests;
+			packageProductDependencies = (
+			);
 			productName = AutoGuardUITests;
 			productReference = E62EF606308D0A5600C26EE6 /* AutoGuardUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -270,6 +274,8 @@
 				E6A80F4D3097D318007D7322 /* TorpedouWidget */,
 			);
 			name = TorpedouWidgetExtension;
+			packageProductDependencies = (
+			);
 			productName = TorpedouWidgetExtension;
 			productReference = E6A80F473097D318007D7322 /* TorpedouWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -414,7 +420,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AutoGuard/AutoGuard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = V7LM828CW2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -431,10 +437,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-				);
+				MARKETING_VERSION = 1.1;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -454,7 +458,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = AutoGuard/AutoGuard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = V7LM828CW2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -471,10 +475,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-				);
+				MARKETING_VERSION = 1.1;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -620,9 +622,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -645,9 +645,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuardTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -707,7 +705,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = TorpedouWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = V7LM828CW2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TorpedouWidget/Info.plist;
@@ -718,7 +716,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard.TorpedouWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -739,7 +737,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = TorpedouWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = V7LM828CW2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = TorpedouWidget/Info.plist;
@@ -750,7 +748,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ascend.AutoGuard.TorpedouWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;

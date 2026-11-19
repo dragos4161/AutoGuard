@@ -311,20 +311,36 @@ public final class CloudBackupManager {
 
         // Fetch mașini existente pentru verificare la merge
         let currentVehicles = try context.fetch(FetchDescriptor<Vehicle>())
+        var matchedVehicleIds = Set<UUID>()
 
         for vDTO in snapshot.vehicles {
-            let existing = currentVehicles.first(where: {
-                (!$0.vin.isEmpty && $0.vin == vDTO.vin) ||
-                $0.plateNumber.uppercased() == vDTO.plateNumber.uppercased()
+            // 1. Căutăm mai întâi potrivirea exactă după UUID-ul unic al mașinii
+            let existingById = currentVehicles.first(where: { $0.id == vDTO.id && !matchedVehicleIds.contains($0.id) })
+            // 2. Fallback sigur: doar dacă numărul de înmatriculare coincide ȘI VIN-urile nu sunt în conflict
+            let existingByPlate = currentVehicles.first(where: { candidate in
+                guard !matchedVehicleIds.contains(candidate.id) else { return false }
+                let samePlate = candidate.plateNumber.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+                    == vDTO.plateNumber.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+                guard samePlate else { return false }
+                if !candidate.vin.isEmpty && !vDTO.vin.isEmpty {
+                    return candidate.vin.uppercased() == vDTO.vin.uppercased()
+                }
+                return true
             })
+
+            let existing = existingById ?? existingByPlate
 
             let targetVehicle: Vehicle
             if let existing {
+                matchedVehicleIds.insert(existing.id)
                 // Actualizăm vehiculul existent
+                existing.plateNumber = vDTO.plateNumber.uppercased()
                 existing.make = vDTO.make
                 existing.model = vDTO.model
                 existing.year = vDTO.year
-                existing.vin = vDTO.vin
+                if !vDTO.vin.isEmpty {
+                    existing.vin = vDTO.vin.uppercased()
+                }
                 existing.nickname = vDTO.nickname
                 existing.oilChangeIntervalKm = vDTO.oilChangeIntervalKm
                 existing.oilChangeIntervalMonths = vDTO.oilChangeIntervalMonths
@@ -344,6 +360,7 @@ public final class CloudBackupManager {
                 newVehicle.oilChangeIntervalKm = vDTO.oilChangeIntervalKm
                 newVehicle.oilChangeIntervalMonths = vDTO.oilChangeIntervalMonths
                 context.insert(newVehicle)
+                matchedVehicleIds.insert(newVehicle.id)
                 targetVehicle = newVehicle
             }
 
@@ -361,11 +378,26 @@ public final class CloudBackupManager {
                 targetVehicle.driverLicenseBackData = Data(base64Encoded: lb)
             }
 
-            // Restaurare documente
-            let existingDocIds = Set((targetVehicle.documents ?? []).map { $0.id })
+            // Restaurare documente (actualizare după ID sau tip activ pentru a preveni dublarea RCA/ITP/Rovinietă)
             for docDTO in vDTO.documents {
-                if !existingDocIds.contains(docDTO.id) {
-                    let docType = DocumentType(rawValue: docDTO.typeRawValue) ?? .rca
+                let docType = DocumentType(rawValue: docDTO.typeRawValue) ?? .rca
+                let existingDoc = (targetVehicle.documents ?? []).first(where: { $0.id == docDTO.id })
+                    ?? (!docDTO.isArchived && docType != .foreignVignette
+                        ? (targetVehicle.documents ?? []).first(where: { !$0.isArchived && $0.type == docType })
+                        : nil)
+
+                if let existingDoc {
+                    existingDoc.expirationDate = docDTO.expirationDate
+                    existingDoc.price = docDTO.price
+                    existingDoc.provider = docDTO.provider
+                    existingDoc.policyNumber = docDTO.policyNumber
+                    existingDoc.isArchived = docDTO.isArchived
+                    existingDoc.archivedAt = docDTO.archivedAt
+                    if let base64 = docDTO.attachmentBase64, !base64.isEmpty {
+                        existingDoc.attachmentData = Data(base64Encoded: base64)
+                        existingDoc.attachmentFileName = docDTO.attachmentFileName
+                    }
+                } else {
                     let newDoc = VehicleDocument(
                         type: docType,
                         expirationDate: docDTO.expirationDate,

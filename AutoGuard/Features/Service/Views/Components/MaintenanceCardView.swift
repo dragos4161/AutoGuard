@@ -147,6 +147,7 @@ struct MaintenanceCardView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .sheet(isPresented: $showingQuickOilChangeSheet) {
             QuickOilChangeSheet(vehicle: vehicle)
+                .id(vehicle.id)
         }
     }
 
